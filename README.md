@@ -10,7 +10,7 @@ AI/ML Learner | Python Developer | Data Science Enthusiast | 17 years old|
 ---
 
 🛠️ Current Skills
-- Languages: C, C++ , Python
+- Languages: C, C++ , Python, Rust
 - AI/ML - Tensorflow , Sci-kit Learn , Pytorch , Pandas , Seaborne , OpenCV
 - Databases: MySQL
 - Tools: Zapier ,Linux , Git.
