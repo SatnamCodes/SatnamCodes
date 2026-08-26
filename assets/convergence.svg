@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="230" viewBox="0 0 820 230" role="img" aria-label="Three lines converging into one point">
+<style>
+  svg { --ink:#24292f; --mute:#656d76; --accent:#0969da; --rule:#d0d7de; }
+  @media (prefers-color-scheme: dark) { svg { --ink:#e6edf3; --mute:#8b949e; --accent:#58a6ff; --rule:#30363d; } }
+  text { font-family:"SFMono-Regular",Menlo,Consolas,"DejaVu Sans Mono",monospace; }
+  .lbl { font-size:11px; fill:var(--mute); letter-spacing:3px; }
+  .note { font-size:12.5px; fill:var(--ink); }
+
+  .path { fill:none; stroke:var(--rule); stroke-width:1.25; stroke-dasharray:700; stroke-dashoffset:700;
+          animation:draw 9s cubic-bezier(.4,0,.3,1) infinite; }
+  #p1 { animation-delay:.2s } #p2 { animation-delay:.5s } #p3 { animation-delay:.8s }
+  @keyframes draw {
+    0%   { stroke-dashoffset:700 }
+    35%  { stroke-dashoffset:0 }
+    82%  { stroke-dashoffset:0; opacity:1 }
+    96%  { stroke-dashoffset:0; opacity:0 }
+    100% { stroke-dashoffset:700; opacity:0 }
+  }
+
+  .trav { fill:var(--accent); offset-rotate:0deg; animation:run 9s cubic-bezier(.4,0,.3,1) infinite; }
+  #t1 { offset-path:path("M 40 40 C 300 40, 480 115, 700 115"); animation-delay:.2s }
+  #t2 { offset-path:path("M 40 115 C 320 115, 480 115, 700 115"); animation-delay:.5s }
+  #t3 { offset-path:path("M 40 190 C 300 190, 480 115, 700 115"); animation-delay:.8s }
+  @keyframes run {
+    0%  { offset-distance:0%;   opacity:0 }
+    4%  { opacity:1 }
+    35% { offset-distance:100%; opacity:1 }
+    50% { offset-distance:100%; opacity:0 }
+    100%{ offset-distance:100%; opacity:0 }
+  }
+
+  #node { fill:var(--ink); opacity:0; animation:land 9s ease-out infinite; animation-delay:.8s }
+  @keyframes land { 0%,32%{opacity:0;r:2} 40%{opacity:1;r:5} 85%{opacity:1;r:5} 95%{opacity:0;r:5} 100%{opacity:0} }
+
+  #ring { fill:none; stroke:var(--accent); stroke-width:1; opacity:0; animation:ping 9s ease-out infinite; animation-delay:1.1s }
+  @keyframes ping { 0%,32%{opacity:0;r:5} 42%{opacity:.7;r:6} 60%{opacity:0;r:26} 100%{opacity:0;r:26} }
+
+  .fade { opacity:0; animation:fi 9s ease-out infinite }
+  #f1 { animation-delay:1.4s }
+  @keyframes fi { 0%,38%{opacity:0} 48%{opacity:1} 85%{opacity:1} 95%{opacity:0} 100%{opacity:0} }
+</style>
+
+<text class="lbl" x="24" y="30">PHYSICS</text>
+<text class="lbl" x="24" y="105">MATHEMATICS</text>
+<text class="lbl" x="24" y="180">COMPUTATION</text>
+
+<path class="path" id="p1" d="M 40 40 C 300 40, 480 115, 700 115"/>
+<path class="path" id="p2" d="M 40 115 C 320 115, 480 115, 700 115"/>
+<path class="path" id="p3" d="M 40 190 C 300 190, 480 115, 700 115"/>
+
+<circle class="trav" id="t1" cx="700" cy="115" r="2.5"/>
+<circle class="trav" id="t2" cx="700" cy="115" r="2.5"/>
+<circle class="trav" id="t3" cx="700" cy="115" r="2.5"/>
+
+<circle id="ring" cx="700" cy="115" r="5"/>
+<circle id="node" cx="700" cy="115" r="5"/>
+
+<text class="note fade" id="f1" x="724" y="119">holds</text>
+</svg>

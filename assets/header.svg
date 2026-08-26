@@ -48,7 +48,7 @@
 
 <g>
   <text class="sub rot" x="30" y="136">building things that must survive execution</text>
-  <text class="sub rot" x="30" y="136">CUDA kernels &#183; graph neural nets &#183; RISC-V internals</text>
-  <text class="sub rot" x="30" y="136">169.6 GFLOPS &#8594; 1052.9 GFLOPS, and not done yet</text>
+  <text class="sub rot" x="30" y="136">kernels, graphs, lattices &#8212; whatever the problem is made of</text>
+  <text class="sub rot" x="30" y="136">measure, model, compile, repeat</text>
 </g>
 </svg>
