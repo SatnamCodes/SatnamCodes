@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="200" viewBox="0 0 820 200" role="img" aria-label="Education timeline">
+<style>
+  svg { --ink:#24292f; --mute:#656d76; --faint:#8c959f; --accent:#0969da; --rule:#d0d7de; }
+  @media (prefers-color-scheme: dark) { svg { --ink:#e6edf3; --mute:#8b949e; --faint:#6e7681; --accent:#58a6ff; --rule:#30363d; } }
+  text { font-family:"SFMono-Regular",Menlo,Consolas,"DejaVu Sans Mono",monospace; }
+  .inst { font-size:12.5px; fill:var(--ink); }
+  .deg  { font-size:11px;  fill:var(--mute); }
+  .yr   { font-size:9.5px; fill:var(--faint); letter-spacing:3px; }
+
+  #axis { stroke:var(--rule); stroke-width:1; stroke-dasharray:700; stroke-dashoffset:700;
+          animation:draw 1.6s cubic-bezier(.4,0,.2,1) .1s forwards }
+  @keyframes draw { to { stroke-dashoffset:0 } }
+
+  .mk { fill:none; stroke:var(--ink); stroke-width:1.25; opacity:0;
+        animation:snap .7s cubic-bezier(.2,.8,.3,1) forwards; transform-box:fill-box; transform-origin:center }
+  @keyframes snap { from{opacity:0;transform:rotate(0deg) scale(.4)} to{opacity:1;transform:rotate(45deg) scale(1)} }
+
+  .core { fill:var(--accent); opacity:0; animation:fi .5s ease-out forwards; transform-box:fill-box; transform-origin:center }
+  @keyframes fi { to { opacity:1 } }
+
+  .txt { opacity:0; animation:up .7s ease-out forwards }
+  @keyframes up { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:none} }
+
+  .tick { stroke:var(--rule); stroke-width:1; opacity:0; animation:fi .5s ease-out forwards }
+</style>
+
+<line id="axis" x1="60" y1="96" x2="760" y2="96"/>
+
+<!-- node 1 -->
+<g>
+  <line class="tick" x1="150" y1="96" x2="150" y2="70" style="animation-delay:.6s"/>
+  <rect class="mk" x="142" y="88" width="16" height="16" style="animation-delay:.55s"/>
+  <rect class="core" x="147" y="93" width="6" height="6" style="animation-delay:1.0s"/>
+  <text class="yr  txt" x="150" y="46" text-anchor="middle" style="animation-delay:.7s">2011 &#8212; 2025</text>
+  <text class="inst txt" x="150" y="64" text-anchor="middle" style="animation-delay:.8s">Delhi Public School</text>
+  <text class="deg txt" x="150" y="134" text-anchor="middle" style="animation-delay:.9s">Bathinda</text>
+</g>
+
+<!-- node 2 -->
+<g>
+  <line class="tick" x1="410" y1="96" x2="410" y2="122" style="animation-delay:1.0s"/>
+  <rect class="mk" x="402" y="88" width="16" height="16" style="animation-delay:.95s"/>
+  <rect class="core" x="407" y="93" width="6" height="6" style="animation-delay:1.4s"/>
+  <text class="yr  txt" x="410" y="164" text-anchor="middle" style="animation-delay:1.1s">2025 &#8212; 2029</text>
+  <text class="inst txt" x="410" y="146" text-anchor="middle" style="animation-delay:1.2s">Christ University</text>
+  <text class="deg txt" x="410" y="72" text-anchor="middle" style="animation-delay:1.3s">B.Tech CSE &#183; AI &amp; ML</text>
+</g>
+
+<!-- node 3 -->
+<g>
+  <line class="tick" x1="670" y1="96" x2="670" y2="70" style="animation-delay:1.4s"/>
+  <rect class="mk" x="662" y="88" width="16" height="16" style="animation-delay:1.35s"/>
+  <rect class="core" x="667" y="93" width="6" height="6" style="animation-delay:1.8s"/>
+  <text class="yr  txt" x="670" y="46" text-anchor="middle" style="animation-delay:1.5s">2025 &#8212; 2029</text>
+  <text class="inst txt" x="670" y="64" text-anchor="middle" style="animation-delay:1.6s">IIT Madras</text>
+  <text class="deg txt" x="670" y="134" text-anchor="middle" style="animation-delay:1.7s">B.S. Data Science &#183; online</text>
+</g>
+</svg>

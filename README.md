@@ -12,7 +12,7 @@
 
 <br>
 
-<img src="assets/convergence.svg" width="820" alt="They do not meet by harmony, but by pressure. At convergence, there is no room for belief — only what holds.">
+<img src="assets/convergence.svg" width="820" alt="They do not meet by harmony, but by pressure. At convergence there is no room for belief — only what holds.">
 
 <br>
 
@@ -29,13 +29,17 @@ matter        ::  defects, dopants, and what physics permits before anyone optim
 
 <br>
 
+<img src="assets/descent.svg" width="820" alt="From research question down through model, framework, kernel, warp, register, to silicon — and there's always room at the bottom.">
+
+<br>
+
 ### Now
 
 <sup>rolling — last updated 2026-02</sup>
 
-**`matmul-optimization`** · CUDA, C++ — custom SGEMM kernels toward cuBLAS-class throughput.
-**`riscv-db`** · PostgreSQL, Python — the official RISC-V ISA spec, normalized into queryable relations.
-**`gnn-dopant-viability`** · PyTorch — graph networks for p-type dopant viability in β-Ga₂O₃.
+**`matmul-optimization`** · CUDA, C++ — custom SGEMM kernels toward cuBLAS-class throughput.<br>
+**`riscv-db`** · PostgreSQL, Python — the official RISC-V ISA spec, normalized into queryable relations.<br>
+**`gnn-dopant-viability`** · PyTorch — graph networks for p-type dopant viability in β-Ga₂O₃.<br>
 **`radian`** · computer vision — persistent identities for trees and farmland from drone imagery.
 
 Pinned repositories carry the detail.
@@ -48,15 +52,22 @@ Pinned repositories carry the detail.
 
 <br>
 
-### Elsewhere
+### Education
 
-B.Tech CSE (AI & ML), Christ University · B.S. Data Science, IIT Madras
-**spaceflora** — astrophotography outreach, featured by NASA
+<img src="assets/education.svg" width="820" alt="Delhi Public School Bathinda · Christ University, B.Tech CSE AI and ML · IIT Madras, B.S. Data Science">
 
-[x](https://twitter.com/gitblamesatnam) ·
-[linkedin](https://www.linkedin.com/in/satnamcodes) ·
-[instagram](https://www.instagram.com/dontblamesatnam) ·
-[github](https://github.com/SatnamCodes)
+<br>
+
+### Internet Coordinates
+
+<p>
+<a href="https://twitter.com/gitblamesatnam"><img src="assets/coord-x.svg" width="200" alt="X — @gitblamesatnam"></a>
+<a href="https://www.linkedin.com/in/satnamcodes"><img src="assets/coord-linkedin.svg" width="200" alt="LinkedIn — satnamcodes"></a>
+<a href="https://www.instagram.com/dontblamesatnam"><img src="assets/coord-instagram.svg" width="200" alt="Instagram — dontblamesatnam"></a>
+<a href="https://github.com/SatnamCodes"><img src="assets/coord-github.svg" width="200" alt="GitHub — SatnamCodes"></a>
+</p>
+
+<sub>**spaceflora** — astrophotography outreach, featured by NASA</sub>
 
 <br>
 
