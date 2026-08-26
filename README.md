@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/header.svg" width="820" alt="Satnam Singh — physics · mathematics · computation">
+<img src="assets/header.svg" width="820" alt="Satnam Singh">
 
 <img src="assets/portrait.svg" width="430" alt="">
 
@@ -12,25 +12,33 @@
 
 <br>
 
-### Building
+<img src="assets/convergence.svg" width="820" alt="They do not meet by harmony, but by pressure. At convergence, there is no room for belief — only what holds.">
 
-**`matmul-optimization`** · CUDA, C++
-A naive SGEMM kernel walked toward cuBLAS-class throughput.
+<br>
 
-<img src="assets/gemm.svg" width="820" alt="169.6 → 1052.9 GFLOPS, 6.5× speedup">
+### Directions
 
-Next: register blocking, warp tiling, WMMA / Tensor Core paths, mixed precision.
+Where the work points, independent of what happens to be open in my editor.
 
-**`riscv-db`** · PostgreSQL, Python
-1,700+ YAML files of the official RISC-V ISA spec → one normalized 8-table database.
-1,351 instructions and 396 CSRs, queryable in SQL instead of read by hand.
+```
+performance   ::  memory hierarchies, kernels, the distance between correct and fast
+representation::  graphs, lattices, encodings — choosing the shape a problem is solved in
+systems       ::  specifications as data, hardware as a thing worth reading closely
+matter        ::  defects, dopants, and what physics permits before anyone optimizes it
+```
 
-**`gnn-dopant-viability`** · PyTorch, research
-Defect-site-resolved graph networks predicting formation energy and ionization levels
-for p-type dopants in β-Ga₂O₃. ~15,000 DFT structures. Abstract under review, IIM ATM 2026.
+<br>
 
-**`radian`** · computer vision
-Persistent digital identities for individual trees and farmland parcels, from drone imagery.
+### Now
+
+<sup>rolling — last updated 2026-02</sup>
+
+**`matmul-optimization`** · CUDA, C++ — custom SGEMM kernels toward cuBLAS-class throughput.
+**`riscv-db`** · PostgreSQL, Python — the official RISC-V ISA spec, normalized into queryable relations.
+**`gnn-dopant-viability`** · PyTorch — graph networks for p-type dopant viability in β-Ga₂O₃.
+**`radian`** · computer vision — persistent identities for trees and farmland from drone imagery.
+
+Pinned repositories carry the detail.
 
 <br>
 
@@ -43,7 +51,7 @@ Persistent digital identities for individual trees and farmland parcels, from dr
 ### Elsewhere
 
 B.Tech CSE (AI & ML), Christ University · B.S. Data Science, IIT Madras
-**spaceflora** — astrophotography outreach, 100K+ monthly engagement, featured by NASA
+**spaceflora** — astrophotography outreach, featured by NASA
 
 [x](https://twitter.com/gitblamesatnam) ·
 [linkedin](https://www.linkedin.com/in/satnamcodes) ·
