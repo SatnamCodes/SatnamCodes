@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="60" viewBox="0 0 820 60" role="img" aria-label="while (understanding &lt; reality) { measure(); model(); compile(); }">
+<style>
+  svg { --ink:#24292f; --mute:#656d76; --accent:#0969da; }
+  @media (prefers-color-scheme: dark) { svg { --ink:#e6edf3; --mute:#8b949e; --accent:#58a6ff; } }
+  text { font-family:"SFMono-Regular",Menlo,Consolas,"DejaVu Sans Mono",monospace; font-size:13px; fill:var(--mute); }
+  #wipe { animation:type 3s steps(58) .4s infinite; }
+  @keyframes type { 0%{width:0} 55%{width:600px} 92%{width:600px} 100%{width:0} }
+  #cur { fill:var(--accent); animation:blink 1s steps(1) infinite }
+  @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
+</style>
+<defs><clipPath id="c"><rect id="wipe" x="24" y="10" width="0" height="34"/></clipPath></defs>
+<g clip-path="url(#c)">
+  <text x="24" y="34" textLength="600" lengthAdjust="spacingAndGlyphs">while (understanding &lt; reality) { measure(); model(); compile(); }</text>
+</g>
+<rect id="cur" x="630" y="22" width="8" height="15"/>
+</svg>

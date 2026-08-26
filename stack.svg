@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="200" viewBox="0 0 820 200" role="img" aria-label="Toolchain">
+<style>
+  svg { --ink:#24292f; --mute:#656d76; --accent:#0969da; --rule:#d0d7de; }
+  @media (prefers-color-scheme: dark) { svg { --ink:#e6edf3; --mute:#8b949e; --accent:#58a6ff; --rule:#30363d; } }
+  text { font-family:"SFMono-Regular",Menlo,Consolas,"DejaVu Sans Mono",monospace; }
+  .k { font-size:10px; fill:var(--mute); letter-spacing:3px; }
+  .v { font-size:13px; fill:var(--ink); }
+  .p { opacity:0; animation:pop .5s ease-out forwards }
+  @keyframes pop { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:none} }
+  .row line { stroke:var(--rule); stroke-width:1; stroke-dasharray:760; stroke-dashoffset:760; animation:draw 1s ease-out forwards }
+  @keyframes draw { to { stroke-dashoffset:0 } }
+</style>
+
+<g class="row">
+  <text class="k p" x="24" y="30" style="animation-delay:.1s">LANGUAGES</text>
+  <text class="v p" x="200" y="30" style="animation-delay:.2s">Python</text>
+  <text class="v p" x="300" y="30" style="animation-delay:.3s">C++</text>
+  <text class="v p" x="380" y="30" style="animation-delay:.4s">C</text>
+  <text class="v p" x="440" y="30" style="animation-delay:.5s">SQL</text>
+  <line x1="24" y1="46" x2="790" y2="46" style="animation-delay:.2s"/>
+</g>
+
+<g class="row">
+  <text class="k p" x="24" y="80" style="animation-delay:.5s">FRAMEWORKS</text>
+  <text class="v p" x="200" y="80" style="animation-delay:.6s">PyTorch</text>
+  <text class="v p" x="300" y="80" style="animation-delay:.7s">XGBoost</text>
+  <text class="v p" x="410" y="80" style="animation-delay:.8s">scikit-learn</text>
+  <line x1="24" y1="96" x2="790" y2="96" style="animation-delay:.6s"/>
+</g>
+
+<g class="row">
+  <text class="k p" x="24" y="130" style="animation-delay:.9s">TOOLS</text>
+  <text class="v p" x="200" y="130" style="animation-delay:1.0s">CUDA</text>
+  <text class="v p" x="280" y="130" style="animation-delay:1.1s">Nsight</text>
+  <text class="v p" x="370" y="130" style="animation-delay:1.2s">PostgreSQL</text>
+  <text class="v p" x="500" y="130" style="animation-delay:1.3s">Docker</text>
+  <text class="v p" x="590" y="130" style="animation-delay:1.4s">Linux</text>
+  <line x1="24" y1="146" x2="790" y2="146" style="animation-delay:1.0s"/>
+</g>
+
+<g class="row">
+  <text class="k p" x="24" y="180" style="animation-delay:1.4s">DOMAINS</text>
+  <text class="v p" x="200" y="180" style="animation-delay:1.5s">GPU programming</text>
+  <text class="v p" x="390" y="180" style="animation-delay:1.6s">deep learning</text>
+  <text class="v p" x="550" y="180" style="animation-delay:1.7s">HPC</text>
+</g>
+</svg>

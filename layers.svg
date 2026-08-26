@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="250" viewBox="0 0 820 250" role="img" aria-label="Physics, mathematics, computation">
+<style>
+  svg { --ink:#24292f; --mute:#656d76; --accent:#0969da; --rule:#d0d7de; }
+  @media (prefers-color-scheme: dark) { svg { --ink:#e6edf3; --mute:#8b949e; --accent:#58a6ff; --rule:#30363d; } }
+  text { font-family:"SFMono-Regular",Menlo,Consolas,"DejaVu Sans Mono",monospace; }
+  .k { font-size:17px; letter-spacing:4px; fill:var(--ink); }
+  .d { font-size:12.5px; fill:var(--mute); }
+  .n { font-size:10px; fill:var(--mute); letter-spacing:2px; }
+  .spine { stroke:var(--rule); stroke-width:1; }
+
+  .row { opacity:0; animation:enter .8s ease-out forwards; }
+  .row:nth-of-type(1){ animation-delay:.2s } 
+  .row:nth-of-type(2){ animation-delay:.5s }
+  .row:nth-of-type(3){ animation-delay:.8s }
+  @keyframes enter { from{opacity:0;transform:translateX(-10px)} to{opacity:1;transform:none} }
+
+  .dot { fill:var(--accent); animation:fall 6s cubic-bezier(.5,0,.5,1) 1.4s infinite; }
+  @keyframes fall {
+    0%   { transform:translateY(0);   opacity:0 }
+    8%   { opacity:1 }
+    30%  { transform:translateY(72px) }
+    58%  { transform:translateY(144px) }
+    82%  { transform:translateY(144px); opacity:1 }
+    92%  { opacity:0 }
+    100% { transform:translateY(144px); opacity:0 }
+  }
+
+  .ring { fill:none; stroke:var(--accent); stroke-width:1; opacity:0; }
+  #r1 { animation:ping 6s ease-out 1.4s infinite }
+  #r2 { animation:ping 6s ease-out 3.2s infinite }
+  #r3 { animation:ping 6s ease-out 4.8s infinite }
+  @keyframes ping { 0%{opacity:.7;r:4} 40%{opacity:0;r:16} 100%{opacity:0;r:16} }
+</style>
+
+<line class="spine" x1="40" y1="52" x2="40" y2="196"/>
+
+<g class="row">
+  <circle cx="40" cy="52" r="3.5" fill="var(--ink)"/>
+  <circle class="ring" id="r1" cx="40" cy="52" r="4"/>
+  <text class="k" x="70" y="48">PHYSICS</text>
+  <text class="n" x="300" y="48">THE SUBSTRATE</text>
+  <text class="d" x="70" y="70">moves first, indifferent to intention</text>
+</g>
+
+<g class="row">
+  <circle cx="40" cy="124" r="3.5" fill="var(--ink)"/>
+  <circle class="ring" id="r2" cx="40" cy="124" r="4"/>
+  <text class="k" x="70" y="120">MATHEMATICS</text>
+  <text class="n" x="300" y="120">THE LANGUAGE</text>
+  <text class="d" x="70" y="142">strips meaning down to what cannot lie</text>
+</g>
+
+<g class="row">
+  <circle cx="40" cy="196" r="3.5" fill="var(--ink)"/>
+  <circle class="ring" id="r3" cx="40" cy="196" r="4"/>
+  <text class="k" x="70" y="192">COMPUTATION</text>
+  <text class="n" x="300" y="192">THE PROOF</text>
+  <text class="d" x="70" y="214">demands that every idea survive execution</text>
+</g>
+
+<circle class="dot" cx="40" cy="52" r="3"/>
+</svg>

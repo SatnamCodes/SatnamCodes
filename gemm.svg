@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="180" viewBox="0 0 820 180" role="img" aria-label="SGEMM throughput: 169.6 to 1052.9 GFLOPS">
+<style>
+  svg { --ink:#24292f; --mute:#656d76; --accent:#0969da; --rule:#d0d7de; }
+  @media (prefers-color-scheme: dark) { svg { --ink:#e6edf3; --mute:#8b949e; --accent:#58a6ff; --rule:#30363d; } }
+  text { font-family:"SFMono-Regular",Menlo,Consolas,"DejaVu Sans Mono",monospace; }
+  .lbl { font-size:12px; fill:var(--mute); }
+  .val { font-size:12px; fill:var(--ink); }
+  .cap { font-size:10px; fill:var(--mute); letter-spacing:3px; }
+  .track { fill:var(--rule); opacity:.4; }
+  .bar { fill:var(--accent); transform-origin:230px 0; transform:scaleX(0); }
+  #b1 { animation:grow 1s cubic-bezier(.2,.8,.3,1) .5s forwards }
+  #b2 { animation:grow 1.5s cubic-bezier(.2,.8,.3,1) 1.1s forwards }
+  @keyframes grow { to { transform:scaleX(1) } }
+  .fade { opacity:0; animation:fi .6s ease-out forwards }
+  #f1{animation-delay:1.2s} #f2{animation-delay:2.4s} #f3{animation-delay:2.8s}
+  @keyframes fi { to { opacity:1 } }
+</style>
+
+<text class="cap" x="24" y="26">CUSTOM SGEMM KERNEL &#183; FP32 &#183; RTX 4060</text>
+
+<text class="lbl" x="24" y="72">naive GEMM</text>
+<rect class="track" x="230" y="62" width="560" height="13" rx="6.5"/>
+<rect class="bar" id="b1" x="230" y="62" width="90" height="13" rx="6.5"/>
+<text class="val fade" id="f1" x="334" y="72">169.6 GFLOPS</text>
+
+<text class="lbl" x="24" y="122">tiled + coalesced</text>
+<rect class="track" x="230" y="112" width="560" height="13" rx="6.5"/>
+<rect class="bar" id="b2" x="230" y="112" width="560" height="13" rx="6.5"/>
+<text class="val fade" id="f2" x="230" y="150">1052.9 GFLOPS</text>
+
+<text class="cap fade" id="f3" x="672" y="150">6.5&#215; SPEEDUP</text>
+</svg>
