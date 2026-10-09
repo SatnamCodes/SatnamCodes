@@ -200,6 +200,60 @@ function integrate(P, w, theta0, phid0) {
   return { samples, duration: t, period: t / 2, span: hi - lo };
 }
 
+// The top as a solid of revolution, seen from the camera at any tilt. Each ring of the turned
+// body (height h along the axis, radius r) projects to an ellipse: centred h·k up the projected
+// axis, r wide across it, r·m deep along it, where k is how much of the axis we see and m how
+// much of a ring's face. The outline is the envelope of those ellipses; the rim and lathe lines
+// are the rings' near halves. Everything is in the frame where the projected axis points up.
+const dot3 = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+const cross3 = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+let RINGS;
+const rings = () => (RINGS ??= Array.from({ length: 164 }, (_, h) => [h, halfWidth(-h)]));
+let XS_;
+const xsamples = () =>
+  (XS_ ??= (() => {
+    const R = Math.max(...rings().map(([, r]) => r)) - 0.01;
+    return Array.from({ length: 49 }, (_, i) => {
+      const s = -1 + (2 * i) / 48;
+      return R * (0.55 * s ** 3 + 0.45 * s); // denser near the axis, where the stem is
+    });
+  })());
+function solidAt(th, phi) {
+  const f = [0, -Math.sin(PITCH), Math.cos(PITCH)], U = [0, Math.cos(PITCH), Math.sin(PITCH)];
+  const u = [Math.sin(th) * Math.cos(phi), Math.cos(th), Math.sin(th) * Math.sin(phi)];
+  const ax = u[0], ay = dot3(u, U), k = Math.hypot(ax, ay), A = [ax / k, ay / k];
+  let e1 = cross3(u, f);
+  const n1 = Math.hypot(...e1);
+  e1 = e1.map((v) => v / n1);
+  const e2 = cross3(u, e1);
+  const s2 = e2[0] * A[0] + dot3(e2, U) * A[1]; // how a ring's depth shows on screen (±m)
+  const m = Math.abs(s2);
+  const top = [], bottom = [];
+  for (const x of xsamples()) {
+    let lo = Infinity, hi = -Infinity;
+    for (const [h, r] of rings()) {
+      if (r < Math.abs(x)) continue;
+      const d = r * m * Math.sqrt(Math.max(0, 1 - (x / r) ** 2));
+      lo = Math.min(lo, -h * k - d);
+      hi = Math.max(hi, -h * k + d);
+    }
+    top.push([x, lo]);
+    bottom.push([x, hi]);
+  }
+  const outline = `M ${[...top, ...bottom.reverse()].map(([x, y]) => `${r1(x)} ${r1(y)}`).join(" L ")} Z`;
+  // the near half of a ring: depth along f is r·sinψ·(e2·f); near means negative
+  const front = dot3(e2, f) > 0 ? Math.PI : 0;
+  const arc = (h, from = 0, to = 1) => {
+    const r = halfWidth(-h);
+    return Array.from({ length: 13 }, (_, i) => {
+      const psi = front + Math.PI * (from + ((to - from) * i) / 12);
+      return `${r1(r * Math.cos(psi))} ${r1(-h * k - r * Math.sin(psi) * s2)}`;
+    }).join(" L ");
+  };
+  // the stem shows over the crown only while it leans toward us
+  return { angle: (Math.atan2(A[0], A[1]) * 180) / Math.PI, k, outline, arc, stemFront: dot3(u, f) < 0.02 };
+}
+
 // The lean as the camera sees it: the axis (sin θ cos φ, cos θ, sin θ sin φ), seen from a little
 // above, gives a screen angle and a foreshortened height.
 const PITCH = 0.1;
@@ -318,39 +372,48 @@ export function svg(m, mo, theme = "dark") {
   const marks = mo.fallen
     ? `<rect x="-10" y="-95" width="5" height="1.6" rx=".8" fill="#0e0f10" opacity=".55"/>`
     : `<rect x="-46" y="-96.2" width="92" height="2.2" fill="#0e0f10" opacity=".22"/>`;
+  // The motion, integrated in motion(), sampled at 30 frames a second.
+  const traj = mo.fallen ? null : integrate(physics(), mo.launch.w, mo.launch.theta, mo.launch.phid0);
+  const frames = traj ? traj.samples.filter((_, i) => i % 2 === 0 || i === traj.samples.length - 1).map(([th, phi]) => solidAt(th, phi)) : null;
+  const dur = traj ? r2(traj.duration) : 0;
+  const per = (attr, fn) => (frames ? `<animate attributeName="${attr}" values="${frames.map(fn).join(";")}" dur="${dur}s" repeatCount="indefinite"/>` : "");
+  const still = frames ? null : solidAt(0, 0);
+  const shape = frames ? frames[0] : still;
+  const outlineDef = mo.fallen ? `<path id="tt-outline" d="${BODY}"/>` : `<path id="tt-outline" d="${shape.outline}">${per("d", (q) => q.outline)}</path>`;
+  const arcPath = (h, from, to, attrs) =>
+    mo.fallen ? "" : `<path d="M ${shape.arc(h, from, to)}" fill="none" ${attrs}>${per("d", (q) => `M ${q.arc(h, from, to)}`)}</path>`;
+  const kY = (y) => (frames ? per("y", (q) => r1(y * q.k)) : "");
+  const kcy = (y) => (frames ? per("cy", (q) => r1(y * q.k)) : "");
   const top = `
     <g clip-path="url(#tt-clip)">
-      <path d="${BODY}" fill="url(#tt-steel)"/>
+      <use href="#tt-outline" fill="url(#tt-steel)"/>
       <!-- The stem is a narrower cylinder, so it carries the same reflections at its own scale. -->
-      <rect x="-8" y="-164" width="16" height="52" fill="url(#tt-stem)"/>
-      <path d="${BODY}" fill="url(#tt-shade)"/>
-      <path d="${BODY}" fill="url(#tt-warm)"/>
+      <rect x="-8" y="-164" width="16" height="52" fill="url(#tt-stem)">${kY(-164)}${frames ? per("height", (q) => r1(52 * q.k)) + `<animate attributeName="opacity" values="${frames.map((q) => (q.stemFront ? 1 : 0)).join(";")}" dur="${dur}s" calcMode="discrete" repeatCount="indefinite"/>` : ""}</rect>
+      <use href="#tt-outline" fill="url(#tt-shade)"/>
+      <use href="#tt-outline" fill="url(#tt-warm)"/>
       <!-- The key light's hotspot on the crown. -->
-      <ellipse cx="-17" cy="-93" rx="12" ry="9" fill="url(#tt-hot)"/>
-      ${lathe.join("\n      ")}
-      <g filter="url(#tt-blur)">${marks}</g>
+      <ellipse cx="-17" cy="-93" rx="12" ry="9" fill="url(#tt-hot)">${kcy(-93)}</ellipse>
+      ${mo.fallen ? lathe.join("\n      ") : [20, 34, 48, 60, 70, 88, 97].map((h, i) => arcPath(h, 0, 1, `stroke="${i % 3 ? "#000" : "#fff"}" stroke-opacity="${i % 3 ? 0.07 : 0.06}" stroke-width=".5"`)).join("")}
+      <g filter="url(#tt-blur)">${mo.fallen ? marks : `<rect x="-46" y="-96.2" width="92" height="2.2" fill="#0e0f10" opacity=".22">${kY(-96.2)}</rect>`}</g>
     </g>
     <!-- The machined edge at the widest point, and a fine rim light on the crown. -->
-    <path d="M -50 -79 Q 0 -75.2 50 -79" fill="none" stroke="#000" stroke-opacity=".35" stroke-width=".7" clip-path="url(#tt-clip)"/>
+    ${mo.fallen
+      ? `<path d="M -50 -79 Q 0 -75.2 50 -79" fill="none" stroke="#000" stroke-opacity=".35" stroke-width=".7" clip-path="url(#tt-clip)"/>
     <path d="M -49.6 -77.6 Q 0 -73.8 49.6 -77.6" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width=".5" clip-path="url(#tt-clip)"/>
-    <path d="M -38 -102 C -29 -108 -15 -111 -6.5 -112" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width=".6"/>`;
+    <path d="M -38 -102 C -29 -108 -15 -111 -6.5 -112" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width=".6"/>`
+      : `${arcPath(79, 0, 1, 'stroke="#000" stroke-opacity=".35" stroke-width=".7" clip-path="url(#tt-clip)"')}
+    ${arcPath(80.4, 0, 1, 'stroke="#fff" stroke-opacity=".35" stroke-width=".5" clip-path="url(#tt-clip)"')}
+    ${arcPath(104, 0.62, 0.95, 'stroke="#fff" stroke-opacity=".4" stroke-width=".6"')}`}`;
 
-
-  // The axis's path, integrated in motion(): its angle on screen and its foreshortened height.
-  const traj = mo.fallen ? null : integrate(physics(), mo.launch.w, mo.launch.theta, mo.launch.phid0);
-  const moving = (inner) => {
-    if (!traj) return inner;
-    const pr = traj.samples.map(([th, phi]) => projected(th, phi));
-    const dur = r2(traj.duration);
-    return `<g><animateTransform attributeName="transform" type="rotate" values="${pr.map((q) => r2(q.angle)).join(";")}" dur="${dur}s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="scale" values="${pr.map((q) => `1 ${q.k.toFixed(4)}`).join(";")}" dur="${dur}s" repeatCount="indefinite"/>${inner}</g></g>`;
-  };
+  const moving = (inner) =>
+    frames ? `<g><animateTransform attributeName="transform" type="rotate" values="${frames.map((q) => r2(q.angle)).join(";")}" dur="${dur}s" repeatCount="indefinite"/>${inner}</g>` : inner;
   const pose = mo.fallen ? `${restingPose(HTIP, HSCALE)} scale(${HSCALE})` : `translate(${HTIP.x} ${HTIP.y}) scale(${HSCALE})`;
 
   // The shadow: the silhouette projected onto the table along the lamp's direction.
   const kx = 0.62, ky = 0.14;
   const shadow = mo.fallen
     ? `<ellipse cx="${HTIP.x + 10}" cy="${HTIP.y + 4}" rx="118" ry="9" fill="${FILM.shadow}" opacity="${FILM.shadowOp + 0.1}" filter="url(#tt-sh)"/>`
-    : `<g transform="matrix(1 0 ${-kx * HSCALE} ${-ky * HSCALE} ${HTIP.x} ${HTIP.y})" opacity="${FILM.shadowOp}" filter="url(#tt-sh)">${moving(`<path d="${BODY}" fill="${FILM.shadow}"/>`)}</g>
+    : `<g transform="matrix(1 0 ${-kx * HSCALE} ${-ky * HSCALE} ${HTIP.x} ${HTIP.y})" opacity="${FILM.shadowOp}" filter="url(#tt-sh)">${moving(`<use href="#tt-outline" fill="${FILM.shadow}"/>`)}</g>
 <ellipse cx="${HTIP.x}" cy="${HTIP.y + 0.5}" rx="7" ry="1.8" fill="${FILM.shadow}" opacity="${FILM.shadowOp + 0.2}" filter="url(#tt-soft)"/>`;
 
   const body = `
@@ -375,7 +438,8 @@ ${shadow}
     <stop offset=".55" stop-color="#000" stop-opacity=".05"/>
     <stop offset="1" stop-color="#000" stop-opacity=".5"/>
   </linearGradient>
-  <clipPath id="tt-clip"><path d="${BODY}"/></clipPath>
+  ${outlineDef}
+  <clipPath id="tt-clip"><use href="#tt-outline"/></clipPath>
   <filter id="tt-blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${mo.fallen ? 0.3 : 6} 0.4"/></filter>
   <filter id="tt-soft" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="6 2.2"/></filter>
 

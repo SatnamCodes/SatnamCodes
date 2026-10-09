@@ -248,12 +248,12 @@ function warp(theme) {
   const say = (a, b, s, first = false) => `<text x="20" y="22" font-family="${SANS}" font-size="9.5" letter-spacing="2" fill="${K.light}" fill-opacity=".85">${animT("opacity", first ? [[0, 1], [b - 0.5, 1], [b + 0.3, 0, true], [T - 0.7, 0], [T, 1, true]] : [[0, 0], [a - 0.3, 0], [a + 0.5, 1, true], [b - 0.5, 1], [b + 0.3, 0, true], [T, 0]], r2)}${s}</text>`;
   const body = `<rect width="0" height="0"><animate id="wp-clk" attributeName="x" values="0;0" dur="${T}s" begin="0s;wp-clk.end"/></rect>
 ${tank}${rods}${kernel}${parts.join("")}
-${say(0, tKernel, "SPH DAM BREAK · 5× SLOWER", true)}
+${say(0, tKernel, "A FLUID, PARTICLE BY PARTICLE · 5× SLOWER", true)}
 ${say(tKernel, tMorph + 1.4, "ONE WARP: 32 PARTICLES, 32 THREADS")}
 ${say(tMorph + 1.4, tOut, `LOCKSTEP · ${L} STEPS · ${busy.toFixed(1)} OF 32 LANES BUSY`)}`;
   return frame({
     w: W, h: H, p, theme,
-    desc: `Warp divergence, from where it comes: an SPH dam break of ${nF} particles plays out; one warp of 32 neighbouring particles lifts out of the water into 32 lanes, each a GPU thread gathering the neighbours inside its kernel radius; their real neighbour counts (${Math.min(...nsL)} to ${L}) become the work, and the warp steps in lockstep for ${L} steps with ${busy.toFixed(1)} of 32 lanes busy on average, the rest masked off. Measured on a million particles: 33.34% branch efficiency, and still faster, 158.87 against 153.13 GB/s.`,
+    desc: `Warp divergence, from where it comes: a fluid of ${nF} particles flows and settles; one warp of 32 neighbouring particles lifts out of the water into 32 lanes, each a GPU thread gathering the neighbours inside its kernel radius; their real neighbour counts (${Math.min(...nsL)} to ${L}) become the work, and the warp steps in lockstep for ${L} steps with ${busy.toFixed(1)} of 32 lanes busy on average, the rest masked off. Measured on a million particles: 33.34% branch efficiency, and still faster, 158.87 against 153.13 GB/s.`,
     defs: `${sphere(`${p}-ball`)}<radialGradient id="${p}-warm" cx=".38" cy=".34" r=".7"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="${K.hot}"/><stop offset="1" stop-color="#7a4f24"/></radialGradient>`,
     body,
     caption: ["Warp divergence", "A third of the efficiency, and still faster · 158.87 vs 153.13 GB/s, 1M particles"],

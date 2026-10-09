@@ -18,7 +18,8 @@
     <stop offset=".55" stop-color="#000" stop-opacity=".05"/>
     <stop offset="1" stop-color="#000" stop-opacity=".5"/>
   </linearGradient>
-  <clipPath id="tt-clip"><path d="M 0 0 C 6 -6 18 -26 30 -44 C 40 -58 48 -70 50 -79 C 51 -86 47 -95 38 -102 C 29 -108 15 -111 6.5 -112 C 5.4 -114 5 -116 5 -119 L 5 -149 C 5 -151 7.6 -152 7.6 -156 C 7.6 -161 4 -163 0 -163 C -4 -163, -7.6 -161, -7.6 -156 C -7.6 -152, -5 -151, -5 -149 L -5 -119 C -5 -116, -5.4 -114, -6.5 -112 C -15 -111, -29 -108, -38 -102 C -47 -95, -51 -86, -50 -79 C -48 -70, -40 -58, -30 -44 C -18 -26, -6 -6, 0 0 Z"/></clipPath>
+  <path id="tt-outline" d="M 0 0 C 6 -6 18 -26 30 -44 C 40 -58 48 -70 50 -79 C 51 -86 47 -95 38 -102 C 29 -108 15 -111 6.5 -112 C 5.4 -114 5 -116 5 -119 L 5 -149 C 5 -151 7.6 -152 7.6 -156 C 7.6 -161 4 -163 0 -163 C -4 -163, -7.6 -161, -7.6 -156 C -7.6 -152, -5 -151, -5 -149 L -5 -119 C -5 -116, -5.4 -114, -6.5 -112 C -15 -111, -29 -108, -38 -102 C -47 -95, -51 -86, -50 -79 C -48 -70, -40 -58, -30 -44 C -18 -26, -6 -6, 0 0 Z"/>
+  <clipPath id="tt-clip"><use href="#tt-outline"/></clipPath>
   <filter id="tt-blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="0.3 0.4"/></filter>
   <filter id="tt-soft" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="6 2.2"/></filter>
 
@@ -35,13 +36,13 @@
 <ellipse cx="430" cy="266" rx="118" ry="9" fill="#1f2328" opacity="0.32" filter="url(#tt-sh)"/>
 <g id="tt-top" transform="translate(505.6 156.0) rotate(-118.75) scale(1.22)">
     <g clip-path="url(#tt-clip)">
-      <path d="M 0 0 C 6 -6 18 -26 30 -44 C 40 -58 48 -70 50 -79 C 51 -86 47 -95 38 -102 C 29 -108 15 -111 6.5 -112 C 5.4 -114 5 -116 5 -119 L 5 -149 C 5 -151 7.6 -152 7.6 -156 C 7.6 -161 4 -163 0 -163 C -4 -163, -7.6 -161, -7.6 -156 C -7.6 -152, -5 -151, -5 -149 L -5 -119 C -5 -116, -5.4 -114, -6.5 -112 C -15 -111, -29 -108, -38 -102 C -47 -95, -51 -86, -50 -79 C -48 -70, -40 -58, -30 -44 C -18 -26, -6 -6, 0 0 Z" fill="url(#tt-steel)"/>
+      <use href="#tt-outline" fill="url(#tt-steel)"/>
       <!-- The stem is a narrower cylinder, so it carries the same reflections at its own scale. -->
-      <rect x="-8" y="-164" width="16" height="52" fill="url(#tt-stem)"/>
-      <path d="M 0 0 C 6 -6 18 -26 30 -44 C 40 -58 48 -70 50 -79 C 51 -86 47 -95 38 -102 C 29 -108 15 -111 6.5 -112 C 5.4 -114 5 -116 5 -119 L 5 -149 C 5 -151 7.6 -152 7.6 -156 C 7.6 -161 4 -163 0 -163 C -4 -163, -7.6 -161, -7.6 -156 C -7.6 -152, -5 -151, -5 -149 L -5 -119 C -5 -116, -5.4 -114, -6.5 -112 C -15 -111, -29 -108, -38 -102 C -47 -95, -51 -86, -50 -79 C -48 -70, -40 -58, -30 -44 C -18 -26, -6 -6, 0 0 Z" fill="url(#tt-shade)"/>
-      <path d="M 0 0 C 6 -6 18 -26 30 -44 C 40 -58 48 -70 50 -79 C 51 -86 47 -95 38 -102 C 29 -108 15 -111 6.5 -112 C 5.4 -114 5 -116 5 -119 L 5 -149 C 5 -151 7.6 -152 7.6 -156 C 7.6 -161 4 -163 0 -163 C -4 -163, -7.6 -161, -7.6 -156 C -7.6 -152, -5 -151, -5 -149 L -5 -119 C -5 -116, -5.4 -114, -6.5 -112 C -15 -111, -29 -108, -38 -102 C -47 -95, -51 -86, -50 -79 C -48 -70, -40 -58, -30 -44 C -18 -26, -6 -6, 0 0 Z" fill="url(#tt-warm)"/>
+      <rect x="-8" y="-164" width="16" height="52" fill="url(#tt-stem)"></rect>
+      <use href="#tt-outline" fill="url(#tt-shade)"/>
+      <use href="#tt-outline" fill="url(#tt-warm)"/>
       <!-- The key light's hotspot on the crown. -->
-      <ellipse cx="-17" cy="-93" rx="12" ry="9" fill="url(#tt-hot)"/>
+      <ellipse cx="-17" cy="-93" rx="12" ry="9" fill="url(#tt-hot)"></ellipse>
       <ellipse cx="0" cy="-110.5" rx="18.7" ry="1.25" fill="none" stroke="#fff" stroke-opacity="0.036" stroke-width=".4"/>
       <ellipse cx="0" cy="-108.8" rx="24.8" ry="1.47" fill="none" stroke="#000" stroke-opacity="0.054" stroke-width=".4"/>
       <ellipse cx="0" cy="-107.1" rx="29.5" ry="1.63" fill="none" stroke="#000" stroke-opacity="0.063" stroke-width=".4"/>
