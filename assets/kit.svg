@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="840" height="300" viewBox="0 0 840 300" role="img" aria-labelledby="kt-t">
+<title id="kt-t">The kit: machined plates dropped onto a table. Languages: Python, C++, C, CUDA, SQL. Infrastructure: Nsight Systems, Nsight Compute, Docker, Linux, Git, PostgreSQL, FastAPI. Machine learning: PyTorch, PyTorch Geometric, scikit-learn, XGBoost, LangGraph, FAISS. Speaks: ਪੰਜਾਬੀ, हिन्दी, English.</title>
+<defs>
+  <filter id="kt-grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="7" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  1.6 0 0 0 -.82"/></filter>
+  <pattern id="kt-gp" width="160" height="160" patternUnits="userSpaceOnUse"><rect width="160" height="160" filter="url(#kt-grain)"/>
+    <animateTransform attributeName="patternTransform" type="translate" values="76 99;38 51;17 57;18 56;44 74;99 105;74 14;8 118;24 30;76 114;53 99;53 49" dur="1s" calcMode="discrete" repeatCount="indefinite"/></pattern>
+  <radialGradient id="kt-vig" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".72"/></radialGradient>
+  <linearGradient id="kt-foot" x1="0" x2="0" y1="0" y2="1"><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".7"/></linearGradient>
+  <filter id="ktb1" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="0.5"/></filter><filter id="ktb2" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.1"/></filter><filter id="ktb3" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.9"/></filter><filter id="ktb4" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>
+  <style>.drop { animation: drop 1.4s linear both; } @keyframes drop { 0% { transform: translateY(-150px) } 2.8% { transform: translateY(-149.4px) } 5.6% { transform: translateY(-147.9px) } 8.3% { transform: translateY(-145.3px) } 11.1% { transform: translateY(-141.7px) } 13.9% { transform: translateY(-137.1px) } 16.7% { transform: translateY(-131.5px) } 19.4% { transform: translateY(-124.9px) } 22.2% { transform: translateY(-117.3px) } 25% { transform: translateY(-108.7px) } 27.8% { transform: translateY(-99px) } 30.5% { transform: translateY(-88.4px) } 33.3% { transform: translateY(-76.7px) } 36.1% { transform: translateY(-64px) } 38.9% { transform: translateY(-50.4px) } 41.6% { transform: translateY(-35.7px) } 44.4% { transform: translateY(-20px) } 47.2% { transform: translateY(-3.3px) } 50% { transform: translateY(-4.8px) } 52.8% { transform: translateY(-9.7px) } 55.6% { transform: translateY(-13.6px) } 58.4% { transform: translateY(-16.5px) } 61.1% { transform: translateY(-18.4px) } 63.9% { transform: translateY(-19.3px) } 66.7% { transform: translateY(-19.1px) } 69.5% { transform: translateY(-18px) } 72.2% { transform: translateY(-15.8px) } 75% { transform: translateY(-12.7px) } 77.8% { transform: translateY(-8.5px) } 80.6% { transform: translateY(-3.3px) } 83.3% { transform: translateY(-0.9px) } 86.1% { transform: translateY(-2.2px) } 88.9% { transform: translateY(-2.4px) } 91.7% { transform: translateY(-1.7px) } 94.4% { transform: translateY(0px) } 97.2% { transform: translateY(-0.3px) } 100% { transform: translateY(0px) } 100% { transform: translateY(0px) } } .sh { transform-box: view-box; animation: sh 1.4s linear both; } @keyframes sh { 0% { transform: scale(1.9, 1.5); opacity: 0.15 } 2.8% { transform: scale(1.9, 1.5); opacity: 0.15 } 5.6% { transform: scale(1.89, 1.49); opacity: 0.16 } 8.3% { transform: scale(1.87, 1.48); opacity: 0.17 } 11.1% { transform: scale(1.85, 1.47); opacity: 0.18 } 13.9% { transform: scale(1.82, 1.46); opacity: 0.2 } 16.7% { transform: scale(1.79, 1.44); opacity: 0.22 } 19.4% { transform: scale(1.75, 1.42); opacity: 0.25 } 22.2% { transform: scale(1.7, 1.39); opacity: 0.28 } 25% { transform: scale(1.65, 1.36); opacity: 0.32 } 27.8% { transform: scale(1.59, 1.33); opacity: 0.35 } 30.5% { transform: scale(1.53, 1.29); opacity: 0.4 } 33.3% { transform: scale(1.46, 1.26); opacity: 0.44 } 36.1% { transform: scale(1.38, 1.21); opacity: 0.49 } 38.9% { transform: scale(1.3, 1.17); opacity: 0.55 } 41.6% { transform: scale(1.21, 1.12); opacity: 0.61 } 44.4% { transform: scale(1.12, 1.07); opacity: 0.67 } 47.2% { transform: scale(1.02, 1.01); opacity: 0.74 } 50% { transform: scale(1.03, 1.02); opacity: 0.73 } 52.8% { transform: scale(1.06, 1.03); opacity: 0.71 } 55.6% { transform: scale(1.08, 1.05); opacity: 0.7 } 58.4% { transform: scale(1.1, 1.06); opacity: 0.68 } 61.1% { transform: scale(1.11, 1.06); opacity: 0.68 } 63.9% { transform: scale(1.12, 1.06); opacity: 0.67 } 66.7% { transform: scale(1.11, 1.06); opacity: 0.67 } 69.5% { transform: scale(1.11, 1.06); opacity: 0.68 } 72.2% { transform: scale(1.09, 1.05); opacity: 0.69 } 75% { transform: scale(1.08, 1.04); opacity: 0.7 } 77.8% { transform: scale(1.05, 1.03); opacity: 0.72 } 80.6% { transform: scale(1.02, 1.01); opacity: 0.74 } 83.3% { transform: scale(1.01, 1); opacity: 0.75 } 86.1% { transform: scale(1.01, 1.01); opacity: 0.74 } 88.9% { transform: scale(1.01, 1.01); opacity: 0.74 } 91.7% { transform: scale(1.01, 1.01); opacity: 0.74 } 94.4% { transform: scale(1, 1); opacity: 0.75 } 97.2% { transform: scale(1, 1); opacity: 0.75 } 100% { transform: scale(1, 1); opacity: 0.75 } 100% { transform: scale(1, 1); opacity: 0.75 } } @media (prefers-reduced-motion: reduce) { .drop, .sh { animation: none } }</style>
+<linearGradient id="kt-metal" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#d9dcdf"/><stop offset=".45" stop-color="#a9adb2"/><stop offset=".55" stop-color="#9a9ea3"/><stop offset="1" stop-color="#6d7175"/></linearGradient>
+<linearGradient id="kt-table" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#0d0b09"/><stop offset="1" stop-color="#1a130d"/></linearGradient>
+<radialGradient id="kt-pool" cx=".3" cy=".1" r=".9"><stop offset="0" stop-color="#ffe2b8" stop-opacity=".12"/><stop offset="1" stop-color="#ffe2b8" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="840" height="300" fill="#0b0b0c"/>
+<g><animateTransform attributeName="transform" type="translate" values="0.02 0.11;0.23 -0.25;-0.11 -0.26;0.16 0.12;0.1 0.27;0.18 -0.2;-0.18 -0.25;-0.09 -0.32;-0.29 0.34" dur="1.5s" calcMode="discrete" repeatCount="indefinite"/>
+<rect width="840" height="300" fill="url(#kt-table)"/><rect width="840" height="300" fill="url(#kt-pool)"/>
+<g transform="translate(17.6 0)" filter="url(#ktb1)">
+<text x="158" y="64.5" text-anchor="end" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.5" letter-spacing="2" fill="#efebe3" fill-opacity=".75">LANGUAGES</text>
+<ellipse class="sh" style="animation-delay:0.30s;transform-origin:208.5px 76px" cx="212.5" cy="77" rx="34.5" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:0.30s">
+  <rect x="176" y="46" width="65" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="176.5" y="46.5" width="64" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="208.5" y="65.2" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#fff" fill-opacity=".35">Python</text>
+  <text x="208.5" y="64.5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#17181a">Python</text>
+</g>
+<ellipse class="sh" style="animation-delay:0.41s;transform-origin:271px 76px" cx="275" cy="77" rx="24" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:0.41s">
+  <rect x="249" y="46" width="44" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="249.5" y="46.5" width="43" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="271" y="65.2" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#fff" fill-opacity=".35">C++</text>
+  <text x="271" y="64.5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#17181a">C++</text>
+</g>
+<ellipse class="sh" style="animation-delay:0.52s;transform-origin:315.5px 76px" cx="319.5" cy="77" rx="16.5" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:0.52s">
+  <rect x="301" y="46" width="29" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="301.5" y="46.5" width="28" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="315.5" y="65.2" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#fff" fill-opacity=".35">C</text>
+  <text x="315.5" y="64.5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#17181a">C</text>
+</g>
+<ellipse class="sh" style="animation-delay:0.63s;transform-origin:363.5px 76px" cx="367.5" cy="77" rx="27.5" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:0.63s">
+  <rect x="338" y="46" width="51" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="338.5" y="46.5" width="50" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="363.5" y="65.2" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#fff" fill-opacity=".35">CUDA</text>
+  <text x="363.5" y="64.5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#17181a">CUDA</text>
+</g>
+<ellipse class="sh" style="animation-delay:0.74s;transform-origin:419px 76px" cx="423" cy="77" rx="24" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:0.74s">
+  <rect x="397" y="46" width="44" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="397.5" y="46.5" width="43" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="419" y="65.2" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#fff" fill-opacity=".35">SQL</text>
+  <text x="419" y="64.5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#17181a">SQL</text>
+</g></g>
+<g transform="translate(11.7 0)" filter="url(#ktb1)">
+<text x="158" y="120.5" text-anchor="end" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.5" letter-spacing="2" fill="#efebe3" fill-opacity=".75">INFRASTRUCTURE</text>
+<ellipse class="sh" style="animation-delay:0.85s;transform-origin:237.5px 132px" cx="241.5" cy="133" rx="63.5" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:0.85s">
+  <rect x="176" y="102" width="123" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="176.5" y="102.5" width="122" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="237.5" y="121.2" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#fff" fill-opacity=".35">Nsight Systems</text>
+  <text x="237.5" y="120.5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#17181a">Nsight Systems</text>
+</g>
+<ellipse class="sh" style="animation-delay:0.96s;transform-origin:368.5px 132px" cx="372.5" cy="133" rx="63.5" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:0.96s">
+  <rect x="307" y="102" width="123" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="307.5" y="102.5" width="122" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="368.5" y="121.2" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#fff" fill-opacity=".35">Nsight Compute</text>
+  <text x="368.5" y="120.5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#17181a">Nsight Compute</text>
+</g>
+<ellipse class="sh" style="animation-delay:1.07s;transform-origin:470.5px 132px" cx="474.5" cy="133" rx="34.5" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:1.07s">
+  <rect x="438" y="102" width="65" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="438.5" y="102.5" width="64" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="470.5" y="121.2" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#fff" fill-opacity=".35">Docker</text>
+  <text x="470.5" y="120.5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#17181a">Docker</text>
+</g>
+<ellipse class="sh" style="animation-delay:1.18s;transform-origin:540px 132px" cx="544" cy="133" rx="31" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:1.18s">
+  <rect x="511" y="102" width="58" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="511.5" y="102.5" width="57" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="540" y="121.2" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#fff" fill-opacity=".35">Linux</text>
+  <text x="540" y="120.5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#17181a">Linux</text>
+</g>
+<ellipse class="sh" style="animation-delay:1.29s;transform-origin:599px 132px" cx="603" cy="133" rx="24" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:1.29s">
+  <rect x="577" y="102" width="44" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="577.5" y="102.5" width="43" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="599" y="121.2" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#fff" fill-opacity=".35">Git</text>
+  <text x="599" y="120.5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#17181a">Git</text>
+</g>
+<ellipse class="sh" style="animation-delay:1.40s;transform-origin:676px 132px" cx="680" cy="133" rx="49" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:1.40s">
+  <rect x="629" y="102" width="94" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="629.5" y="102.5" width="93" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="676" y="121.2" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#fff" fill-opacity=".35">PostgreSQL</text>
+  <text x="676" y="120.5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#17181a">PostgreSQL</text>
+</g>
+<ellipse class="sh" style="animation-delay:1.51s;transform-origin:767px 132px" cx="771" cy="133" rx="38" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:1.51s">
+  <rect x="731" y="102" width="72" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="731.5" y="102.5" width="71" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="767" y="121.2" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#fff" fill-opacity=".35">FastAPI</text>
+  <text x="767" y="120.5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#17181a">FastAPI</text>
+</g></g>
+<g transform="translate(5.9 0)">
+<text x="158" y="176.5" text-anchor="end" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.5" letter-spacing="2" fill="#efebe3" fill-opacity=".75">MACHINE LEARNING</text>
+<ellipse class="sh" style="animation-delay:1.62s;transform-origin:212px 188px" cx="216" cy="189" rx="38" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:1.62s">
+  <rect x="176" y="158" width="72" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="176.5" y="158.5" width="71" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="212" y="177.2" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#fff" fill-opacity=".35">PyTorch</text>
+  <text x="212" y="176.5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#17181a">PyTorch</text>
+</g>
+<ellipse class="sh" style="animation-delay:1.73s;transform-origin:328px 188px" cx="332" cy="189" rx="74" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:1.73s">
+  <rect x="256" y="158" width="144" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="256.5" y="158.5" width="143" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="328" y="177.2" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#fff" fill-opacity=".35">PyTorch Geometric</text>
+  <text x="328" y="176.5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#17181a">PyTorch Geometric</text>
+</g>
+<ellipse class="sh" style="animation-delay:1.84s;transform-origin:462px 188px" cx="466" cy="189" rx="56" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:1.84s">
+  <rect x="408" y="158" width="108" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="408.5" y="158.5" width="107" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="462" y="177.2" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#fff" fill-opacity=".35">scikit-learn</text>
+  <text x="462" y="176.5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#17181a">scikit-learn</text>
+</g>
+<ellipse class="sh" style="animation-delay:1.95s;transform-origin:560px 188px" cx="564" cy="189" rx="38" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:1.95s">
+  <rect x="524" y="158" width="72" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="524.5" y="158.5" width="71" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="560" y="177.2" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#fff" fill-opacity=".35">XGBoost</text>
+  <text x="560" y="176.5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#17181a">XGBoost</text>
+</g>
+<ellipse class="sh" style="animation-delay:2.06s;transform-origin:647.5px 188px" cx="651.5" cy="189" rx="45.5" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:2.06s">
+  <rect x="604" y="158" width="87" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="604.5" y="158.5" width="86" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="647.5" y="177.2" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#fff" fill-opacity=".35">LangGraph</text>
+  <text x="647.5" y="176.5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#17181a">LangGraph</text>
+</g>
+<ellipse class="sh" style="animation-delay:2.17s;transform-origin:728px 188px" cx="732" cy="189" rx="31" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:2.17s">
+  <rect x="699" y="158" width="58" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="699.5" y="158.5" width="57" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="728" y="177.2" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#fff" fill-opacity=".35">FAISS</text>
+  <text x="728" y="176.5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#17181a">FAISS</text>
+</g></g>
+<g transform="translate(0 0)">
+<text x="158" y="232.5" text-anchor="end" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.5" letter-spacing="2" fill="#efebe3" fill-opacity=".75">SPEAKS</text>
+<ellipse class="sh" style="animation-delay:2.28s;transform-origin:217px 244px" cx="221" cy="245" rx="43" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:2.28s">
+  <rect x="176" y="214" width="82" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="176.5" y="214.5" width="81" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="217" y="233.2" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" fill="#fff" fill-opacity=".35">ਪੰਜਾਬੀ</text>
+  <text x="217" y="232.5" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" fill="#17181a">ਪੰਜਾਬੀ</text>
+</g>
+<ellipse class="sh" style="animation-delay:2.39s;transform-origin:307px 244px" cx="311" cy="245" rx="43" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:2.39s">
+  <rect x="266" y="214" width="82" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="266.5" y="214.5" width="81" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="307" y="233.2" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" fill="#fff" fill-opacity=".35">हिन्दी</text>
+  <text x="307" y="232.5" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" fill="#17181a">हिन्दी</text>
+</g>
+<ellipse class="sh" style="animation-delay:2.50s;transform-origin:402px 244px" cx="406" cy="245" rx="48" ry="4" fill="#000" filter="url(#ktb3)"/>
+<g class="drop" style="animation-delay:2.50s">
+  <rect x="356" y="214" width="92" height="28" rx="3" fill="url(#kt-metal)"/>
+  <rect x="356.5" y="214.5" width="91" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
+  <text x="402" y="233.2" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" fill="#fff" fill-opacity=".35">English</text>
+  <text x="402" y="232.5" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" fill="#17181a">English</text>
+</g></g>
+</g>
+<rect width="840" height="300" fill="url(#kt-vig)"/>
+<rect width="840" height="300" fill="url(#kt-foot)"/>
+<rect width="840" height="300" fill="url(#kt-gp)" opacity=".1"/>
+<rect width="840" height="300" fill="#000" opacity="0"><animate attributeName="opacity" values="0;0;0;0;0;0;0;0;0;0" dur="2.3s" repeatCount="indefinite" calcMode="discrete"/></rect>
+<text x="20" y="268" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" letter-spacing="3.2" fill="#efebe3" fill-opacity=".92">THE KIT</text>
+<text x="20" y="285" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="11" fill="#e3b072">Python · C++ · CUDA · PyTorch · Nsight · PostgreSQL · Docker</text>
+
+</svg>

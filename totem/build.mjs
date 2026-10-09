@@ -6,7 +6,7 @@
 //   assets/totem.svg                              the top, on a transparent ground (light and dark alike)
 //   assets/blueprint-dark.svg, -light.svg         its engineering drawing, one per GitHub theme
 //   totem/state.json                              the measurement
-//   assets/states/*, assets/heatmap-*.svg         the other states' examples and buttons; the year's calendar
+//   assets/states/*, assets/city.svg              the other states' examples and buttons; the year as a city
 //   README.md                                     the caption and the state buttons, between their markers
 //
 // Every number in the pictures comes from the calendar. Nothing is tuned by hand.
@@ -17,7 +17,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { heatmap } from "./profile.mjs";
+import { frame, anim, rng, r1, r2, INK as FILM } from "./film.mjs";
+import { city } from "./shots.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const USER = process.env.TOTEM_USER ?? "SatnamCodes";
@@ -211,13 +212,20 @@ const STEEL = [
   [0.85, "#8d9094"], [0.93, "#3a3c3f"], [1, "#151618"],
 ];
 
+// The shot: the top on a polished walnut table at night, one lamp behind it to the left. Its
+// shadow falls toward us, the table reflects it, dust hangs in the lamp's light. The axis
+// precesses around the vertical (seen from the side, the lean swings left and right) with a
+// small fast nod on top of it, and the tip wanders, as a real top's does.
+const HW = 840, HH = 352; // 2.39:1
+const HTIP = { x: 420, y: 298 };
+const HSCALE = 1.22;
+const HORIZON = 176;
+
 export function svg(m, mo) {
   const lean = mo.fallen ? 0 : mo.leanDeg;
   const desc = mo.fallen
-    ? `A machined steel spinning top lying still on its side: no contributions for ${m.idleDays} days.`
-    : `A machined steel spinning top, ${mo.state}: ${m.last14} contributions on ${m.active14} of the last 14 days. It turns once every ${mo.spinPeriod} seconds and leans ${lean} degrees as it precesses.`;
-  const pose = `${mo.fallen ? restingPose() : `translate(${TIP.x} ${TIP.y})`} scale(${SCALE})`;
-
+    ? `A machined steel spinning top lying still on its side on a dark table: no contributions for ${m.idleDays} days.`
+    : `A machined steel spinning top on a dark table, ${mo.state}: ${m.last14} contributions on ${m.active14} of the last 14 days. It turns once every ${mo.spinPeriod} seconds and leans ${lean} degrees as it precesses.`;
   // Lathe lines: fine turned rings across the body, alternately catching and losing the light.
   const lathe = [];
   for (let y = -110.5, i = 0; y < -3; y += 1.7, i++) {
@@ -247,6 +255,7 @@ export function svg(m, mo) {
       <!-- The stem is a narrower cylinder, so it carries the same reflections at its own scale. -->
       <rect x="-8" y="-164" width="16" height="52" fill="url(#tt-stem)"/>
       <path d="${BODY}" fill="url(#tt-shade)"/>
+      <path d="${BODY}" fill="url(#tt-warm)"/>
       <!-- The key light's hotspot on the crown. -->
       <ellipse cx="-17" cy="-93" rx="12" ry="9" fill="url(#tt-hot)"/>
       ${lathe.join("\n      ")}
@@ -257,15 +266,66 @@ export function svg(m, mo) {
     <path d="M -49.6 -77.6 Q 0 -73.8 49.6 -77.6" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width=".5" clip-path="url(#tt-clip)"/>
     <path d="M -38 -102 C -29 -108 -15 -111 -6.5 -112" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width=".6"/>`;
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-labelledby="tt-title">
-<title id="tt-title">${desc}</title>
-<style>
-  .sway { transform-box: view-box; transform-origin: ${TIP.x}px ${TIP.y}px;
-          animation: sway ${mo.precessionPeriod}s ease-in-out infinite alternate; }
-  @keyframes sway { from { transform: rotate(-${lean}deg) } to { transform: rotate(${lean}deg) } }
-  .shadow { transform-box: view-box; transform-origin: ${TIP.x}px ${TIP.y}px;
-            animation: drift ${mo.precessionPeriod}s ease-in-out infinite alternate; }
-  @keyframes drift { from { transform: translateX(${(-lean * 2.4).toFixed(1)}px) } to { transform: translateX(${(lean * 2.4).toFixed(1)}px) } }
+
+  // Precession and nutation, sampled over one precession period; the tip's wander over three.
+  const N = 60, T = mo.precessionPeriod;
+  const tilt = [], wander = [];
+  for (let i = 0; i <= N; i++) {
+    const ph = (2 * Math.PI * i) / N;
+    tilt.push(r2(lean * Math.cos(ph) + lean * 0.16 * Math.cos(7 * ph)));
+    wander.push(`${r1(lean * 0.9 * Math.sin(ph))} ${r1(lean * 0.15 * Math.sin(2 * ph))}`);
+  }
+  const moving = (inner) =>
+    mo.fallen
+      ? inner
+      : `<g><animateTransform attributeName="transform" type="translate" values="${wander.join(";")}" dur="${r2(3 * T)}s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="rotate" values="${tilt.join(";")}" dur="${T}s" repeatCount="indefinite"/>${inner}</g></g>`;
+  const pose = mo.fallen ? `${restingPose(HTIP, HSCALE)} scale(${HSCALE})` : `translate(${HTIP.x} ${HTIP.y}) scale(${HSCALE})`;
+
+  // The shadow: the silhouette projected onto the table along the lamp's direction.
+  const kx = 0.62, ky = 0.14;
+  const shadow = mo.fallen
+    ? `<ellipse cx="${HTIP.x + 10}" cy="${HTIP.y + 4}" rx="118" ry="9" fill="#000" opacity=".7" filter="url(#tt-sh)"/>`
+    : `<g transform="matrix(1 0 ${-kx * HSCALE} ${-ky * HSCALE} ${HTIP.x} ${HTIP.y})" opacity=".62" filter="url(#tt-sh)">${moving(`<path d="${BODY}" fill="#000"/>`)}</g>
+<ellipse cx="${HTIP.x}" cy="${HTIP.y + 0.5}" rx="7" ry="1.8" fill="#000" opacity=".8" filter="url(#tt-soft)"/>`;
+
+  // The room: a dark wall with the lamp and two far lights out of focus, the table, its grain
+  // running away from us to the horizon.
+  const R = rng(11);
+  const grain = Array.from({ length: 46 }, (_, i) => {
+    const x0 = -900 + (i / 45) * 2640 + (R() - 0.5) * 30;
+    const dark = R() < 0.7;
+    return `<line x1="${r1(x0)}" y1="${HH}" x2="${HW / 2}" y2="${HORIZON - 60}" stroke="${dark ? "#000" : "#6b4a33"}" stroke-opacity="${r2(dark ? 0.12 + R() * 0.22 : 0.05 + R() * 0.06)}" stroke-width="${r1(0.5 + R() * 1.6)}"/>`;
+  }).join("");
+  const bokeh = [
+    [96, 64, 26, 0.12], [150, 112, 12, 0.08], [688, 58, 34, 0.07], [758, 118, 15, 0.1], [600, 30, 18, 0.05], [262, 40, 9, 0.06],
+  ]
+    .map(([x, y, r, o]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${FILM.hot}" opacity="${o}"/>`)
+    .join("");
+  const dust = Array.from({ length: 18 }, (_, i) => {
+    const x = 150 + R() * 360, y = 20 + R() * 230, rad = r1(0.5 + R() * 1.3), o = r2(0.15 + R() * 0.45);
+    const xs = [], ys = [];
+    for (let k = 0; k <= 8; k++) {
+      xs.push(x + Math.sin(k * 0.9 + i) * 9 + k * 1.6);
+      ys.push(y + Math.cos(k * 0.7 + i * 2) * 6 - k * 0.8);
+    }
+    xs.push(xs[0]); ys.push(ys[0]);
+    return `<circle r="${rad}" fill="${FILM.hot}" opacity="${o}"${rad > 1.2 ? ' filter="url(#tt-b1)"' : ""}>${anim("cx", xs, 18 + (i % 5) * 3)}${anim("cy", ys, 18 + (i % 5) * 3)}</circle>`;
+  }).join("");
+
+  const body = `
+<rect width="${HW}" height="${HORIZON}" fill="url(#tt-wall)"/>
+<g filter="url(#tt-bokeh)">${bokeh}</g>
+<rect y="${HORIZON}" width="${HW}" height="${HH - HORIZON}" fill="url(#tt-table)"/>
+<g clip-path="url(#tt-tableclip)">${grain}</g>
+<line x1="0" y1="${HORIZON + 0.5}" x2="${HW}" y2="${HORIZON + 0.5}" stroke="#3b2b20" stroke-opacity=".7"/>
+<ellipse cx="${HTIP.x - 40}" cy="${HTIP.y - 6}" rx="330" ry="78" fill="url(#tt-pool)"/>
+<g mask="url(#tt-refmask)"><g transform="translate(0 ${2 * HTIP.y}) scale(1 -1)" opacity=".26" filter="url(#tt-b2)"><use href="#tt-top"/></g></g>
+${shadow}
+<g id="tt-top" transform="${pose}">${moving(top)}</g>
+<path d="M 120 0 H 236 L 560 ${HTIP.y + 30} H 300 Z" fill="url(#tt-beam)" filter="url(#tt-wide)"/>
+${dust}`;
+
+  const defs = `<style>
   .mark { opacity: 0; animation: turn ${mo.spinPeriod}s linear infinite; }
   @keyframes turn {
     0%   { transform: translateX(-46px) scaleX(.2); opacity: 0 }
@@ -276,9 +336,9 @@ export function svg(m, mo) {
     90%  { opacity: .55 }
     100% { transform: translateX(46px) scaleX(.2); opacity: 0 }
   }
-  @media (prefers-reduced-motion: reduce) { .sway, .shadow, .mark { animation: none } }
+  @media (prefers-reduced-motion: reduce) { .mark { animation: none } }
 </style>
-<defs>
+
   <linearGradient id="tt-steel" x1="-51" x2="51" y1="0" y2="0" gradientUnits="userSpaceOnUse">
     ${STEEL.map(([o, c]) => `<stop offset="${o}" stop-color="${c}"/>`).join("")}
   </linearGradient>
@@ -297,15 +357,20 @@ export function svg(m, mo) {
   <clipPath id="tt-clip"><path d="${BODY}"/></clipPath>
   <filter id="tt-blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${blur.toFixed(1)} 0.2"/></filter>
   <filter id="tt-soft" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="6 2.2"/></filter>
-</defs>
 
-<!-- Contact shadow only: no floor, no frame. It reads on a light page and fades into a dark one. -->
-<ellipse class="shadow" cx="${mo.fallen ? TIP.x - 30 : TIP.x}" cy="${TIP.y + 1}" rx="${mo.fallen ? 115 : 58}" ry="5.5" fill="#000" opacity=".38" filter="url(#tt-soft)"/>
-<ellipse class="shadow" cx="${mo.fallen ? TIP.x - 30 : TIP.x}" cy="${TIP.y + 0.5}" rx="${mo.fallen ? 50 : 9}" ry="1.6" fill="#000" opacity=".45" filter="url(#tt-soft)"/>
+  <linearGradient id="tt-wall" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#060606"/><stop offset="1" stop-color="#15110e"/></linearGradient>
+  <linearGradient id="tt-table" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#1c140e"/><stop offset=".5" stop-color="#140e0a"/><stop offset="1" stop-color="#0c0907"/></linearGradient>
+  <clipPath id="tt-tableclip"><rect y="${HORIZON}" width="${HW}" height="${HH - HORIZON}"/></clipPath>
+  <radialGradient id="tt-pool"><stop offset="0" stop-color="${FILM.hot}" stop-opacity=".2"/><stop offset=".45" stop-color="${FILM.warm}" stop-opacity=".07"/><stop offset="1" stop-color="${FILM.warm}" stop-opacity="0"/></radialGradient>
+  <linearGradient id="tt-beam" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${FILM.hot}" stop-opacity=".16"/><stop offset="1" stop-color="${FILM.hot}" stop-opacity="0"/></linearGradient>
+  <linearGradient id="tt-rf" x1="0" x2="0" y1="${HTIP.y}" y2="${HTIP.y + 62}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  <mask id="tt-refmask" maskUnits="userSpaceOnUse" x="0" y="0" width="${HW}" height="${HH}"><rect y="${HTIP.y}" width="${HW}" height="${HH - HTIP.y}" fill="url(#tt-rf)"/></mask>
+  <linearGradient id="tt-warm" x1="-51" x2="51" y1="0" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${FILM.warm}" stop-opacity=".28"/><stop offset=".45" stop-color="${FILM.warm}" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity=".25"/></linearGradient>
+  <filter id="tt-bokeh" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
+  <filter id="tt-wide" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="16"/></filter>
+  <filter id="tt-sh" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.2"/></filter>`;
 
-<g class="sway"><g transform="${pose}">${top}</g></g>
-</svg>
-`;
+  return frame({ w: HW, h: HH, p: "tt", desc, defs, body });
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -556,8 +621,7 @@ async function main() {
   for (const theme of ["dark", "light"])
     fs.writeFileSync(path.join(ROOT, "assets", `blueprint-${theme}.svg`), blueprint(m, mo, theme));
   fs.writeFileSync(STATE, `${JSON.stringify({ measurement: m, motion: mo }, null, 2)}\n`);
-  fs.writeFileSync(path.join(ROOT, "assets", "heatmap-dark.svg"), heatmap(days, "dark"));
-  fs.writeFileSync(path.join(ROOT, "assets", "heatmap-light.svg"), heatmap(days, "light"));
+  fs.writeFileSync(path.join(ROOT, "assets", "city.svg"), city(days));
   writeStates();
   writeBlock("totem", caption(m, mo));
   writeBlock("states", statesBlock(mo));

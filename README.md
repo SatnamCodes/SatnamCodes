@@ -1,7 +1,7 @@
 <div align="center">
 
 <details>
-<summary><a name="totem"><img src="assets/totem.svg" width="560" alt="A machined steel spinning top, running on my last two weeks of work: true when I've been building steadily, wobbling when I haven't, at rest when I stop. Click it to open its blueprint."></a><br><sub>Click the top to open its blueprint</sub></summary>
+<summary><a name="totem"><img src="assets/totem.svg" width="840" alt="A steel spinning top on a dark table under one lamp, running on my last two weeks of work: spinning true when I've been building steadily, wobbling when I haven't, at rest when I stop. Click it to open its blueprint."></a><br><sub>Click the top for its blueprint and its other states</sub></summary>
 <br>
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/blueprint-dark.svg">
@@ -37,30 +37,39 @@
 
 </div>
 
-<br>
+## Satnam Singh
+
+**Machine learning engineering · AI infrastructure · AI research · Software engineering**
+
+I build machine learning models of physical systems and the GPU code they run on, and I profile both until the numbers make sense.
+
+- **AI infrastructure.** A CUDA SGEMM taken from a naive kernel through coalescing and shared-memory tiling, 169.6 → 1,052.9 GFLOPS on an RTX 4060 (6.5×), profiled in Nsight Systems and Nsight Compute; register blocking, warp tiling and Tensor Cores next. Warp divergence measured in neighbor-gather kernels over a million particles.
+- **AI research.** Graph neural networks over a defect's real crystal structure, to predict formation energy and ionization levels of p-type dopants in β-Ga₂O₃ (abstract under review at IIM ATM 2026). An independent study of whether exoplanet habitability indices reduce to a few physical quantities.
+- **ML engineering.** NodeGuard, a GCN in PyTorch Geometric that finds fraud rings under heavy class imbalance; recall-only checkpointing converged on a degenerate model, so it checkpoints on F1. A multi-agent retrieval system (LangGraph, FAISS) that checks each generated claim against its sources with sentence-level NLI.
+- **Software engineering.** A pipeline that loads 1,700+ RISC-V YAML specification files into PostgreSQL: 8 tables, 1,351 instructions, 396 control and status registers. Python, C++, FastAPI, Docker, Linux.
+
+**Education.** Indian Institute of Technology Madras, B.S. in Data Science and Applications (2025–2029) · Delhi Public School, Bathinda
 
 <div align="center">
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/about-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/about-light.svg">
-  <img src="assets/about-light.svg" width="840" alt="Satnam Singh. Machine learning for physical and materials systems, GPU performance in scientific computing, and exoplanet habitability. B.Tech in Computer Science (AI and ML) at Christ University, Bengaluru, and a B.S. in Data Science at IIT Madras.">
-</picture>
-</div>
 
 <br>
 
-<div align="center">
+<a href="https://github.com/SatnamCodes/matmul"><img src="assets/shots/sgemm.svg" width="410" alt="Custom SGEMM: matrix multiplication drawn as a room of three walls, tiles of C filling as strips of A and B light up. 169.6 to 1,052.9 GFLOPS on an RTX 4060."></a>
+<a href="https://satnamwanders.dev/research/p-type-dopants-in-beta-ga2o3"><img src="assets/shots/dopants.svg" width="410" alt="p-type dopants in beta-Ga2O3: a crystal lattice turning under a lamp, one dopant glowing. Abstract under review at IIM ATM 2026."></a>
 
-<a href="https://github.com/SatnamCodes/matmul"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/cards/sgemm-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/cards/sgemm-light.svg"><img src="assets/cards/sgemm-light.svg" width="410" alt="Custom SGEMM: 169.6 to 1,052.9 GFLOPS on an RTX 4060, 6.5 times faster, shown as bars settling on springs toward the cuBLAS line."></picture></a>
-<a href="https://github.com/SatnamCodes/gpu-neighbor-gather-divergence"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/cards/warp-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/cards/warp-light.svg"><img src="assets/cards/warp-light.svg" width="410" alt="Warp divergence: two warps of 32 lanes; the variable one finishes unevenly at a third of the branch efficiency, yet moved more data, 158.87 against 153.13 GB/s."></picture></a>
+<a href="https://github.com/SatnamCodes/gpu-neighbor-gather-divergence"><img src="assets/shots/warp.svg" width="410" alt="Warp divergence: 32 lanes as rods, each lane's work a bead sliding down; with uneven work most wait for the slowest."></a>
+<a href="https://satnamwanders.dev/projects/nodeguard"><img src="assets/shots/nodeguard.svg" width="410" alt="NodeGuard: a transaction graph in three dimensions, the camera circling it; the fraud ring is the warm knot."></a>
 
+<a href="https://satnamwanders.dev/projects/risc-v-knowledge-db"><img src="assets/shots/riscv.svg" width="410" alt="RISC-V specification database: a split-flap board spelling out 32-bit instruction words, their fields bracketed beneath."></a>
+<a href="https://satnamwanders.dev"><img src="assets/shots/exoplanets.svg" width="410" alt="Exoplanet habitability: a planet on an eccentric orbit transiting its star, the light curve dipping."></a>
 
-<a href="https://satnamwanders.dev/research/p-type-dopants-in-beta-ga2o3"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/cards/dopants-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/cards/dopants-light.svg"><img src="assets/cards/dopants-light.svg" width="410" alt="p-type dopants in beta-Ga2O3: a vibrating crystal lattice with a dopant passing messages to its neighbours. Abstract under review at IIM ATM 2026."></picture></a>
-<a href="https://satnamwanders.dev/projects/nodeguard"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/cards/nodeguard-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/cards/nodeguard-light.svg"><img src="assets/cards/nodeguard-light.svg" width="410" alt="NodeGuard: a transaction graph relaxing under spring forces until a fraud ring pulls together."></picture></a>
+<br><br>
 
+<img src="assets/city.svg" width="840" alt="The last year of contributions as a city, a block a day, as tall as that day's work; the past recedes into haze and the last fortnight is lit.">
 
-<a href="https://satnamwanders.dev"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/cards/exoplanets-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/cards/exoplanets-light.svg"><img src="assets/cards/exoplanets-light.svg" width="410" alt="Exoplanet habitability: a planet on an eccentric Kepler orbit, dipping in and out of the habitable zone."></picture></a>
-<a href="https://satnamwanders.dev/projects/risc-v-knowledge-db"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/cards/riscv-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/cards/riscv-light.svg"><img src="assets/cards/riscv-light.svg" width="410" alt="RISC-V specification database: an instruction word decoded into its fields, its records falling into eight tables."></picture></a>
+<br><br>
+
+<img src="assets/kit.svg" width="840" alt="The kit, machined plates dropped onto a table. Languages: Python, C++, C, CUDA, SQL. Infrastructure: Nsight Systems, Nsight Compute, Docker, Linux, Git, PostgreSQL, FastAPI. Machine learning: PyTorch, PyTorch Geometric, scikit-learn, XGBoost, LangGraph, FAISS. Speaks Punjabi, Hindi and English.">
 
 <br><br>
 
@@ -69,24 +78,8 @@
 <a href="https://twitter.com/gitblamesatnam"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/links/x-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/links/x-light.svg"><img src="assets/links/x-light.svg" height="40" alt="X, @gitblamesatnam"></picture></a>
 <a href="https://www.instagram.com/dontblamesatnam"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/links/instagram-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/links/instagram-light.svg"><img src="assets/links/instagram-light.svg" height="40" alt="Instagram, @dontblamesatnam"></picture></a>
 
-</div>
-
-<br>
-
-<div align="center">
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/heatmap-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/heatmap-light.svg">
-  <img src="assets/heatmap-light.svg" width="840" alt="My contribution calendar for the last year, a square a day, with the fortnight the top is measured on marked.">
-</picture>
-
 <br><br>
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/stack-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/stack-light.svg">
-  <img src="assets/stack-light.svg" width="840" alt="Languages: Python, C++, C, CUDA, SQL. Tools: Nsight Systems, Nsight Compute, Git, Linux, Docker, PostgreSQL, FastAPI. Machine learning: PyTorch, PyTorch Geometric, scikit-learn, XGBoost, LangGraph, FAISS. Speaks Punjabi, Hindi and English.">
-</picture>
-
 <sub><b>spaceflora</b>: astrophotography outreach, featured by NASA</sub>
+
 </div>

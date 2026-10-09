@@ -1,0 +1,259 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="220" viewBox="0 0 420 220" role="img" aria-labelledby="rv-t">
+<title id="rv-t">RISC-V specification database: a split-flap board spelling out add, lw and addi as 32-bit instruction words, flap by flap, with the fields of each bracketed beneath and the board reflected in the desk. A pipeline that loads 1,700+ YAML specification files into PostgreSQL.</title>
+<defs>
+  <filter id="rv-grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="7" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  1.6 0 0 0 -.82"/></filter>
+  <pattern id="rv-gp" width="160" height="160" patternUnits="userSpaceOnUse"><rect width="160" height="160" filter="url(#rv-grain)"/>
+    <animateTransform attributeName="patternTransform" type="translate" values="55 108;60 77;50 47;50 82;6 14;68 89;59 75;62 45;81 41;109 105;43 10;40 102" dur="1s" calcMode="discrete" repeatCount="indefinite"/></pattern>
+  <radialGradient id="rv-vig" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".72"/></radialGradient>
+  <linearGradient id="rv-foot" x1="0" x2="0" y1="0" y2="1"><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".7"/></linearGradient>
+  <filter id="rvb1" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="0.5"/></filter><filter id="rvb2" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.1"/></filter><filter id="rvb3" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.9"/></filter><filter id="rvb4" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>
+  <linearGradient id="rv-flap" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3b3b3e"/><stop offset=".49" stop-color="#28282b"/><stop offset=".51" stop-color="#1c1c1e"/><stop offset="1" stop-color="#2c2c2f"/></linearGradient>
+<linearGradient id="rv-rf" x1="0" x2="0" y1="94" y2="124" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<mask id="rv-rm" maskUnits="userSpaceOnUse" x="0" y="0" width="420" height="220"><rect y="94" width="420" height="40" fill="url(#rv-rf)"/></mask>
+<radialGradient id="rv-lamp" cx=".45" cy=".35" r=".6"><stop offset="0" stop-color="#1d1915"/><stop offset="1" stop-color="#0b0b0c"/></radialGradient>
+</defs>
+<rect width="420" height="220" fill="#0b0b0c"/>
+<g><animateTransform attributeName="transform" type="translate" values="0.34 -0.08;0.25 0.05;0.06 0.24;-0.23 -0.2;-0.04 0.05;0.14 0.01;-0.08 0.14;-0.3 0.04;0.3 -0.13" dur="1.5s" calcMode="discrete" repeatCount="indefinite"/>
+<rect width="420" height="220" fill="url(#rv-lamp)"/>
+<g id="rv-board"><g>
+  <rect x="34" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(38.8 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0;0.0067;0.0111;0.0144;0.0178;0.0211;0.0244;0.0289;0.3333;0.34;0.3444;0.3478;0.3511;0.3544;0.3578;0.3622;0.6667;0.6733;0.6778;0.6811;0.6844;0.6878;0.6911;0.6956;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;1;1;1" keyTimes="0;0.0144;0.3478;0.6811" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;0;0;0" keyTimes="0;0.0144;0.3478;0.6811" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="34" y1="82" x2="43.6" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="44.9" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(49.7 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0028;0.0094;0.0139;0.0172;0.0206;0.0239;0.0272;0.0317;0.3361;0.3428;0.3472;0.3506;0.3539;0.3572;0.3606;0.365;0.6694;0.6761;0.6806;0.6839;0.6872;0.6906;0.6939;0.6983;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;1;1;1" keyTimes="0;0.0172;0.3506;0.6839" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;0;0;0" keyTimes="0;0.0172;0.3506;0.6839" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="44.9" y1="82" x2="54.5" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="55.8" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(60.6 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0056;0.0122;0.0167;0.02;0.0233;0.0267;0.03;0.0344;0.3389;0.3456;0.35;0.3533;0.3567;0.36;0.3633;0.3678;0.6722;0.6789;0.6833;0.6867;0.69;0.6933;0.6967;0.7011;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;1;1;1" keyTimes="0;0.02;0.3533;0.6867" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;0;0;0" keyTimes="0;0.02;0.3533;0.6867" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="55.8" y1="82" x2="65.4" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="66.7" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(71.5 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0083;0.015;0.0194;0.0228;0.0261;0.0294;0.0328;0.0372;0.3417;0.3483;0.3528;0.3561;0.3594;0.3628;0.3661;0.3706;0.675;0.6817;0.6861;0.6894;0.6928;0.6961;0.6994;0.7039;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;1;1;1" keyTimes="0;0.0228;0.3561;0.6894" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;0;0;0" keyTimes="0;0.0228;0.3561;0.6894" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="66.7" y1="82" x2="76.3" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="77.6" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(82.4 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0111;0.0178;0.0222;0.0256;0.0289;0.0322;0.0356;0.04;0.3444;0.3511;0.3556;0.3589;0.3622;0.3656;0.3689;0.3733;0.6778;0.6844;0.6889;0.6922;0.6956;0.6989;0.7022;0.7067;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;1;1;1" keyTimes="0;0.0256;0.3589;0.6922" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;0;0;0" keyTimes="0;0.0256;0.3589;0.6922" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="77.6" y1="82" x2="87.2" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="88.5" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(93.3 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0139;0.0206;0.025;0.0283;0.0317;0.035;0.0383;0.0428;0.3472;0.3539;0.3583;0.3617;0.365;0.3683;0.3717;0.3761;0.6806;0.6872;0.6917;0.695;0.6983;0.7017;0.705;0.7094;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;1;1;1" keyTimes="0;0.0283;0.3617;0.695" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;0;0;0" keyTimes="0;0.0283;0.3617;0.695" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="88.5" y1="82" x2="98.1" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="99.4" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(104.2 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0167;0.0233;0.0278;0.0311;0.0344;0.0378;0.0411;0.0456;0.35;0.3567;0.3611;0.3644;0.3678;0.3711;0.3744;0.3789;0.6833;0.69;0.6944;0.6978;0.7011;0.7044;0.7078;0.7122;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.0311;0.3644;0.6978" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="1;0;0;1" keyTimes="0;0.0311;0.3644;0.6978" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="99.4" y1="82" x2="109" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="110.3" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(115.1 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0194;0.0261;0.0306;0.0339;0.0372;0.0406;0.0439;0.0483;0.3528;0.3594;0.3639;0.3672;0.3706;0.3739;0.3772;0.3817;0.6861;0.6928;0.6972;0.7006;0.7039;0.7072;0.7106;0.715;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;1;1;1" keyTimes="0;0.0339;0.3672;0.7006" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;0;0;0" keyTimes="0;0.0339;0.3672;0.7006" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="110.3" y1="82" x2="119.9" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="121.2" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(126 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0222;0.0289;0.0333;0.0367;0.04;0.0433;0.0467;0.0511;0.3556;0.3622;0.3667;0.37;0.3733;0.3767;0.38;0.3844;0.6889;0.6956;0.7;0.7033;0.7067;0.71;0.7133;0.7178;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="0;1;0;0" keyTimes="0;0.0367;0.37;0.7033" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="1;0;1;1" keyTimes="0;0.0367;0.37;0.7033" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="121.2" y1="82" x2="130.8" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="132.1" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(136.9 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.025;0.0317;0.0361;0.0394;0.0428;0.0461;0.0494;0.0539;0.3583;0.365;0.3694;0.3728;0.3761;0.3794;0.3828;0.3872;0.6917;0.6983;0.7028;0.7061;0.7094;0.7128;0.7161;0.7206;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;0;1;1" keyTimes="0;0.0394;0.3728;0.7061" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;1;0;0" keyTimes="0;0.0394;0.3728;0.7061" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="132.1" y1="82" x2="141.7" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="143" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(147.8 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0278;0.0344;0.0389;0.0422;0.0456;0.0489;0.0522;0.0567;0.3611;0.3678;0.3722;0.3756;0.3789;0.3822;0.3856;0.39;0.6944;0.7011;0.7056;0.7089;0.7122;0.7156;0.7189;0.7233;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="0;0;1;0" keyTimes="0;0.0422;0.3756;0.7089" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="1;1;0;1" keyTimes="0;0.0422;0.3756;0.7089" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="143" y1="82" x2="152.6" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="153.9" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(158.7 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0306;0.0372;0.0417;0.045;0.0483;0.0517;0.055;0.0594;0.3639;0.3706;0.375;0.3783;0.3817;0.385;0.3883;0.3928;0.6972;0.7039;0.7083;0.7117;0.715;0.7183;0.7217;0.7261;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;0;1;1" keyTimes="0;0.045;0.3783;0.7117" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;1;0;0" keyTimes="0;0.045;0.3783;0.7117" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="153.9" y1="82" x2="163.5" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="164.8" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(169.6 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0333;0.04;0.0444;0.0478;0.0511;0.0544;0.0578;0.0622;0.3667;0.3733;0.3778;0.3811;0.3844;0.3878;0.3911;0.3956;0.7;0.7067;0.7111;0.7144;0.7178;0.7211;0.7244;0.7289;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;1;1;1" keyTimes="0;0.0478;0.3811;0.7144" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;0;0;0" keyTimes="0;0.0478;0.3811;0.7144" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="164.8" y1="82" x2="174.4" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="175.7" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(180.5 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0361;0.0428;0.0472;0.0506;0.0539;0.0572;0.0606;0.065;0.3694;0.3761;0.3806;0.3839;0.3872;0.3906;0.3939;0.3983;0.7028;0.7094;0.7139;0.7172;0.7206;0.7239;0.7272;0.7317;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;1;1;1" keyTimes="0;0.0506;0.3839;0.7172" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;0;0;0" keyTimes="0;0.0506;0.3839;0.7172" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="175.7" y1="82" x2="185.3" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="186.6" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(191.4 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0389;0.0456;0.05;0.0533;0.0567;0.06;0.0633;0.0678;0.3722;0.3789;0.3833;0.3867;0.39;0.3933;0.3967;0.4011;0.7056;0.7122;0.7167;0.72;0.7233;0.7267;0.73;0.7344;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;0;1;1" keyTimes="0;0.0533;0.3867;0.72" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;1;0;0" keyTimes="0;0.0533;0.3867;0.72" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="186.6" y1="82" x2="196.2" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="197.5" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(202.3 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0417;0.0483;0.0528;0.0561;0.0594;0.0628;0.0661;0.0706;0.375;0.3817;0.3861;0.3894;0.3928;0.3961;0.3994;0.4039;0.7083;0.715;0.7194;0.7228;0.7261;0.7294;0.7328;0.7372;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;0;0;1" keyTimes="0;0.0561;0.3894;0.7228" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.0561;0.3894;0.7228" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="197.5" y1="82" x2="207.1" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="208.4" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(213.2 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0444;0.0511;0.0556;0.0589;0.0622;0.0656;0.0689;0.0733;0.3778;0.3844;0.3889;0.3922;0.3956;0.3989;0.4022;0.4067;0.7111;0.7178;0.7222;0.7256;0.7289;0.7322;0.7356;0.74;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;1;1;1" keyTimes="0;0.0589;0.3922;0.7256" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;0;0;0" keyTimes="0;0.0589;0.3922;0.7256" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="208.4" y1="82" x2="218" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="219.3" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(224.1 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0472;0.0539;0.0583;0.0617;0.065;0.0683;0.0717;0.0761;0.3806;0.3872;0.3917;0.395;0.3983;0.4017;0.405;0.4094;0.7139;0.7206;0.725;0.7283;0.7317;0.735;0.7383;0.7428;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;1;1;1" keyTimes="0;0.0617;0.395;0.7283" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;0;0;0" keyTimes="0;0.0617;0.395;0.7283" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="219.3" y1="82" x2="228.9" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="230.2" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(235 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.05;0.0567;0.0611;0.0644;0.0678;0.0711;0.0744;0.0789;0.3833;0.39;0.3944;0.3978;0.4011;0.4044;0.4078;0.4122;0.7167;0.7233;0.7278;0.7311;0.7344;0.7378;0.7411;0.7456;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;1;0;1" keyTimes="0;0.0644;0.3978;0.7311" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;0;1;0" keyTimes="0;0.0644;0.3978;0.7311" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="230.2" y1="82" x2="239.8" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="241.1" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(245.9 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0528;0.0594;0.0639;0.0672;0.0706;0.0739;0.0772;0.0817;0.3861;0.3928;0.3972;0.4006;0.4039;0.4072;0.4106;0.415;0.7194;0.7261;0.7306;0.7339;0.7372;0.7406;0.7439;0.7483;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;1;1;1" keyTimes="0;0.0672;0.4006;0.7339" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;0;0;0" keyTimes="0;0.0672;0.4006;0.7339" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="241.1" y1="82" x2="250.7" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="252" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(256.8 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0556;0.0622;0.0667;0.07;0.0733;0.0767;0.08;0.0844;0.3889;0.3956;0.4;0.4033;0.4067;0.41;0.4133;0.4178;0.7222;0.7289;0.7333;0.7367;0.74;0.7433;0.7467;0.7511;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;1;1;1" keyTimes="0;0.07;0.4033;0.7367" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;0;0;0" keyTimes="0;0.07;0.4033;0.7367" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="252" y1="82" x2="261.6" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="262.9" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(267.7 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0583;0.065;0.0694;0.0728;0.0761;0.0794;0.0828;0.0872;0.3917;0.3983;0.4028;0.4061;0.4094;0.4128;0.4161;0.4206;0.725;0.7317;0.7361;0.7394;0.7428;0.7461;0.7494;0.7539;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;1;0;1" keyTimes="0;0.0728;0.4061;0.7394" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;0;1;0" keyTimes="0;0.0728;0.4061;0.7394" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="262.9" y1="82" x2="272.5" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="273.8" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(278.6 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0611;0.0678;0.0722;0.0756;0.0789;0.0822;0.0856;0.09;0.3944;0.4011;0.4056;0.4089;0.4122;0.4156;0.4189;0.4233;0.7278;0.7344;0.7389;0.7422;0.7456;0.7489;0.7522;0.7567;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;0;1;1" keyTimes="0;0.0756;0.4089;0.7422" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;1;0;0" keyTimes="0;0.0756;0.4089;0.7422" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="273.8" y1="82" x2="283.4" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="284.7" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(289.5 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0639;0.0706;0.075;0.0783;0.0817;0.085;0.0883;0.0928;0.3972;0.4039;0.4083;0.4117;0.415;0.4183;0.4217;0.4261;0.7306;0.7372;0.7417;0.745;0.7483;0.7517;0.755;0.7594;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;1;0;1" keyTimes="0;0.0783;0.4117;0.745" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;0;1;0" keyTimes="0;0.0783;0.4117;0.745" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="284.7" y1="82" x2="294.3" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="295.6" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(300.4 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0667;0.0733;0.0778;0.0811;0.0844;0.0878;0.0911;0.0956;0.4;0.4067;0.4111;0.4144;0.4178;0.4211;0.4244;0.4289;0.7333;0.74;0.7444;0.7478;0.7511;0.7544;0.7578;0.7622;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="0;0;1;0" keyTimes="0;0.0811;0.4144;0.7478" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="1;1;0;1" keyTimes="0;0.0811;0.4144;0.7478" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="295.6" y1="82" x2="305.2" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="306.5" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(311.3 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0694;0.0761;0.0806;0.0839;0.0872;0.0906;0.0939;0.0983;0.4028;0.4094;0.4139;0.4172;0.4206;0.4239;0.4272;0.4317;0.7361;0.7428;0.7472;0.7506;0.7539;0.7572;0.7606;0.765;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;1;1;1" keyTimes="0;0.0839;0.4172;0.7506" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;0;0;0" keyTimes="0;0.0839;0.4172;0.7506" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="306.5" y1="82" x2="316.1" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="317.4" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(322.2 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0722;0.0789;0.0833;0.0867;0.09;0.0933;0.0967;0.1011;0.4056;0.4122;0.4167;0.42;0.4233;0.4267;0.43;0.4344;0.7389;0.7456;0.75;0.7533;0.7567;0.76;0.7633;0.7678;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;0;1;1" keyTimes="0;0.0867;0.42;0.7533" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;1;0;0" keyTimes="0;0.0867;0.42;0.7533" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="317.4" y1="82" x2="327" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="328.3" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(333.1 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.075;0.0817;0.0861;0.0894;0.0928;0.0961;0.0994;0.1039;0.4083;0.415;0.4194;0.4228;0.4261;0.4294;0.4328;0.4372;0.7417;0.7483;0.7528;0.7561;0.7594;0.7628;0.7661;0.7706;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="0;0;1;0" keyTimes="0;0.0894;0.4228;0.7561" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="1;1;0;1" keyTimes="0;0.0894;0.4228;0.7561" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="328.3" y1="82" x2="337.9" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="339.2" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(344 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0778;0.0844;0.0889;0.0922;0.0956;0.0989;0.1022;0.1067;0.4111;0.4178;0.4222;0.4256;0.4289;0.4322;0.4356;0.44;0.7444;0.7511;0.7556;0.7589;0.7622;0.7656;0.7689;0.7733;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;1;1;1" keyTimes="0;0.0922;0.4256;0.7589" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;0;0;0" keyTimes="0;0.0922;0.4256;0.7589" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="339.2" y1="82" x2="348.8" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="350.1" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(354.9 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0806;0.0872;0.0917;0.095;0.0983;0.1017;0.105;0.1094;0.4139;0.4206;0.425;0.4283;0.4317;0.435;0.4383;0.4428;0.7472;0.7539;0.7583;0.7617;0.765;0.7683;0.7717;0.7761;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="1;1;1;1" keyTimes="0;0.095;0.4283;0.7617" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="0;0;0;0" keyTimes="0;0.095;0.4283;0.7617" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="350.1" y1="82" x2="359.7" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="361" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(365.8 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0833;0.09;0.0944;0.0978;0.1011;0.1044;0.1078;0.1122;0.4167;0.4233;0.4278;0.4311;0.4344;0.4378;0.4411;0.4456;0.75;0.7567;0.7611;0.7644;0.7678;0.7711;0.7744;0.7789;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="0;0;0;0" keyTimes="0;0.0978;0.4311;0.7644" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="1;1;1;1" keyTimes="0;0.0978;0.4311;0.7644" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="361" y1="82" x2="370.6" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g><g>
+  <rect x="371.9" y="70" width="9.6" height="24" rx="1.4" fill="url(#rv-flap)"/>
+  <g transform="translate(376.7 82)"><g><animateTransform attributeName="transform" type="scale" values="1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1;1 0.82;1 0.45;1 0;1 0;1 0.92;1 1.04;1 1;1 1" keyTimes="0;0.0861;0.0928;0.0972;0.1006;0.1039;0.1072;0.1106;0.115;0.4194;0.4261;0.4306;0.4339;0.4372;0.4406;0.4439;0.4483;0.7528;0.7594;0.7639;0.7672;0.7706;0.7739;0.7772;0.7817;1" dur="9s" repeatCount="indefinite"/>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="0;0;0;0" keyTimes="0;0.1006;0.4339;0.7672" dur="9s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="1;1;1;1" keyTimes="0;0.1006;0.4339;0.7672" dur="9s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+  </g></g>
+  <line x1="371.9" y1="82" x2="381.5" y2="82" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
+</g></g>
+<g mask="url(#rv-rm)"><g transform="translate(0 190) scale(1 -1)" opacity=".35" filter="url(#rvb2)"><use href="#rv-board"/></g></g>
+<g opacity="0"><animate attributeName="opacity" values="0;1;0;0" keyTimes="0;0.0333;0.3667;0.7" dur="9s" calcMode="discrete" repeatCount="indefinite"/>
+<path d="M 35 100 v 4 H 108 v -4" fill="none" stroke="#8d8a84" stroke-width=".7"/><text x="71.5" y="116" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8.5" fill="#8d8a84">funct7</text><path d="M 111.3 100 v 4 H 162.5 v -4" fill="none" stroke="#8d8a84" stroke-width=".7"/><text x="136.9" y="116" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8.5" fill="#8d8a84">rs2</text><path d="M 165.8 100 v 4 H 217 v -4" fill="none" stroke="#8d8a84" stroke-width=".7"/><text x="191.4" y="116" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8.5" fill="#8d8a84">rs1</text><path d="M 220.3 100 v 4 H 249.7 v -4" fill="none" stroke="#8d8a84" stroke-width=".7"/><text x="235" y="116" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8.5" fill="#8d8a84">f3</text><path d="M 253 100 v 4 H 304.2 v -4" fill="none" stroke="#8d8a84" stroke-width=".7"/><text x="278.6" y="116" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8.5" fill="#8d8a84">rd</text><path d="M 307.5 100 v 4 H 380.5 v -4" fill="none" stroke="#8d8a84" stroke-width=".7"/><text x="344" y="116" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8.5" fill="#8d8a84">opcode</text>
+<text x="34" y="56" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#e3b072">add  x5, x6, x7</text></g><g opacity="0"><animate attributeName="opacity" values="0;0;1;0" keyTimes="0;0.0333;0.3667;0.7" dur="9s" calcMode="discrete" repeatCount="indefinite"/>
+<path d="M 35 100 v 4 H 162.5 v -4" fill="none" stroke="#8d8a84" stroke-width=".7"/><text x="98.8" y="116" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8.5" fill="#8d8a84">imm[11:0]</text><path d="M 165.8 100 v 4 H 217 v -4" fill="none" stroke="#8d8a84" stroke-width=".7"/><text x="191.4" y="116" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8.5" fill="#8d8a84">rs1</text><path d="M 220.3 100 v 4 H 249.7 v -4" fill="none" stroke="#8d8a84" stroke-width=".7"/><text x="235" y="116" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8.5" fill="#8d8a84">f3</text><path d="M 253 100 v 4 H 304.2 v -4" fill="none" stroke="#8d8a84" stroke-width=".7"/><text x="278.6" y="116" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8.5" fill="#8d8a84">rd</text><path d="M 307.5 100 v 4 H 380.5 v -4" fill="none" stroke="#8d8a84" stroke-width=".7"/><text x="344" y="116" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8.5" fill="#8d8a84">opcode</text>
+<text x="34" y="56" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#e3b072">lw   x10, 8(x2)</text></g><g opacity="0"><animate attributeName="opacity" values="1;0;0;1" keyTimes="0;0.0333;0.3667;0.7" dur="9s" calcMode="discrete" repeatCount="indefinite"/>
+<path d="M 35 100 v 4 H 162.5 v -4" fill="none" stroke="#8d8a84" stroke-width=".7"/><text x="98.8" y="116" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8.5" fill="#8d8a84">imm[11:0]</text><path d="M 165.8 100 v 4 H 217 v -4" fill="none" stroke="#8d8a84" stroke-width=".7"/><text x="191.4" y="116" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8.5" fill="#8d8a84">rs1</text><path d="M 220.3 100 v 4 H 249.7 v -4" fill="none" stroke="#8d8a84" stroke-width=".7"/><text x="235" y="116" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8.5" fill="#8d8a84">f3</text><path d="M 253 100 v 4 H 304.2 v -4" fill="none" stroke="#8d8a84" stroke-width=".7"/><text x="278.6" y="116" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8.5" fill="#8d8a84">rd</text><path d="M 307.5 100 v 4 H 380.5 v -4" fill="none" stroke="#8d8a84" stroke-width=".7"/><text x="344" y="116" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8.5" fill="#8d8a84">opcode</text>
+<text x="34" y="56" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" fill="#e3b072">addi x1, x0, 42</text></g>
+</g>
+<rect width="420" height="220" fill="url(#rv-vig)"/>
+<rect width="420" height="220" fill="url(#rv-foot)"/>
+<rect width="420" height="220" fill="url(#rv-gp)" opacity=".1"/>
+<rect width="420" height="220" fill="#000" opacity="0"><animate attributeName="opacity" values="0;0;0;0;0;0.1;0;0;0;0" dur="2.3s" repeatCount="indefinite" calcMode="discrete"/></rect>
+<text x="20" y="188" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" letter-spacing="3.2" fill="#efebe3" fill-opacity=".92">RISC-V SPECIFICATION DATABASE</text>
+<text x="20" y="205" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="11" fill="#e3b072">1,700+ YAML files → PostgreSQL · 1,351 instructions, 396 CSRs</text>
+
+</svg>
