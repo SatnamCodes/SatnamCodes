@@ -1,74 +1,37 @@
-<div align="center">
+<a href="https://satnamcodes.github.io/SatnamCodes/">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/totem-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/totem-light.svg">
+    <img src="assets/totem-dark.svg" width="840" alt="A spinning top on a polished table. It spins on my last two weeks of work: steady when I've been building, wobbling when I haven't, at rest when I've stopped. Click it to spin it yourself.">
+  </picture>
+</a>
 
-<img src="assets/header.svg" width="820" alt="Satnam Singh">
+<sub>The top is measured every morning from my contribution calendar. It spins true when I've been building steadily, wobbles when I haven't, and falls when I stop. Click it to spin it yourself.</sub>
 
-<img src="assets/portrait.svg" width="430" alt="">
+### Satnam Singh
 
-</div>
+GPU performance engineering, machine learning and systems. CUDA kernels profiled down to the hardware counters, LLM inference engines, and graph networks for materials research.
 
-<br>
+**Now**
 
-<img src="assets/layers.svg" width="820" alt="Physics moves first. Mathematics follows. Computation arrives last.">
+- [**CUDA GEMM Journey**](https://github.com/SatnamCodes/matmul): a from-scratch SGEMM, optimised one profiled bottleneck at a time toward cuBLAS.
+- [**PagedServe**](https://satnamwanders.dev/projects/pagedserve): an LLM inference engine with continuous batching and a paged KV cache.
+- [**p-type dopants in β-Ga₂O₃**](https://satnamwanders.dev/research/p-type-dopants-in-beta-ga2o3): structure-aware graph neural networks for defect formation energies. Abstract submitted to IIM ATM 2026.
+- [**RISC-V Knowledge DB**](https://satnamwanders.dev/projects/risc-v-knowledge-db): the RISC-V specification as queryable PostgreSQL tables.
 
-<br>
+[satnamwanders.dev](https://satnamwanders.dev) · [LinkedIn](https://www.linkedin.com/in/satnamcodes) · [X](https://twitter.com/gitblamesatnam) · [Instagram](https://www.instagram.com/dontblamesatnam)
 
-<img src="assets/convergence.svg" width="820" alt="They do not meet by harmony, but by pressure. At convergence there is no room for belief — only what holds.">
-
-<br>
-
-### Directions
-
-Where the work points, independent of what happens to be open in my editor.
-
-```
-performance   ::  memory hierarchies, kernels, the distance between correct and fast
-representation::  graphs, lattices, encodings — choosing the shape a problem is solved in
-systems       ::  specifications as data, hardware as a thing worth reading closely
-matter        ::  defects, dopants, and what physics permits before anyone optimizes it
-```
+<details>
+<summary>Stack and education</summary>
 
 <br>
 
-<img src="assets/descent.svg" width="820" alt="From research question down through model, framework, kernel, warp, register, to silicon — and there's always room at the bottom.">
+**Languages** Python, C++, C, SQL<br>
+**ML** PyTorch, XGBoost, scikit-learn<br>
+**Systems** CUDA, Nsight, PostgreSQL, Docker, Linux
 
-<br>
+**Education** Christ University, B.Tech CSE (AI and ML) · IIT Madras, B.S. Data Science · Delhi Public School Bathinda
 
-### Now
+<sub>**spaceflora**: astrophotography outreach, featured by NASA</sub>
 
-<sup>rolling — last updated 2026-02</sup>
-
-**`matmul-optimization`** · CUDA, C++ — custom SGEMM kernels toward cuBLAS-class throughput.<br>
-**`riscv-db`** · PostgreSQL, Python — the official RISC-V ISA spec, normalized into queryable relations.<br>
-**`gnn-dopant-viability`** · PyTorch — graph networks for p-type dopant viability in β-Ga₂O₃.<br>
-**`radian`** · computer vision — persistent identities for trees and farmland from drone imagery.
-
-Pinned repositories carry the detail.
-
-<br>
-
-### Stack
-
-<img src="assets/stack.svg" width="820" alt="Python, C++, C, SQL · PyTorch, XGBoost, scikit-learn · CUDA, Nsight, PostgreSQL, Docker, Linux">
-
-<br>
-
-### Education
-
-<img src="assets/education.svg" width="820" alt="Delhi Public School Bathinda · Christ University, B.Tech CSE AI and ML · IIT Madras, B.S. Data Science">
-
-<br>
-
-### Internet Coordinates
-
-<p>
-<a href="https://twitter.com/gitblamesatnam"><img src="assets/coord-x.svg" width="200" alt="X — @gitblamesatnam"></a>
-<a href="https://www.linkedin.com/in/satnamcodes"><img src="assets/coord-linkedin.svg" width="200" alt="LinkedIn — satnamcodes"></a>
-<a href="https://www.instagram.com/dontblamesatnam"><img src="assets/coord-instagram.svg" width="200" alt="Instagram — dontblamesatnam"></a>
-<a href="https://github.com/SatnamCodes"><img src="assets/coord-github.svg" width="200" alt="GitHub — SatnamCodes"></a>
-</p>
-
-<sub>**spaceflora** — astrophotography outreach, featured by NASA</sub>
-
-<br>
-
-<img src="assets/footer.svg" width="820" alt="while (understanding < reality) { measure(); model(); compile(); }">
+</details>

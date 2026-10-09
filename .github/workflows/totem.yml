@@ -1,0 +1,40 @@
+# The totem is measured once a day from the contribution calendar and redrawn:
+# assets/totem-dark.svg, assets/totem-light.svg and docs/totem.json (read by the interactive page).
+name: Totem
+
+on:
+  schedule:
+    - cron: "47 5 * * *" # daily, 11:17 in India
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["totem/**", ".github/workflows/totem.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: totem
+  cancel-in-progress: false
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Measure and redraw
+        run: node totem/build.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit if anything changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/totem-dark.svg assets/totem-light.svg docs/totem.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Totem: measured $(date -u +%Y-%m-%d)"
+          git push

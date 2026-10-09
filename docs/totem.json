@@ -1,0 +1,33 @@
+{
+  "user": "SatnamCodes",
+  "measuredAt": "2026-10-09",
+  "last14": 46,
+  "active14": 6,
+  "usualFortnight": 7.5,
+  "idleDays": 1,
+  "lastActive": "2026-10-08",
+  "yearTotal": 264,
+  "steadiness": 0.943,
+  "state": "spinning true",
+  "spinPeriod": 0.369,
+  "leanDeg": 3.33,
+  "precessionPeriod": 6.226,
+  "fallen": false,
+  "recent": [
+    30,
+    4,
+    7,
+    0,
+    0,
+    0,
+    0,
+    0,
+    3,
+    0,
+    0,
+    1,
+    1,
+    0
+  ],
+  "page": "https://satnamcodes.github.io/SatnamCodes/"
+}
