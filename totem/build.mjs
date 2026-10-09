@@ -3,10 +3,10 @@
 //
 // Reads the daily contribution calendar, measures how steadily things have been built lately,
 // and writes:
-//   assets/totem.svg                              the top, on a transparent ground (light and dark alike)
+//   assets/totem-dark.svg, -light.svg             the top, on nothing, one per GitHub theme
 //   assets/blueprint-dark.svg, -light.svg         its engineering drawing, one per GitHub theme
 //   totem/state.json                              the measurement
-//   assets/states/*, assets/city.svg              the other states' examples and buttons; the year as a city
+//   assets/states/*, assets/city-*.svg            the other states' examples and buttons; the year as a city
 //   README.md                                     the caption and the state buttons, between their markers
 //
 // Every number in the pictures comes from the calendar. Nothing is tuned by hand.
@@ -17,7 +17,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { frame, anim, rng, r1, r2, INK as FILM } from "./film.mjs";
+import { frame, anim, rng, r1, r2, TH } from "./film.mjs";
 import { city } from "./shots.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -216,16 +216,16 @@ const STEEL = [
 // shadow falls toward us, the table reflects it, dust hangs in the lamp's light. The axis
 // precesses around the vertical (seen from the side, the lean swings left and right) with a
 // small fast nod on top of it, and the tip wanders, as a real top's does.
-const HW = 840, HH = 352; // 2.39:1
-const HTIP = { x: 420, y: 298 };
+const HW = 840, HH = 300;
+const HTIP = { x: 420, y: 262 };
 const HSCALE = 1.22;
-const HORIZON = 176;
 
-export function svg(m, mo) {
+export function svg(m, mo, theme = "dark") {
+  const FILM = TH[theme];
   const lean = mo.fallen ? 0 : mo.leanDeg;
   const desc = mo.fallen
-    ? `A machined steel spinning top lying still on its side on a dark table: no contributions for ${m.idleDays} days.`
-    : `A machined steel spinning top on a dark table, ${mo.state}: ${m.last14} contributions on ${m.active14} of the last 14 days. It turns once every ${mo.spinPeriod} seconds and leans ${lean} degrees as it precesses.`;
+    ? `A machined steel spinning top lying still on its side: no contributions for ${m.idleDays} days.`
+    : `A machined steel spinning top, ${mo.state}: ${m.last14} contributions on ${m.active14} of the last 14 days. It turns once every ${mo.spinPeriod} seconds and leans ${lean} degrees as it precesses.`;
   // Lathe lines: fine turned rings across the body, alternately catching and losing the light.
   const lathe = [];
   for (let y = -110.5, i = 0; y < -3; y += 1.7, i++) {
@@ -284,23 +284,11 @@ export function svg(m, mo) {
   // The shadow: the silhouette projected onto the table along the lamp's direction.
   const kx = 0.62, ky = 0.14;
   const shadow = mo.fallen
-    ? `<ellipse cx="${HTIP.x + 10}" cy="${HTIP.y + 4}" rx="118" ry="9" fill="#000" opacity=".7" filter="url(#tt-sh)"/>`
-    : `<g transform="matrix(1 0 ${-kx * HSCALE} ${-ky * HSCALE} ${HTIP.x} ${HTIP.y})" opacity=".62" filter="url(#tt-sh)">${moving(`<path d="${BODY}" fill="#000"/>`)}</g>
-<ellipse cx="${HTIP.x}" cy="${HTIP.y + 0.5}" rx="7" ry="1.8" fill="#000" opacity=".8" filter="url(#tt-soft)"/>`;
+    ? `<ellipse cx="${HTIP.x + 10}" cy="${HTIP.y + 4}" rx="118" ry="9" fill="${FILM.shadow}" opacity="${FILM.shadowOp + 0.1}" filter="url(#tt-sh)"/>`
+    : `<g transform="matrix(1 0 ${-kx * HSCALE} ${-ky * HSCALE} ${HTIP.x} ${HTIP.y})" opacity="${FILM.shadowOp}" filter="url(#tt-sh)">${moving(`<path d="${BODY}" fill="${FILM.shadow}"/>`)}</g>
+<ellipse cx="${HTIP.x}" cy="${HTIP.y + 0.5}" rx="7" ry="1.8" fill="${FILM.shadow}" opacity="${FILM.shadowOp + 0.2}" filter="url(#tt-soft)"/>`;
 
-  // The room: a dark wall with the lamp and two far lights out of focus, the table, its grain
-  // running away from us to the horizon.
   const R = rng(11);
-  const grain = Array.from({ length: 46 }, (_, i) => {
-    const x0 = -900 + (i / 45) * 2640 + (R() - 0.5) * 30;
-    const dark = R() < 0.7;
-    return `<line x1="${r1(x0)}" y1="${HH}" x2="${HW / 2}" y2="${HORIZON - 60}" stroke="${dark ? "#000" : "#6b4a33"}" stroke-opacity="${r2(dark ? 0.12 + R() * 0.22 : 0.05 + R() * 0.06)}" stroke-width="${r1(0.5 + R() * 1.6)}"/>`;
-  }).join("");
-  const bokeh = [
-    [96, 64, 26, 0.12], [150, 112, 12, 0.08], [688, 58, 34, 0.07], [758, 118, 15, 0.1], [600, 30, 18, 0.05], [262, 40, 9, 0.06],
-  ]
-    .map(([x, y, r, o]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${FILM.hot}" opacity="${o}"/>`)
-    .join("");
   const dust = Array.from({ length: 18 }, (_, i) => {
     const x = 150 + R() * 360, y = 20 + R() * 230, rad = r1(0.5 + R() * 1.3), o = r2(0.15 + R() * 0.45);
     const xs = [], ys = [];
@@ -309,20 +297,14 @@ export function svg(m, mo) {
       ys.push(y + Math.cos(k * 0.7 + i * 2) * 6 - k * 0.8);
     }
     xs.push(xs[0]); ys.push(ys[0]);
-    return `<circle r="${rad}" fill="${FILM.hot}" opacity="${o}"${rad > 1.2 ? ' filter="url(#tt-b1)"' : ""}>${anim("cx", xs, 18 + (i % 5) * 3)}${anim("cy", ys, 18 + (i % 5) * 3)}</circle>`;
+    return `<circle r="${rad}" fill="${FILM.warm}" opacity="${o}"${rad > 1.2 ? ' filter="url(#tt-b1)"' : ""}>${anim("cx", xs, 18 + (i % 5) * 3)}${anim("cy", ys, 18 + (i % 5) * 3)}</circle>`;
   }).join("");
 
   const body = `
-<rect width="${HW}" height="${HORIZON}" fill="url(#tt-wall)"/>
-<g filter="url(#tt-bokeh)">${bokeh}</g>
-<rect y="${HORIZON}" width="${HW}" height="${HH - HORIZON}" fill="url(#tt-table)"/>
-<g clip-path="url(#tt-tableclip)">${grain}</g>
-<line x1="0" y1="${HORIZON + 0.5}" x2="${HW}" y2="${HORIZON + 0.5}" stroke="#3b2b20" stroke-opacity=".7"/>
-<ellipse cx="${HTIP.x - 40}" cy="${HTIP.y - 6}" rx="330" ry="78" fill="url(#tt-pool)"/>
-<g mask="url(#tt-refmask)"><g transform="translate(0 ${2 * HTIP.y}) scale(1 -1)" opacity=".26" filter="url(#tt-b2)"><use href="#tt-top"/></g></g>
+<ellipse cx="${HTIP.x}" cy="${HTIP.y + 2}" rx="210" ry="14" fill="url(#tt-floor)"/>
+<g mask="url(#tt-refmask)"><g transform="translate(0 ${2 * HTIP.y}) scale(1 -1)" opacity=".16" filter="url(#tt-b2)"><use href="#tt-top"/></g></g>
 ${shadow}
 <g id="tt-top" transform="${pose}">${moving(top)}</g>
-<path d="M 120 0 H 236 L 560 ${HTIP.y + 30} H 300 Z" fill="url(#tt-beam)" filter="url(#tt-wide)"/>
 ${dust}`;
 
   const defs = `<style>
@@ -358,19 +340,13 @@ ${dust}`;
   <filter id="tt-blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${blur.toFixed(1)} 0.2"/></filter>
   <filter id="tt-soft" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="6 2.2"/></filter>
 
-  <linearGradient id="tt-wall" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#060606"/><stop offset="1" stop-color="#15110e"/></linearGradient>
-  <linearGradient id="tt-table" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#1c140e"/><stop offset=".5" stop-color="#140e0a"/><stop offset="1" stop-color="#0c0907"/></linearGradient>
-  <clipPath id="tt-tableclip"><rect y="${HORIZON}" width="${HW}" height="${HH - HORIZON}"/></clipPath>
-  <radialGradient id="tt-pool"><stop offset="0" stop-color="${FILM.hot}" stop-opacity=".2"/><stop offset=".45" stop-color="${FILM.warm}" stop-opacity=".07"/><stop offset="1" stop-color="${FILM.warm}" stop-opacity="0"/></radialGradient>
-  <linearGradient id="tt-beam" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${FILM.hot}" stop-opacity=".16"/><stop offset="1" stop-color="${FILM.hot}" stop-opacity="0"/></linearGradient>
+  <radialGradient id="tt-floor"><stop offset="0" stop-color="${FILM.shadow}" stop-opacity="${theme === "dark" ? 0.35 : 0.07}"/><stop offset="1" stop-color="${FILM.shadow}" stop-opacity="0"/></radialGradient>
   <linearGradient id="tt-rf" x1="0" x2="0" y1="${HTIP.y}" y2="${HTIP.y + 62}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
   <mask id="tt-refmask" maskUnits="userSpaceOnUse" x="0" y="0" width="${HW}" height="${HH}"><rect y="${HTIP.y}" width="${HW}" height="${HH - HTIP.y}" fill="url(#tt-rf)"/></mask>
   <linearGradient id="tt-warm" x1="-51" x2="51" y1="0" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${FILM.warm}" stop-opacity=".28"/><stop offset=".45" stop-color="${FILM.warm}" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity=".25"/></linearGradient>
-  <filter id="tt-bokeh" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
-  <filter id="tt-wide" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="16"/></filter>
   <filter id="tt-sh" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.2"/></filter>`;
 
-  return frame({ w: HW, h: HH, p: "tt", desc, defs, body });
+  return frame({ w: HW, h: HH, p: "tt", theme, desc, defs, body });
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -565,7 +541,7 @@ function statesBlock(mo) {
       (s) => `<details>
 <summary><a name="${s.id}">${pic(`assets/states/${s.id}-button`, `See it ${s.name}`, 'height="40"')}</a></summary>
 <br>
-<a name="${s.id}-top"><img src="assets/states/${s.id}-top.svg" width="420" alt="The top ${s.name}, from an example fortnight."></a>
+<a name="${s.id}-top">${pic(`assets/states/${s.id}-top`, `The top ${s.name}, from an example fortnight.`, 'width="560"')}</a>
 <br>
 ${pic(`assets/states/${s.id}-blueprint`, `Its blueprint, ${s.name}: ${s.m.last14} contributions in 14 days, steadiness ${s.m.steadiness}.`, 'width="840"')}
 </details>`,
@@ -580,8 +556,8 @@ function writeStates() {
     const m = { measuredAt: "2026-01-01", yearTotal: 0, ...s.m };
     const mo = motion(m);
     if (mo.state !== s.name) throw new Error(`example for ${s.name} measures as ${mo.state}`);
-    fs.writeFileSync(path.join(dir, `${s.id}-top.svg`), svg(m, mo));
     for (const theme of ["dark", "light"]) {
+      fs.writeFileSync(path.join(dir, `${s.id}-top-${theme}.svg`), svg(m, mo, theme));
       fs.writeFileSync(path.join(dir, `${s.id}-blueprint-${theme}.svg`), blueprint(m, mo, theme, s));
       fs.writeFileSync(path.join(dir, `${s.id}-button-${theme}.svg`), stateButton(s, theme));
     }
@@ -617,11 +593,11 @@ async function main() {
   const days = await calendar();
   const m = measure(days);
   const mo = motion(m);
-  fs.writeFileSync(path.join(ROOT, "assets", "totem.svg"), svg(m, mo));
+  for (const theme of ["dark", "light"]) fs.writeFileSync(path.join(ROOT, "assets", `totem-${theme}.svg`), svg(m, mo, theme));
   for (const theme of ["dark", "light"])
     fs.writeFileSync(path.join(ROOT, "assets", `blueprint-${theme}.svg`), blueprint(m, mo, theme));
   fs.writeFileSync(STATE, `${JSON.stringify({ measurement: m, motion: mo }, null, 2)}\n`);
-  fs.writeFileSync(path.join(ROOT, "assets", "city.svg"), city(days));
+  for (const theme of ["dark", "light"]) fs.writeFileSync(path.join(ROOT, "assets", `city-${theme}.svg`), city(days, theme));
   writeStates();
   writeBlock("totem", caption(m, mo));
   writeBlock("states", statesBlock(mo));

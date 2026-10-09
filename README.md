@@ -1,7 +1,7 @@
 <div align="center">
 
 <details>
-<summary><a name="totem"><img src="assets/totem.svg" width="840" alt="A steel spinning top on a dark table under one lamp, running on my last two weeks of work: spinning true when I've been building steadily, wobbling when I haven't, at rest when I stop. Click it to open its blueprint."></a><br><sub>Click the top for its blueprint and its other states</sub></summary>
+<summary><a name="totem"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/totem-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/totem-light.svg"><img src="assets/totem-light.svg" width="840" alt="A steel spinning top, running on my last two weeks of work: spinning true when I've been building steadily, wobbling when I haven't, at rest when I stop. Click it to open its blueprint."></picture></a><br><sub>Click the top for its blueprint and its other states</sub></summary>
 <br>
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/blueprint-dark.svg">
@@ -16,14 +16,14 @@
 <details>
 <summary><a name="wobbling"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/states/wobbling-button-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/states/wobbling-button-light.svg"><img src="assets/states/wobbling-button-light.svg" height="40" alt="See it wobbling"></picture></a></summary>
 <br>
-<a name="wobbling-top"><img src="assets/states/wobbling-top.svg" width="420" alt="The top wobbling, from an example fortnight."></a>
+<a name="wobbling-top"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/states/wobbling-top-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/states/wobbling-top-light.svg"><img src="assets/states/wobbling-top-light.svg" width="560" alt="The top wobbling, from an example fortnight."></picture></a>
 <br>
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/states/wobbling-blueprint-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/states/wobbling-blueprint-light.svg"><img src="assets/states/wobbling-blueprint-light.svg" width="840" alt="Its blueprint, wobbling: 3 contributions in 14 days, steadiness 0.3."></picture>
 </details>
 <details>
 <summary><a name="at-rest"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/states/at-rest-button-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/states/at-rest-button-light.svg"><img src="assets/states/at-rest-button-light.svg" height="40" alt="See it at rest"></picture></a></summary>
 <br>
-<a name="at-rest-top"><img src="assets/states/at-rest-top.svg" width="420" alt="The top at rest, from an example fortnight."></a>
+<a name="at-rest-top"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/states/at-rest-top-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/states/at-rest-top-light.svg"><img src="assets/states/at-rest-top-light.svg" width="560" alt="The top at rest, from an example fortnight."></picture></a>
 <br>
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/states/at-rest-blueprint-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/states/at-rest-blueprint-light.svg"><img src="assets/states/at-rest-blueprint-light.svg" width="840" alt="Its blueprint, at rest: 0 contributions in 14 days, steadiness 0."></picture>
 </details>
@@ -54,22 +54,22 @@ I build machine learning models of physical systems and the GPU code they run on
 
 <br>
 
-<a href="https://github.com/SatnamCodes/matmul"><img src="assets/shots/sgemm.svg" width="410" alt="Custom SGEMM: matrix multiplication drawn as a room of three walls, tiles of C filling as strips of A and B light up. 169.6 to 1,052.9 GFLOPS on an RTX 4060."></a>
-<a href="https://satnamwanders.dev/research/p-type-dopants-in-beta-ga2o3"><img src="assets/shots/dopants.svg" width="410" alt="p-type dopants in beta-Ga2O3: a crystal lattice turning under a lamp, one dopant glowing. Abstract under review at IIM ATM 2026."></a>
+<a href="https://github.com/SatnamCodes/matmul"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/shots/sgemm-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/shots/sgemm-light.svg"><img src="assets/shots/sgemm-light.svg" width="410" alt="Custom SGEMM: matrix multiplication drawn as a room of three walls, tiles of C filling as strips of A and B light up. 169.6 to 1,052.9 GFLOPS on an RTX 4060."></picture></a>
+<a href="https://satnamwanders.dev/research/p-type-dopants-in-beta-ga2o3"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/shots/dopants-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/shots/dopants-light.svg"><img src="assets/shots/dopants-light.svg" width="410" alt="p-type dopants in beta-Ga2O3: a crystal lattice turning under a lamp, one dopant glowing. Abstract under review at IIM ATM 2026."></picture></a>
 
-<a href="https://github.com/SatnamCodes/gpu-neighbor-gather-divergence"><img src="assets/shots/warp.svg" width="410" alt="Warp divergence: 32 lanes as rods, each lane's work a bead sliding down; with uneven work most wait for the slowest."></a>
-<a href="https://satnamwanders.dev/projects/nodeguard"><img src="assets/shots/nodeguard.svg" width="410" alt="NodeGuard: a transaction graph in three dimensions, the camera circling it; the fraud ring is the warm knot."></a>
+<a href="https://github.com/SatnamCodes/gpu-neighbor-gather-divergence"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/shots/warp-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/shots/warp-light.svg"><img src="assets/shots/warp-light.svg" width="410" alt="Warp divergence: 32 lanes as rods, each lane's work a bead sliding down; with uneven work most wait for the slowest."></picture></a>
+<a href="https://satnamwanders.dev/projects/nodeguard"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/shots/nodeguard-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/shots/nodeguard-light.svg"><img src="assets/shots/nodeguard-light.svg" width="410" alt="NodeGuard: a transaction graph in three dimensions, the camera circling it; the fraud ring is the warm knot."></picture></a>
 
-<a href="https://satnamwanders.dev/projects/risc-v-knowledge-db"><img src="assets/shots/riscv.svg" width="410" alt="RISC-V specification database: a split-flap board spelling out 32-bit instruction words, their fields bracketed beneath."></a>
-<a href="https://satnamwanders.dev"><img src="assets/shots/exoplanets.svg" width="410" alt="Exoplanet habitability: a planet on an eccentric orbit transiting its star, the light curve dipping."></a>
-
-<br><br>
-
-<img src="assets/city.svg" width="840" alt="The last year of contributions as a city, a block a day, as tall as that day's work; the past recedes into haze and the last fortnight is lit.">
+<a href="https://satnamwanders.dev/projects/risc-v-knowledge-db"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/shots/riscv-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/shots/riscv-light.svg"><img src="assets/shots/riscv-light.svg" width="410" alt="RISC-V specification database: a split-flap board spelling out 32-bit instruction words, their fields bracketed beneath."></picture></a>
+<a href="https://satnamwanders.dev"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/shots/exoplanets-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/shots/exoplanets-light.svg"><img src="assets/shots/exoplanets-light.svg" width="410" alt="Exoplanet habitability: a planet on an eccentric orbit transiting its star, the light curve dipping."></picture></a>
 
 <br><br>
 
-<img src="assets/kit.svg" width="840" alt="The kit, machined plates dropped onto a table. Languages: Python, C++, C, CUDA, SQL. Infrastructure: Nsight Systems, Nsight Compute, Docker, Linux, Git, PostgreSQL, FastAPI. Machine learning: PyTorch, PyTorch Geometric, scikit-learn, XGBoost, LangGraph, FAISS. Speaks Punjabi, Hindi and English.">
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/city-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/city-light.svg"><img src="assets/city-light.svg" width="840" alt="The last year of contributions as a city, a block a day, as tall as that day's work; the past recedes into haze and the last fortnight is lit."></picture>
+
+<br><br>
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/kit-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/kit-light.svg"><img src="assets/kit-light.svg" width="840" alt="The kit. Languages: Python, C++, C, CUDA, SQL. Infrastructure: Nsight Systems, Nsight Compute, Docker, Linux, Git, PostgreSQL, FastAPI. Machine learning: PyTorch, PyTorch Geometric, scikit-learn, XGBoost, LangGraph, FAISS. Speaks Punjabi, Hindi and English."></picture>
 
 <br><br>
 

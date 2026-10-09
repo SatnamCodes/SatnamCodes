@@ -9,7 +9,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { INK, SANS, MONO, esc, r1, r2, rng, camera, dof, bounce, spring, anim, frame } from "./film.mjs";
+import { TH, SANS, MONO, esc, r1, r2, rng, camera, dof, bounce, spring, anim, frame } from "./film.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const W = 420, H = 220; // 1.9:1, the IMAX digital frame
@@ -17,13 +17,14 @@ const pts = (ps) => ps.map((q) => `${r1(q.x)},${r1(q.y)}`).join(" ");
 const kt = (ks) => ` keyTimes="${ks.map((k) => +Math.min(1, Math.max(0, k)).toFixed(4)).join(";")}"`;
 
 // A steel ball lit from the upper left, with a warm kick from the key light.
-const sphere = (id, base = INK.steel) =>
+const sphere = (id, base = "#c3c7cc") =>
   `<radialGradient id="${id}" cx=".38" cy=".34" r=".7"><stop offset="0" stop-color="#fff"/><stop offset=".25" stop-color="${base}"/><stop offset=".8" stop-color="#2b2c2e"/><stop offset="1" stop-color="#121213"/></radialGradient>`;
 
 // ---------------------------------------------------------------------------------------------
 // 1. Custom SGEMM: C = A·B as a room of three walls. A is on the left wall, B on the back wall,
 //    C on the floor. Tile by tile, a strip of A and a strip of B light up and C's tile fills.
-function sgemm() {
+function sgemm(theme) {
+  const K = TH[theme];
   const p = "sg";
   const cam = camera({ yaw: -0.72, pitch: 0.4, dist: 24, target: [4, 3.4, 4], focal: 320, cx: 214, cy: 96 });
   const F = (x, y, z) => cam([x, y, z]);
@@ -35,7 +36,7 @@ function sgemm() {
     lines.push([F(i, 0, 8), F(i, 8, 8), 2], [F(0, i, 8), F(8, i, 8), 2]); // back wall
   }
   const grid = [0, 1, 2]
-    .map((w) => `<g${dof(p, w === 2 ? 1.4 : w === 1 ? 0.6 : 0)} stroke="${INK.steel}" stroke-width=".6" stroke-opacity="${[0.32, 0.24, 0.18][w]}">${lines
+    .map((w) => `<g${dof(p, w === 2 ? 1.4 : w === 1 ? 0.6 : 0)} stroke="${K.steel}" stroke-width=".6" stroke-opacity="${[0.32, 0.24, 0.18][w]}">${lines
       .filter((l) => l[2] === w)
       .map(([a, b]) => `<line x1="${r1(a.x)}" y1="${r1(a.y)}" x2="${r1(b.x)}" y2="${r1(b.y)}"/>`)
       .join("")}</g>`)
@@ -51,8 +52,8 @@ function sgemm() {
     const poly = quad(F(2 * j, 0, 2 * i), F(2 * j + 2, 0, 2 * i), F(2 * j + 2, 0, 2 * i + 2), F(2 * j, 0, 2 * i + 2));
     const ks = [0, on(t0), on(t0 + 0.08), on(t0 + 0.4), on(T - 0.5), 1];
     const vs = [0, 0, 0.95, 0.2, 0.2, 0];
-    parts.push(`<polygon points="${poly}" fill="${INK.warm}" opacity="0"><animate attributeName="opacity" values="${vs.join(";")}"${kt(ks)} dur="${T}s" repeatCount="indefinite"/></polygon>`);
-    parts.push(`<polygon points="${poly}" fill="${INK.hot}" opacity="0" filter="url(#${p}b4)"><animate attributeName="opacity" values="0;0;.9;0;0"${kt([0, on(t0), on(t0 + 0.06), on(t0 + 0.42), 1])} dur="${T}s" repeatCount="indefinite"/></polygon>`);
+    parts.push(`<polygon points="${poly}" fill="${K.warm}" opacity="0"><animate attributeName="opacity" values="${vs.join(";")}"${kt(ks)} dur="${T}s" repeatCount="indefinite"/></polygon>`);
+    parts.push(`<polygon points="${poly}" fill="${K.hot}" opacity="0" filter="url(#${p}b4)"><animate attributeName="opacity" values="0;0;.9;0;0"${kt([0, on(t0), on(t0 + 0.06), on(t0 + 0.42), 1])} dur="${T}s" repeatCount="indefinite"/></polygon>`);
   }
   const pulse = (times) => {
     const ks = [0], vs = [0];
@@ -61,20 +62,18 @@ function sgemm() {
     return `<animate attributeName="opacity" values="${vs.join(";")}"${kt(ks)} dur="${T}s" repeatCount="indefinite"/>`;
   };
   const strips = [
-    ...aStrips.map((ts, i) => `<polygon points="${quad(F(0, 0, 2 * i), F(0, 8, 2 * i), F(0, 8, 2 * i + 2), F(0, 0, 2 * i + 2))}" fill="${INK.warm}" opacity="0">${pulse(ts)}</polygon>`),
-    ...bStrips.map((ts, j) => `<polygon points="${quad(F(2 * j, 0, 8), F(2 * j, 8, 8), F(2 * j + 2, 8, 8), F(2 * j + 2, 0, 8))}" fill="${INK.warm}" opacity="0"${dof(p, 1)}>${pulse(ts)}</polygon>`),
+    ...aStrips.map((ts, i) => `<polygon points="${quad(F(0, 0, 2 * i), F(0, 8, 2 * i), F(0, 8, 2 * i + 2), F(0, 0, 2 * i + 2))}" fill="${K.warm}" opacity="0">${pulse(ts)}</polygon>`),
+    ...bStrips.map((ts, j) => `<polygon points="${quad(F(2 * j, 0, 8), F(2 * j, 8, 8), F(2 * j + 2, 8, 8), F(2 * j + 2, 0, 8))}" fill="${K.warm}" opacity="0"${dof(p, 1)}>${pulse(ts)}</polygon>`),
   ];
-  const label = (q, s) => `<text x="${r1(q.x)}" y="${r1(q.y)}" text-anchor="middle" font-family="${MONO}" font-size="10" fill="${INK.mute}">${s}</text>`;
+  const label = (q, s) => `<text x="${r1(q.x)}" y="${r1(q.y)}" text-anchor="middle" font-family="${MONO}" font-size="10" fill="${K.mute}">${s}</text>`;
   const body = `
-<rect width="${W}" height="${H}" fill="url(#${p}-room)"/>
 ${strips.join("")}
 ${grid}
 ${parts.join("")}
 ${label(F(0, 8.9, 4), "A")}${label(F(4, 8.9, 8), "B")}${label(F(9, 0, 8.8), "C")}`;
   return frame({
-    w: W, h: H, p,
+    w: W, h: H, p, theme,
     desc: "Custom SGEMM: matrix multiplication drawn as a room, A on the left wall, B on the back wall, C on the floor; tile by tile, a strip of A and a strip of B light up and a tile of C fills. 169.6 to 1,052.9 GFLOPS on an RTX 4060, 6.5 times faster.",
-    defs: `<radialGradient id="${p}-room" cx=".45" cy=".55" r=".7"><stop offset="0" stop-color="#1a1714"/><stop offset="1" stop-color="${INK.bg}"/></radialGradient>`,
     body,
     caption: ["Custom SGEMM", "169.6 → 1,052.9 GFLOPS on an RTX 4060 · 6.5×"],
   });
@@ -84,7 +83,8 @@ ${label(F(0, 8.9, 4), "A")}${label(F(4, 8.9, 8), "B")}${label(F(9, 0, 8.8), "C")
 // 2. Warp divergence: 32 lanes as rods receding from us, each lane's work a bead sliding down.
 //    With 32 neighbours each, they land together. With 4 to 60, most land early and wait,
 //    dimmed, for the slowest: a third of the branch efficiency.
-function warp() {
+function warp(theme) {
+  const K = TH[theme];
   const p = "wp";
   const cam = camera({ yaw: 0.55, pitch: 0.22, dist: 13, target: [4.6, 1.5, 0], focal: 400, cx: 214, cy: 100 });
   const R = rng(5);
@@ -97,7 +97,7 @@ function warp() {
     const x = i * 0.3;
     const a = cam([x, 0, 0]), b = cam([x, top, 0]);
     const blur = Math.abs(a.d - cam([4.6, 0, 0]).d) / 2.2;
-    rods.push(`<line x1="${r1(a.x)}" y1="${r1(a.y)}" x2="${r1(b.x)}" y2="${r1(b.y)}" stroke="${INK.steel}" stroke-opacity=".35" stroke-width="${r2(0.4 + a.s * 0.012)}"${dof(p, blur)}/>`);
+    rods.push(`<line x1="${r1(a.x)}" y1="${r1(a.y)}" x2="${r1(b.x)}" y2="${r1(b.y)}" stroke="${K.steel}" stroke-opacity=".35" stroke-width="${r2(0.4 + a.s * 0.012)}"${dof(p, blur)}/>`);
     const ys = [], op = [];
     const d1 = 32 * v, d2 = loads[i] * v, dmax = Math.max(...loads) * v;
     for (let k = 0; k <= N; k++) {
@@ -120,16 +120,15 @@ function warp() {
   const floorA = cam([-0.6, 0, -0.5]), floorB = cam([9.9, 0, -0.5]), floorC = cam([9.9, 0, 0.5]), floorD = cam([-0.6, 0, 0.5]);
   const fade = (on) => `<animate attributeName="opacity" values="${on ? "1;1;0;0;1" : "0;0;1;1;0"}"${kt([0, 3.1 / T, 3.4 / T, 0.97, 1])} dur="${T}s" repeatCount="indefinite"/>`;
   const body = `
-<rect width="${W}" height="${H}" fill="url(#${p}-room)"/>
-<polygon points="${pts([floorA, floorB, floorC, floorD])}" fill="${INK.warm}" opacity=".06"/>
+<polygon points="${pts([floorA, floorB, floorC, floorD])}" fill="${K.warm}" opacity=".06"/>
 ${rods.join("")}
 ${beads.join("")}
-<text x="20" y="28" font-family="${SANS}" font-size="9.5" letter-spacing="2" fill="${INK.light}" fill-opacity=".8">${fade(true)}FIXED · 32 NEIGHBOURS · 100% BRANCH EFFICIENCY</text>
-<text x="20" y="28" font-family="${SANS}" font-size="9.5" letter-spacing="2" fill="${INK.light}" fill-opacity=".8" opacity="0">${fade(false)}VARIABLE · 4 TO 60 · 33.34% BRANCH EFFICIENCY</text>`;
+<text x="20" y="28" font-family="${SANS}" font-size="9.5" letter-spacing="2" fill="${K.light}" fill-opacity=".8">${fade(true)}FIXED · 32 NEIGHBOURS · 100% BRANCH EFFICIENCY</text>
+<text x="20" y="28" font-family="${SANS}" font-size="9.5" letter-spacing="2" fill="${K.light}" fill-opacity=".8" opacity="0">${fade(false)}VARIABLE · 4 TO 60 · 33.34% BRANCH EFFICIENCY</text>`;
   return frame({
-    w: W, h: H, p,
+    w: W, h: H, p, theme,
     desc: "Warp divergence: 32 lanes as rods, each lane's work a bead sliding down. With a fixed 32 neighbours they land together; with 4 to 60, most land early and wait for the slowest, at 33.34% branch efficiency, yet the kernel moved slightly more data, 158.87 against 153.13 GB/s.",
-    defs: `${sphere(`${p}-ball`)}<radialGradient id="${p}-room" cx=".5" cy=".6" r=".7"><stop offset="0" stop-color="#171513"/><stop offset="1" stop-color="${INK.bg}"/></radialGradient>`,
+    defs: `${sphere(`${p}-ball`)}`,
     body,
     caption: ["Warp divergence", "A third of the branch efficiency, and still faster: 158.87 vs 153.13 GB/s"],
   });
@@ -138,7 +137,8 @@ ${beads.join("")}
 // ---------------------------------------------------------------------------------------------
 // 3. p-type dopants in β-Ga₂O₃: a crystal turning slowly under a lamp, its atoms vibrating with
 //    a travelling phonon; one dopant, warm, in focus, lighting its neighbours.
-function dopants() {
+function dopants(theme) {
+  const K = TH[theme];
   const p = "dp";
   const NX = 7, NY = 3, NZ = 2, F = 20, T = 14;
   const atoms = [];
@@ -168,7 +168,7 @@ function dopants() {
   const bondSvg = bonds
     .map(([x, y]) => {
       const warmth = Math.max(0, 1 - Math.min(near(x), near(y)) / 1.5);
-      return `<line stroke="${warmth > 0 ? INK.warm : INK.steel}" stroke-opacity="${r2(0.16 + warmth * 0.4)}" stroke-width=".8"${dof(p, blurOf((meanD(x) + meanD(y)) / 2))}>${anim("x1", frames.map((fr) => fr[x].x), T)}${anim("y1", frames.map((fr) => fr[x].y), T)}${anim("x2", frames.map((fr) => fr[y].x), T)}${anim("y2", frames.map((fr) => fr[y].y), T)}</line>`;
+      return `<line stroke="${warmth > 0 ? K.warm : K.steel}" stroke-opacity="${r2(0.16 + warmth * 0.4)}" stroke-width=".8"${dof(p, blurOf((meanD(x) + meanD(y)) / 2))}>${anim("x1", frames.map((fr) => fr[x].x), T)}${anim("y1", frames.map((fr) => fr[x].y), T)}${anim("x2", frames.map((fr) => fr[y].x), T)}${anim("y2", frames.map((fr) => fr[y].y), T)}</line>`;
     })
     .join("");
   const order = atoms.map((_, x) => x).sort((x, y) => meanD(y) - meanD(x));
@@ -180,11 +180,11 @@ function dopants() {
       return `<circle fill="url(#${isDop ? `${p}-dop` : warm ? `${p}-warm` : a.o ? `${p}-o` : `${p}-ga`})"${dof(p, blurOf(meanD(x)))}>${anim("cx", frames.map((fr) => fr[x].x), T)}${anim("cy", frames.map((fr) => fr[x].y), T)}${anim("r", frames.map((fr) => fr[x].s * k), T)}</circle>`;
     })
     .join("");
-  const glow = `<circle fill="${INK.hot}" opacity=".35" filter="url(#${p}b4)">${anim("cx", frames.map((fr) => fr[dop].x), T)}${anim("cy", frames.map((fr) => fr[dop].y), T)}${anim("r", frames.map((fr, f) => fr[dop].s * (0.42 + 0.08 * Math.sin(f))), T)}</circle>`;
+  const glow = `<circle fill="${K.hot}" opacity=".35" filter="url(#${p}b4)">${anim("cx", frames.map((fr) => fr[dop].x), T)}${anim("cy", frames.map((fr) => fr[dop].y), T)}${anim("r", frames.map((fr, f) => fr[dop].s * (0.42 + 0.08 * Math.sin(f))), T)}</circle>`;
   return frame({
-    w: W, h: H, p,
+    w: W, h: H, p, theme,
     desc: "p-type dopants in beta-Ga2O3: a crystal lattice turning slowly, its atoms vibrating with a travelling phonon, one dopant atom glowing warm and lighting its neighbours. Graph neural networks over the defect's real structure; abstract under review at IIM ATM 2026.",
-    defs: `${sphere(`${p}-ga`)}${sphere(`${p}-o`, "#7d8187")}${sphere(`${p}-warm`, "#d7b48a")}<radialGradient id="${p}-dop" cx=".38" cy=".34" r=".7"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="${INK.hot}"/><stop offset=".85" stop-color="${INK.warm}"/><stop offset="1" stop-color="#6a4520"/></radialGradient>`,
+    defs: `${sphere(`${p}-ga`)}${sphere(`${p}-o`, "#7d8187")}${sphere(`${p}-warm`, "#d7b48a")}<radialGradient id="${p}-dop" cx=".38" cy=".34" r=".7"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="${K.hot}"/><stop offset=".85" stop-color="${K.warm}"/><stop offset="1" stop-color="#6a4520"/></radialGradient>`,
     body: `${glow}${bondSvg}${atomSvg}`,
     caption: ["p-type dopants in β-Ga₂O₃", "GNNs on the defect's real structure · abstract under review, IIM ATM 2026"],
   });
@@ -193,7 +193,8 @@ function dopants() {
 // ---------------------------------------------------------------------------------------------
 // 4. NodeGuard: a transaction graph relaxed in 3D under springs and repulsion, the camera
 //    circling it. The fraud ring is the knot that holds together, warm.
-function graph() {
+function graph(theme) {
+  const K = TH[theme];
   const p = "ng";
   const R = rng(17);
   const n = 26;
@@ -235,7 +236,7 @@ function graph() {
   const edgeSvg = edges
     .map(([a, b]) => {
       const warm = ring.includes(a) && ring.includes(b);
-      return `<line stroke="${warm ? INK.warm : INK.steel}" stroke-width="${warm ? 1.1 : 0.7}">${anim("x1", frames.map((fr) => fr[a].x), T)}${anim("y1", frames.map((fr) => fr[a].y), T)}${anim("x2", frames.map((fr) => fr[b].x), T)}${anim("y2", frames.map((fr) => fr[b].y), T)}${anim("stroke-opacity", frames.map((fr) => (warm ? 0.8 : 0.4) * fog((fr[a].d + fr[b].d) / 2)), T)}</line>`;
+      return `<line stroke="${warm ? K.warm : K.steel}" stroke-width="${warm ? 1.1 : 0.7}">${anim("x1", frames.map((fr) => fr[a].x), T)}${anim("y1", frames.map((fr) => fr[a].y), T)}${anim("x2", frames.map((fr) => fr[b].x), T)}${anim("y2", frames.map((fr) => fr[b].y), T)}${anim("stroke-opacity", frames.map((fr) => (warm ? 0.8 : 0.4) * fog((fr[a].d + fr[b].d) / 2)), T)}</line>`;
     })
     .join("");
   const nodeSvg = P.map((_, a) => {
@@ -243,12 +244,12 @@ function graph() {
     return `<circle fill="url(#${p}-${warm ? "warm" : "ball"})">${anim("cx", frames.map((fr) => fr[a].x), T)}${anim("cy", frames.map((fr) => fr[a].y), T)}${anim("r", frames.map((fr) => fr[a].s * (warm ? 0.17 : 0.13)), T)}${anim("opacity", frames.map((fr) => fog(fr[a].d)), T)}</circle>`;
   }).join("");
   const rc = frames.map((fr) => [ring.reduce((s, a) => s + fr[a].x, 0) / 5, ring.reduce((s, a) => s + fr[a].y, 0) / 5]);
-  const glow = `<circle r="34" fill="${INK.warm}" opacity=".16" filter="url(#${p}b4)">${anim("cx", rc.map((q) => q[0]), T)}${anim("cy", rc.map((q) => q[1]), T)}</circle>`;
-  const dust = Array.from({ length: 40 }, () => `<circle cx="${r1(R() * W)}" cy="${r1(R() * (H - 40))}" r="${r1(0.4 + R() * 0.9)}" fill="${INK.light}" opacity="${r2(0.05 + R() * 0.15)}"/>`).join("");
+  const glow = `<circle r="34" fill="${K.warm}" opacity=".16" filter="url(#${p}b4)">${anim("cx", rc.map((q) => q[0]), T)}${anim("cy", rc.map((q) => q[1]), T)}</circle>`;
+  const dust = Array.from({ length: 40 }, () => `<circle cx="${r1(R() * W)}" cy="${r1(R() * (H - 40))}" r="${r1(0.4 + R() * 0.9)}" fill="${K.light}" opacity="${r2(0.05 + R() * 0.15)}"/>`).join("");
   return frame({
-    w: W, h: H, p,
+    w: W, h: H, p, theme,
     desc: "NodeGuard: a transaction graph relaxed in three dimensions under springs and repulsion, the camera circling it; the fraud ring is the warm knot that holds together. A graph convolutional network that finds fraud rings from network structure.",
-    defs: `${sphere(`${p}-ball`)}<radialGradient id="${p}-warm" cx=".38" cy=".34" r=".7"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="${INK.hot}"/><stop offset="1" stop-color="#7a4f24"/></radialGradient>`,
+    defs: `${sphere(`${p}-ball`)}<radialGradient id="${p}-warm" cx=".38" cy=".34" r=".7"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="${K.hot}"/><stop offset="1" stop-color="#7a4f24"/></radialGradient>`,
     body: `${dust}${glow}${edgeSvg}${nodeSvg}`,
     caption: ["NodeGuard", "A GCN that finds fraud rings in who pays whom · F1-based checkpointing"],
   });
@@ -258,7 +259,8 @@ function graph() {
 // 5. Exoplanet habitability: a star through an anamorphic lens, a planet on an eccentric Kepler
 //    orbit seen almost edge-on, so it transits; its lit side always faces the star. Top right,
 //    the star's light curve, dipping as the planet crosses it.
-function exoplanet() {
+function exoplanet(theme) {
+  const K = TH[theme];
   const p = "ex";
   const cam = camera({ yaw: 0.25, pitch: 0.075, dist: 9, target: [0, 0, 0], focal: 330, cx: 196, cy: 100 });
   const a = 3.1, e = 0.32, F = 90, T = 12;
@@ -278,11 +280,11 @@ function exoplanet() {
     fr.push({ ...q, rr, phase, behind: view > 0, transit });
   }
   const R = rng(3);
-  const stars = Array.from({ length: 70 }, () => `<circle cx="${r1(R() * W)}" cy="${r1(R() * (H - 30))}" r="${r1(0.3 + R() * 0.8)}" fill="${INK.light}" opacity="${r2(0.1 + R() * 0.4)}"/>`).join("");
+  const stars = Array.from({ length: 70 }, () => `<circle cx="${r1(R() * W)}" cy="${r1(R() * (H - 30))}" r="${r1(0.3 + R() * 0.8)}" fill="${K.light}" opacity="${r2(0.1 + R() * 0.4)}"/>`).join("");
   const hz = Array.from({ length: 220 }, () => {
     const th = R() * 2 * Math.PI, rad = 2.3 + R() * 1.4;
     const q = cam([rad * Math.cos(th), (R() - 0.5) * 0.3, rad * Math.sin(th)]);
-    return `<circle cx="${r1(q.x)}" cy="${r1(q.y)}" r="${r2(0.4 + R() * 0.6)}" fill="${INK.warm}" opacity="${r2(0.08 + R() * 0.2)}"/>`;
+    return `<circle cx="${r1(q.x)}" cy="${r1(q.y)}" r="${r2(0.4 + R() * 0.6)}" fill="${K.warm}" opacity="${r2(0.08 + R() * 0.2)}"/>`;
   }).join("");
   const orbit = Array.from({ length: 73 }, (_, i) => {
     const E = (2 * Math.PI * i) / 72;
@@ -301,22 +303,22 @@ function exoplanet() {
   const curve = flux.map((v, i) => `${r1(lc.x + (i / F) * lc.w)},${r1(lc.y + lc.h * (1 - v) * 1.4 + 6)}`).join(" ");
   const body = `
 ${stars}
-<polyline points="${pts(orbit)}" fill="none" stroke="${INK.steel}" stroke-opacity=".16" stroke-dasharray="1.5 3"/>
+<polyline points="${pts(orbit)}" fill="none" stroke="${K.steel}" stroke-opacity=".16" stroke-dasharray="1.5 3"/>
 ${hz}
 ${planet(true)}
 <circle cx="${r1(star.x)}" cy="${r1(star.y)}" r="44" fill="url(#${p}-glow)"/>
 <ellipse cx="${r1(star.x)}" cy="${r1(star.y)}" rx="190" ry="1.3" fill="url(#${p}-flare)">${anim("opacity", [0.75, 0.6, 0.8, 0.7, 0.75], 3.1)}</ellipse>
 <circle cx="${r1(star.x)}" cy="${r1(star.y)}" r="7.5" fill="#fff8ee"/>
 ${planet(false)}
-<g font-family="${SANS}" font-size="8.5" letter-spacing="1.6" fill="${INK.mute}">
+<g font-family="${SANS}" font-size="8.5" letter-spacing="1.6" fill="${K.mute}">
   <text x="${lc.x}" y="${lc.y - 6}">STELLAR FLUX</text>
-  <polyline points="${curve}" fill="none" stroke="${INK.light}" stroke-opacity=".7" stroke-width=".8"/>
-  <circle r="1.8" fill="${INK.warm}">${anim("cx", flux.map((_, i) => lc.x + (i / F) * lc.w), T)}${anim("cy", flux.map((v) => lc.y + lc.h * (1 - v) * 1.4 + 6), T)}</circle>
+  <polyline points="${curve}" fill="none" stroke="${K.light}" stroke-opacity=".7" stroke-width=".8"/>
+  <circle r="1.8" fill="${K.warm}">${anim("cx", flux.map((_, i) => lc.x + (i / F) * lc.w), T)}${anim("cy", flux.map((v) => lc.y + lc.h * (1 - v) * 1.4 + 6), T)}</circle>
 </g>`;
   return frame({
-    w: W, h: H, p,
+    w: W, h: H, p, theme,
     desc: "Exoplanet habitability: a star seen through an anamorphic lens and a planet on an eccentric Kepler orbit, nearly edge-on, transiting the star; a dust ring marks the habitable zone, and the star's light curve dips during the transit. Do habitability indices reduce to a few physical quantities?",
-    defs: `<radialGradient id="${p}-glow"><stop offset="0" stop-color="${INK.hot}" stop-opacity=".9"/><stop offset=".2" stop-color="${INK.warm}" stop-opacity=".45"/><stop offset="1" stop-color="${INK.warm}" stop-opacity="0"/></radialGradient>
+    defs: `<radialGradient id="${p}-glow"><stop offset="0" stop-color="${K.hot}" stop-opacity=".9"/><stop offset=".2" stop-color="${K.warm}" stop-opacity=".45"/><stop offset="1" stop-color="${K.warm}" stop-opacity="0"/></radialGradient>
 <radialGradient id="${p}-flare" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff2df"/><stop offset=".4" stop-color="#cfe0ff" stop-opacity=".35"/><stop offset="1" stop-color="#cfe0ff" stop-opacity="0"/></radialGradient>
 <radialGradient id="${p}-lit" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#d9c3a5"/><stop offset=".7" stop-color="#7d6a55"/><stop offset="1" stop-color="#2a241e"/></radialGradient>`,
     body,
@@ -327,7 +329,8 @@ ${planet(false)}
 // ---------------------------------------------------------------------------------------------
 // 6. RISC-V specification database: a split-flap board spelling out instruction words bit by
 //    bit, each flap falling under gravity, the fields bracketed beneath; reflected in the desk.
-function riscv() {
+function riscv(theme) {
+  const K = TH[theme];
   const p = "rv";
   const words = [
     { asm: "add  x5, x6, x7", bits: "0000000" + "00111" + "00110" + "000" + "00101" + "0110011", fields: [["funct7", 7], ["rs2", 5], ["rs1", 5], ["f3", 3], ["rd", 5], ["opcode", 7]] },
@@ -356,8 +359,8 @@ function riscv() {
     cells.push(`<g>
   <rect x="${r1(x)}" y="${Y0}" width="${CW}" height="${CH}" rx="1.4" fill="url(#${p}-flap)"/>
   <g transform="translate(${r1(cx)} ${cy})"><g><animateTransform attributeName="transform" type="scale" values="${sy.map((v) => `1 ${r2(v)}`).join(";")}"${kt(ks)} dur="${T}s" repeatCount="indefinite"/>
-    <text x="0" y="5" text-anchor="middle" font-family="${MONO}" font-size="12.5" fill="${INK.light}"><animate attributeName="opacity" values="${dv(zero)}"${kt(dk)} dur="${T}s" calcMode="discrete" repeatCount="indefinite"/>0</text>
-    <text x="0" y="5" text-anchor="middle" font-family="${MONO}" font-size="12.5" fill="${INK.warm}"><animate attributeName="opacity" values="${dv(one)}"${kt(dk)} dur="${T}s" calcMode="discrete" repeatCount="indefinite"/>1</text>
+    <text x="0" y="5" text-anchor="middle" font-family="${MONO}" font-size="12.5" fill="#efebe3"><animate attributeName="opacity" values="${dv(zero)}"${kt(dk)} dur="${T}s" calcMode="discrete" repeatCount="indefinite"/>0</text>
+    <text x="0" y="5" text-anchor="middle" font-family="${MONO}" font-size="12.5" fill="#e3b072"><animate attributeName="opacity" values="${dv(one)}"${kt(dk)} dur="${T}s" calcMode="discrete" repeatCount="indefinite"/>1</text>
   </g></g>
   <line x1="${r1(x)}" y1="${cy}" x2="${r1(x + CW)}" y2="${cy}" stroke="#000" stroke-opacity=".8" stroke-width=".7"/>
 </g>`);
@@ -368,25 +371,23 @@ function riscv() {
       .map(([name, len]) => {
         const x1 = X0 + b * (CW + 1.3) + 1, x2 = X0 + (b + len) * (CW + 1.3) - 2.3;
         b += len;
-        return `<path d="M ${r1(x1)} ${Y0 + CH + 6} v 4 H ${r1(x2)} v -4" fill="none" stroke="${INK.mute}" stroke-width=".7"/><text x="${r1((x1 + x2) / 2)}" y="${Y0 + CH + 22}" text-anchor="middle" font-family="${MONO}" font-size="8.5" fill="${INK.mute}">${esc(name)}</text>`;
+        return `<path d="M ${r1(x1)} ${Y0 + CH + 6} v 4 H ${r1(x2)} v -4" fill="none" stroke="${K.mute}" stroke-width=".7"/><text x="${r1((x1 + x2) / 2)}" y="${Y0 + CH + 22}" text-anchor="middle" font-family="${MONO}" font-size="8.5" fill="${K.mute}">${esc(name)}</text>`;
       })
       .join("");
     const vis = words.map((_, k) => (k === n ? 1 : 0));
     const ks = words.map((_, k) => (k * per + 0.3) / T);
     return `<g opacity="0"><animate attributeName="opacity" values="${[vis.at(-1), ...vis].join(";")}"${kt([0, ...ks])} dur="${T}s" calcMode="discrete" repeatCount="indefinite"/>
 ${brackets}
-<text x="${X0}" y="${Y0 - 14}" font-family="${MONO}" font-size="12" fill="${INK.warm}">${esc(w.asm)}</text></g>`;
+<text x="${X0}" y="${Y0 - 14}" font-family="${MONO}" font-size="12" fill="${K.warm}">${esc(w.asm)}</text></g>`;
   });
   const board = `${cells.join("")}${fieldSets.join("")}`;
   return frame({
-    w: W, h: H, p,
+    w: W, h: H, p, theme,
     desc: "RISC-V specification database: a split-flap board spelling out add, lw and addi as 32-bit instruction words, flap by flap, with the fields of each bracketed beneath and the board reflected in the desk. A pipeline that loads 1,700+ YAML specification files into PostgreSQL.",
     defs: `<linearGradient id="${p}-flap" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3b3b3e"/><stop offset=".49" stop-color="#28282b"/><stop offset=".51" stop-color="#1c1c1e"/><stop offset="1" stop-color="#2c2c2f"/></linearGradient>
 <linearGradient id="${p}-rf" x1="0" x2="0" y1="${Y0 + CH}" y2="${Y0 + CH + 30}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
-<mask id="${p}-rm" maskUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}"><rect y="${Y0 + CH}" width="${W}" height="40" fill="url(#${p}-rf)"/></mask>
-<radialGradient id="${p}-lamp" cx=".45" cy=".35" r=".6"><stop offset="0" stop-color="#1d1915"/><stop offset="1" stop-color="${INK.bg}"/></radialGradient>`,
-    body: `<rect width="${W}" height="${H}" fill="url(#${p}-lamp)"/>
-<g id="${p}-board">${cells.join("")}</g>
+<mask id="${p}-rm" maskUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}"><rect y="${Y0 + CH}" width="${W}" height="40" fill="url(#${p}-rf)"/></mask>`,
+    body: `<g id="${p}-board">${cells.join("")}</g>
 <g mask="url(#${p}-rm)"><g transform="translate(0 ${2 * (Y0 + CH) + 2}) scale(1 -1)" opacity=".35" filter="url(#${p}b2)"><use href="#${p}-board"/></g></g>
 ${fieldSets.join("")}`,
     caption: ["RISC-V specification database", "1,700+ YAML files → PostgreSQL · 1,351 instructions, 396 CSRs"],
@@ -407,7 +408,8 @@ export const SHOTS = [
 //    end, today, the past recedes into haze and out of focus. The blocks rise on springs, the
 //    oldest first; the fortnight the top is measured on is lit from inside.
 
-export function city(days) {
+export function city(days, theme) {
+  const K = TH[theme];
   const p = "cy";
   const CWd = 840, CHt = 300;
   const dates = Object.keys(days).sort();
@@ -448,86 +450,149 @@ export function city(days) {
   const groups = [[], [], [], []];
   for (const q of blocks) {
     const far = (q.d - dMin) / (dMax - dMin); // 0 near, 1 far
-    const haze = 1 - far * 0.6;
+    const haze = 1 - far * 0.55;
     const lit = q.c.recent && q.c.n > 0;
-    const topC = q.c.n ? (lit ? INK.hot : shade("#c9c2b6", 0.35 + 0.65 * Math.min(1, Math.sqrt(q.c.n) / 4))) : "#2a2724";
-    const sideC = q.c.n ? (lit ? INK.warm : "#4b4640") : "#1c1a18";
-    const frontC = q.c.n ? (lit ? "#b07a3c" : "#2d2a27") : "#141312";
+    const [tf, sf, ff] = q.c.n ? K.face : K.empty;
+    const topC = q.c.n && lit ? K.hot : tf;
+    const sideC = q.c.n && lit ? K.warm : sf;
+    const frontC = q.c.n && lit ? shade(K.warm.length === 7 ? K.warm : "#b07a3c", 0.75) : ff;
     // visible faces from this camera: the top, the +z side and the -x side
     const [b0, b1, b2, b3] = q.b, [t0, t1, t2, t3] = q.tp;
     const delay = (q.c.w * 0.045 + q.c.r * 0.02).toFixed(2);
     const g = `<g class="rise" style="animation-delay:${delay}s;transform-origin:${r1(q.base.x)}px ${r1(q.base.y)}px" opacity="${r2(haze)}">
-<polygon points="${pts([b3, b2, t2, t3])}" fill="${frontC}"/><polygon points="${pts([b0, b3, t3, t0])}" fill="${sideC}"/><polygon points="${pts(q.tp)}" fill="${topC}"/>${lit ? `<polygon points="${pts(q.tp)}" fill="${INK.hot}" filter="url(#${p}b4)" opacity=".8"/>` : ""}
+<polygon points="${pts([b3, b2, t2, t3])}" fill="${frontC}"/><polygon points="${pts([b0, b3, t3, t0])}" fill="${sideC}"/><polygon points="${pts(q.tp)}" fill="${topC}"/>${lit ? `<polygon points="${pts(q.tp)}" fill="${K.hot}" filter="url(#${p}b4)" opacity=".8"/>` : ""}
 </g>`;
     groups[Math.min(3, Math.floor(far * 4))].push(g);
   }
   const body = `
-<rect width="${CWd}" height="${CHt}" fill="url(#${p}-sky)"/>
-${groups.map((gs, i) => `<g${dof(p, [0, 0.4, 1.2, 2.2][3 - i] ?? 0)}>${gs.join("")}</g>`).reverse().join("")}
-<rect width="${CWd}" height="${CHt}" fill="url(#${p}-haze)"/>
-<text x="20" y="28" font-family="${SANS}" font-size="9.5" letter-spacing="2" fill="${INK.light}" fill-opacity=".8">A BLOCK A DAY, AS TALL AS THAT DAY'S WORK</text>
-<text x="${CWd - 20}" y="28" text-anchor="end" font-family="${SANS}" font-size="9.5" letter-spacing="2" fill="${INK.warm}">LIT: THE FORTNIGHT THE TOP IS MEASURED ON</text>`;
+${groups.map((gs, i) => `<g${dof(p, [0, 0.4, 1.2, 2.2][i])}>${gs.join("")}</g>`).reverse().join("")}
+<text x="20" y="28" font-family="${SANS}" font-size="9.5" letter-spacing="2" fill="${K.light}" fill-opacity=".8">A BLOCK A DAY, AS TALL AS THAT DAY'S WORK</text>
+<text x="${CWd - 20}" y="28" text-anchor="end" font-family="${SANS}" font-size="9.5" letter-spacing="2" fill="${K.warm}">LIT: THE FORTNIGHT THE TOP IS MEASURED ON</text>`;
   return frame({
-    w: CWd, h: CHt, p,
+    w: CWd, h: CHt, p, theme,
     desc: `The last year of contributions as a city, a block a day, its height that day's contributions; the past recedes into haze, and the last fourteen days are lit. ${sum} contributions on ${active} days, the longest run ${best} days.`,
-    defs: `<style>.rise { transform-box: view-box; animation: rise 1.4s linear both; } @keyframes rise { 0% { transform: scaleY(0) } ${kf} } @media (prefers-reduced-motion: reduce) { .rise { animation: none } }</style>
-<linearGradient id="${p}-sky" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#0a0a0b"/><stop offset=".55" stop-color="#14120f"/><stop offset="1" stop-color="#0b0a09"/></linearGradient>
-<linearGradient id="${p}-haze" x1="1" x2="0" y1="0" y2="0"><stop offset="0" stop-color="${INK.bg}" stop-opacity="0"/><stop offset=".55" stop-color="${INK.bg}" stop-opacity="0"/><stop offset="1" stop-color="#16130f" stop-opacity=".55"/></linearGradient>`,
+    defs: `<style>.rise { transform-box: view-box; animation: rise 1.4s linear both; } @keyframes rise { 0% { transform: scaleY(0) } ${kf} } @media (prefers-reduced-motion: reduce) { .rise { animation: none } }</style>`,
     body,
     caption: ["The year", `${sum.toLocaleString("en-US")} contributions · ${active} days · longest run ${best}`],
   });
 }
 
 // ---------------------------------------------------------------------------------------------
-// 8. The kit: machined plates, each engraved with a tool, dropped onto the table one after
-//    another; they fall, bounce and settle, their shadows tightening as they land.
+// 8. The kit: what I work with, as a spec sheet in four columns. Each tool has a small line
+//    drawing of the work it does, moving: a GPU's warps lighting up, a loss curve with a ball
+//    rolling to its minimum, a query sweeping a table. The rows come in on springs.
+
+const L = (K, d, o = "", inner = "") => `<path d="${d}" fill="none" stroke="${K.light}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"${o}>${inner}</path>`;
+const A = (K, d, o = "", inner = "") => `<path d="${d}" fill="none" stroke="${K.warm}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"${o}>${inner}</path>`;
+const loop = (attr, values, dur, ks) => `<animate attributeName="${attr}" values="${values}" dur="${dur}s" repeatCount="indefinite"${ks ? ` keyTimes="${ks}"` : ""}/>`;
+const dot = (K, x, y, r = 1.6, warm = false, inner = "") => `<circle cx="${x}" cy="${y}" r="${r}" fill="${warm ? K.warm : K.light}">${inner}</circle>`;
+
+const ICONS = {
+  // two interlocking halves, trading the light
+  python: (K) => `${L(K, "M12 3.5h-2.5a3 3 0 0 0-3 3V9h6M6.5 9H5a2.5 2.5 0 0 0-2.5 2.5v2A2.5 2.5 0 0 0 5 16h1.5", ' opacity=".9"')}
+${A(K, "M12 20.5h2.5a3 3 0 0 0 3-3V15h-6M17.5 15H19a2.5 2.5 0 0 0 2.5-2.5v-2A2.5 2.5 0 0 0 19 8h-1.5", ``, loop("opacity", "1;.35;1", 3))}
+${dot(K, 9.5, 6.2, 0.9)}${dot(K, 14.5, 17.8, 0.9, true)}`,
+  cpp: (K) => `${L(K, "M12.5 7.2A5.8 5.8 0 1 0 12.5 16.8")}${A(K, "M14.5 12h4M16.5 10v4M19 12h4M21 10v4", ``, loop("opacity", "1;.3;1", 2.2))}`,
+  c: (K) => `${L(K, "M17 6.8A7 7 0 1 0 17 17.2", ` stroke-dasharray="32" stroke-dashoffset="32"`, loop("stroke-dashoffset", "32;0;0;32", 4, "0;.35;.85;1"))}`,
+  // a chip whose 4x4 warps light in a wave
+  cuda: (K) => `${L(K, "M5 5h14v14H5zM8 2.5V5M12 2.5V5M16 2.5V5M8 19v2.5M12 19v2.5M16 19v2.5M2.5 8H5M2.5 12H5M2.5 16H5M19 8h2.5M19 12h2.5M19 16h2.5")}
+${[0, 1, 2, 3].flatMap((i) => [0, 1, 2, 3].map((j) => `<rect x="${6.6 + j * 2.8}" y="${6.6 + i * 2.8}" width="2" height="2" fill="${K.warm}" opacity=".15">${loop("opacity", ".15;1;.15;.15", 1.6, `0;${((i + j) * 0.06).toFixed(2)};${((i + j) * 0.06 + 0.2).toFixed(2)};1`)}</rect>`)).join("")}`,
+  // a database filling
+  sql: (K) => `${L(K, "M5 6.5c0-1.6 3.1-2.8 7-2.8s7 1.2 7 2.8v11c0 1.6-3.1 2.8-7 2.8s-7-1.2-7-2.8z")}${L(K, "M5 6.5c0 1.6 3.1 2.8 7 2.8s7-1.2 7-2.8")}
+${A(K, "M5 13c0 1.6 3.1 2.8 7 2.8s7-1.2 7-2.8", ``, loop("d", "M5 17.5c0 1.6 3.1 2.8 7 2.8s7-1.2 7-2.8;M5 10c0 1.6 3.1 2.8 7 2.8s7-1.2 7-2.8;M5 17.5c0 1.6 3.1 2.8 7 2.8s7-1.2 7-2.8", 3.4))}`,
+  // three timeline lanes scrolling past
+  nsys: (K) => `${L(K, "M3 4v16")}<clipPath id="kt-ns"><rect x="4" y="3" width="17" height="18"/></clipPath><g clip-path="url(#kt-ns)"><g><animateTransform attributeName="transform" type="translate" values="0 0;-12 0" dur="2.4s" repeatCount="indefinite"/>
+${[[6, 0, 5], [6, 8, 3], [6, 14, 6], [11, 2, 7], [11, 12, 4], [11, 19, 6], [16, 1, 3], [16, 6, 6], [16, 15, 5]].map(([y, x, w], i) => `<rect x="${5 + x}" y="${y}" width="${w}" height="2.6" rx="1" fill="${i % 4 === 1 ? K.warm : K.light}" opacity="${i % 4 === 1 ? 1 : 0.75}"/><rect x="${17 + x}" y="${y}" width="${w}" height="2.6" rx="1" fill="${i % 4 === 1 ? K.warm : K.light}" opacity="${i % 4 === 1 ? 1 : 0.75}"/>`).join("")}</g></g>`,
+  // a gauge whose needle swings up and settles, damped
+  ncu: (K) => {
+    const sp = spring(0.25, 12, 20, 1).map(([, v]) => (-150 + v * 115).toFixed(1));
+    return `${L(K, "M4 17a8 8 0 0 1 16 0")}${L(K, "M6.3 11.3l1 .7M12 9v1.2M17.7 11.3l-1 .7")}
+<g transform="translate(12 17)"><line x1="0" y1="0" x2="7" y2="0" stroke="${K.warm}" stroke-width="1.6" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" values="${[...sp, ...sp.slice(-1).fill(sp.at(-1)), "-150"].join(";")}" dur="3.2s" repeatCount="indefinite"/></line></g>${dot(K, 12, 17, 1.4)}`;
+  },
+  // containers stacking, each dropped with a bounce
+  docker: (K) => {
+    const b = bounce(0.3, 14).map(([, y]) => (-y * 10).toFixed(1));
+    const drop = (x, y, d) => `<g><animateTransform attributeName="transform" type="translate" values="${["0 -10", ...b.map((v) => `0 ${v}`), "0 0", "0 0"].join(";")}" keyTimes="${["0", ...b.map((_, i) => (d + (i / (b.length - 1)) * 0.25).toFixed(3)), "0.9", "1"].join(";")}" dur="3.6s" repeatCount="indefinite"/><rect x="${x}" y="${y}" width="6" height="4.5" rx=".6" fill="none" stroke="${K.light}" stroke-width="1.2"/></g>`;
+    return `${L(K, "M2.5 19.5h19")}${drop(4, 14.5, 0.0)}${drop(10.5, 14.5, 0.08)}${drop(7.2, 9.5, 0.18)}${A(K, "M14.5 12.5l2-3h3", ' opacity=".9"')}`;
+  },
+  linux: (K) => `${L(K, "M3 5h18v14H3z")}${L(K, "M6.5 10l2.5 2-2.5 2")}<rect x="11" y="13.2" width="5" height="1.6" fill="${K.warm}">${loop("opacity", "1;1;0;0", 1, "0;.5;.5;1")}</rect>`,
+  // a branch leaving main and merging back, a commit travelling along it
+  git: (K) => `${L(K, "M6 3v18")}${L(K, "M6 7c0 4 10 2 10 6v1c0 2-4 3-10 4")}${dot(K, 6, 7)}${dot(K, 6, 18)}
+<circle r="1.9" fill="${K.warm}"><animateMotion dur="2.6s" repeatCount="indefinite" path="M6 7c0 4 10 2 10 6v1c0 2-4 3-10 4"/></circle>`,
+  // a table scanned row by row
+  postgres: (K) => `${L(K, "M3.5 5h17v14h-17zM3.5 9h17M9 5v14")}${[0, 1, 2].map((i) => `<rect x="4" y="${9.6 + i * 3.1}" width="16" height="2.6" fill="${K.warm}" opacity="0">${loop("opacity", "0;.75;0;0", 2.4, `0;${(0.1 + i * 0.22).toFixed(2)};${(0.3 + i * 0.22).toFixed(2)};1`)}</rect>`).join("")}`,
+  fastapi: (K) => `${L(K, "M12 2.8a9.2 9.2 0 1 0 0 18.4a9.2 9.2 0 1 0 0-18.4")}<path d="M13.2 5.5L8 13h3.6l-1 5.5 5.4-7.6h-3.7z" fill="${K.warm}">${loop("opacity", ".35;1;.35;.35", 2, "0;.1;.3;1")}</path>`,
+  // a loss curve, a ball rolling down it and settling in the minimum
+  pytorch: (K) => {
+    const curve = (x) => 5 + 13 * (1 - Math.exp(-(((x - 15) / 6) ** 2)));
+    const xs = spring(0.35, 11, 24, 1).map(([, v]) => 4 + v * 11);
+    return `${L(K, Array.from({ length: 19 }, (_, i) => `${i ? "L" : "M"}${3 + i} ${curve(3 + i).toFixed(2)}`).join(" "))}
+<circle r="2.2" fill="${K.warm}"><animate attributeName="cx" values="${[...xs, 15, 4].map((v) => v.toFixed(2)).join(";")}" dur="3s" repeatCount="indefinite"/><animate attributeName="cy" values="${[...xs, 15, 4].map((x) => (curve(x) - 2.4).toFixed(2)).join(";")}" dur="3s" repeatCount="indefinite"/></circle>`;
+  },
+  // a graph passing a message from node to node
+  pyg: (K) => {
+    const N = [[5, 6], [18, 5], [12, 12], [5, 18], [19, 18]];
+    const E = [[0, 2], [1, 2], [2, 3], [2, 4], [0, 3], [1, 4]];
+    return `${E.map(([a, b]) => `<line x1="${N[a][0]}" y1="${N[a][1]}" x2="${N[b][0]}" y2="${N[b][1]}" stroke="${K.light}" stroke-width="1" opacity=".7"/>`).join("")}
+${N.map(([x, y], i) => dot(K, x, y, 2.1, i === 2, i === 2 ? "" : loop("fill", `${K.light};${K.warm};${K.light};${K.light}`, 2.4, `0;${(0.15 + i * 0.12).toFixed(2)};${(0.3 + i * 0.12).toFixed(2)};1`))).join("")}`;
+  },
+  // two classes and a decision boundary swinging into place
+  sklearn: (K) => {
+    const sp = spring(0.3, 10, 16, 1).map(([, v]) => (-60 + v * 60 + 32).toFixed(1));
+    return `${[[5, 7], [8, 4.5], [6.5, 11], [9.5, 8.5]].map(([x, y]) => dot(K, x, y, 1.5)).join("")}${[[15, 15], [18, 12], [17, 19], [20, 16]].map(([x, y]) => dot(K, x, y, 1.5, true)).join("")}
+<g transform="translate(12 12)"><line x1="-11" y1="0" x2="11" y2="0" stroke="${K.light}" stroke-width="1.2" stroke-dasharray="2 2"><animateTransform attributeName="transform" type="rotate" values="${[...sp, sp.at(-1), "-28"].join(";")}" dur="3.4s" repeatCount="indefinite"/></line></g>`;
+  },
+  // a tree grown stage by stage, as boosting adds trees
+  xgboost: (K) => `${dot(K, 12, 4, 1.8, true)}${[["M12 4L6.5 12", 0], ["M12 4L17.5 12", 0.1], ["M6.5 12L3.5 20", 0.25], ["M6.5 12L9.5 20", 0.32], ["M17.5 12L14.5 20", 0.42], ["M17.5 12L20.5 20", 0.5]].map(([d, k]) => L(K, d, ' stroke-dasharray="10" stroke-dashoffset="10"', loop("stroke-dashoffset", "10;10;0;0;10", 3.2, `0;${k};${k + 0.12};.92;1`))).join("")}`,
+  // agents in a cycle, a token going round
+  langgraph: (K) => `${L(K, "M12 4.5L19 16.5H5Z", ' stroke-opacity=".7"')}${dot(K, 12, 4.5, 2.4)}${dot(K, 19, 16.5, 2.4)}${dot(K, 5, 16.5, 2.4)}
+<circle r="1.6" fill="${K.warm}"><animateMotion dur="2.4s" repeatCount="indefinite" path="M12 4.5L19 16.5H5Z"/></circle>`,
+  // a query reaching out for its nearest neighbours
+  faiss: (K) => {
+    const near = [[14.5, 9], [9.5, 15], [15, 15.5]];
+    const far = [[4, 5], [20, 4.5], [21, 19], [3.5, 19]];
+    return `${far.map(([x, y]) => dot(K, x, y, 1.4)).join("")}${near.map(([x, y]) => dot(K, x, y, 1.6, false, loop("fill", `${K.light};${K.light};${K.warm};${K.warm};${K.light}`, 2.8, "0;.3;.42;.9;1"))).join("")}
+<circle cx="12" cy="12" r="0" fill="none" stroke="${K.warm}" stroke-width="1"><animate attributeName="r" values="0;6.5;6.5;0" keyTimes="0;.4;.9;1" dur="2.8s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;.8;.3;0" keyTimes="0;.4;.9;1" dur="2.8s" repeatCount="indefinite"/></circle>${dot(K, 12, 12, 2, true)}`;
+  },
+  script: (ch, font) => (K) => `<text x="12" y="18" text-anchor="middle" font-family="${font}" font-size="17" fill="${K.light}">${ch}</text>${A(K, "M5 21.5h14", ` stroke-dasharray="14" stroke-dashoffset="14"`, loop("stroke-dashoffset", "14;0;0;14", 4, "0;.3;.85;1"))}`,
+};
 
 const SHELVES = [
-  { label: "Languages", items: ["Python", "C++", "C", "CUDA", "SQL"] },
-  { label: "Infrastructure", items: ["Nsight Systems", "Nsight Compute", "Docker", "Linux", "Git", "PostgreSQL", "FastAPI"] },
-  { label: "Machine learning", items: ["PyTorch", "PyTorch Geometric", "scikit-learn", "XGBoost", "LangGraph", "FAISS"] },
-  { label: "Speaks", items: ["ਪੰਜਾਬੀ", "हिन्दी", "English"] },
+  { label: "Languages", items: [["Python", "research and ML code", "python"], ["C++", "kernels and their hosts", "cpp"], ["C", "systems", "c"], ["CUDA", "SGEMM, warp divergence", "cuda"], ["SQL", "the RISC-V database", "sql"]] },
+  { label: "Infrastructure", items: [["Nsight Systems", "timelines", "nsys"], ["Nsight Compute", "kernel profiles", "ncu"], ["Docker", "containers", "docker"], ["Linux", "development", "linux"], ["Git", "version control", "git"], ["PostgreSQL", "1,351 instructions, 8 tables", "postgres"], ["FastAPI", "services", "fastapi"]] },
+  { label: "Machine learning", items: [["PyTorch", "training", "pytorch"], ["PyTorch Geometric", "NodeGuard, dopant GNNs", "pyg"], ["scikit-learn", "baselines", "sklearn"], ["XGBoost", "gradient boosting", "xgboost"], ["LangGraph", "multi-agent retrieval", "langgraph"], ["FAISS", "vector search", "faiss"]] },
+  { label: "Speaks", items: [["Punjabi", "native", ICONS.script("ਪ", SANS)], ["Hindi", "fluent", ICONS.script("ह", SANS)], ["English", "fluent", ICONS.script("A", "Georgia, serif")]] },
 ];
 
-function kit() {
+function kit(theme) {
+  const K = TH[theme];
   const p = "kt";
-  const KW = 840, KH = 300, X = 176, ROW = 56, TOP = 46;
-  const drop = bounce(0.36, 36);
-  const kf = drop.map(([k, y]) => `${+(k * 100).toFixed(1)}% { transform: translateY(${r1(-y * 150)}px) }`).join(" ");
-  const kfs = drop.map(([k, y]) => `${+(k * 100).toFixed(1)}% { transform: scale(${r2(1 + y * 0.9)}, ${r2(1 + y * 0.5)}); opacity: ${r2(0.75 - y * 0.6)} }`).join(" ");
+  const KW = 840, COL = 210, ROW = 42, TOP = 58;
+  const KH = TOP + 7 * ROW + 6;
+  const sp = spring(0.38, 13, 22, 1);
+  const kf = sp.map(([k, v]) => `${+(k * 100).toFixed(1)}% { transform: translateY(${r1((1 - v) * 16)}px); opacity: ${r2(Math.min(1, k * 4))} }`).join(" ");
   let n = 0;
-  const rows = SHELVES.map((s, i) => {
-    const y = TOP + i * ROW, depth = (SHELVES.length - 1 - i) / (SHELVES.length - 1); // back rows are farther
-    const scale = 0.9 + 0.1 * (1 - depth);
-    let x = X;
-    const plates = s.items.map((it) => {
-      const w = Math.round((s.label === "Speaks" ? 10 : 7.2) * [...it].length + 22);
-      const delay = (0.3 + n++ * 0.11).toFixed(2);
-      const cx = x + w / 2;
-      const out = `<ellipse class="sh" style="animation-delay:${delay}s;transform-origin:${r1(cx)}px ${y + 30}px" cx="${r1(cx + 4)}" cy="${y + 31}" rx="${r1(w / 2 + 2)}" ry="4" fill="#000" filter="url(#${p}b3)"/>
-<g class="drop" style="animation-delay:${delay}s">
-  <rect x="${x}" y="${y}" width="${w}" height="28" rx="3" fill="url(#${p}-metal)"/>
-  <rect x="${x + 0.5}" y="${y + 0.5}" width="${w - 1}" height="27" rx="2.6" fill="none" stroke="#fff" stroke-opacity=".28"/>
-  <text x="${r1(cx)}" y="${y + 19.2}" text-anchor="middle" font-family="${s.label === "Speaks" ? SANS : MONO}" font-size="12" fill="#fff" fill-opacity=".35">${esc(it)}</text>
-  <text x="${r1(cx)}" y="${y + 18.5}" text-anchor="middle" font-family="${s.label === "Speaks" ? SANS : MONO}" font-size="12" fill="#17181a">${esc(it)}</text>
+  const cols = SHELVES.map((s, c) => {
+    const x = 16 + c * COL;
+    const rows = s.items.map(([name, note, icon], i) => {
+      const y = TOP + i * ROW;
+      const draw = typeof icon === "string" ? ICONS[icon] : icon;
+      return `<g class="in" style="animation-delay:${(0.15 + c * 0.12 + i * 0.07).toFixed(2)}s">
+  <g transform="translate(${x} ${y})">${draw(K)}</g>
+  <text x="${x + 36}" y="${y + 10}" font-family="${SANS}" font-size="13" fill="${K.light}">${esc(name)}</text>
+  <text x="${x + 36}" y="${y + 25}" font-family="${SANS}" font-size="10.5" fill="${K.mute}">${esc(note)}</text>
 </g>`;
-      x += w + 8;
-      return out;
     });
-    return `<g transform="translate(${r1(X * (1 - scale))} 0)"${dof(p, depth * 1.2)}>
-<text x="${X - 18}" y="${y + 18.5}" text-anchor="end" font-family="${SANS}" font-size="9.5" letter-spacing="2" fill="${INK.light}" fill-opacity=".75">${esc(s.label.toUpperCase())}</text>
-${plates.join("\n")}</g>`;
+    n += s.items.length;
+    return `<text x="${x}" y="24" font-family="${SANS}" font-size="9.5" letter-spacing="2.4" fill="${K.mute}">${esc(s.label.toUpperCase())}</text>
+<line class="rule" x1="${x}" y1="36" x2="${x + COL - 26}" y2="36" stroke="${K.dim}"/>
+${rows.join("\n")}`;
   });
   return frame({
-    w: KW, h: KH, p,
-    desc: `The kit: machined plates dropped onto a table. ${SHELVES.map((s) => `${s.label}: ${s.items.join(", ")}`).join(". ")}.`,
-    defs: `<style>.drop { animation: drop 1.4s linear both; } @keyframes drop { ${kf} } .sh { transform-box: view-box; animation: sh 1.4s linear both; } @keyframes sh { ${kfs} } @media (prefers-reduced-motion: reduce) { .drop, .sh { animation: none } }</style>
-<linearGradient id="${p}-metal" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#d9dcdf"/><stop offset=".45" stop-color="#a9adb2"/><stop offset=".55" stop-color="#9a9ea3"/><stop offset="1" stop-color="#6d7175"/></linearGradient>
-<linearGradient id="${p}-table" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#0d0b09"/><stop offset="1" stop-color="#1a130d"/></linearGradient>
-<radialGradient id="${p}-pool" cx=".3" cy=".1" r=".9"><stop offset="0" stop-color="${INK.hot}" stop-opacity=".12"/><stop offset="1" stop-color="${INK.hot}" stop-opacity="0"/></radialGradient>`,
-    body: `<rect width="${KW}" height="${KH}" fill="url(#${p}-table)"/><rect width="${KW}" height="${KH}" fill="url(#${p}-pool)"/>
-${rows.join("\n")}`,
-    caption: ["The kit", "Python · C++ · CUDA · PyTorch · Nsight · PostgreSQL · Docker"],
+    w: KW, h: KH, p, theme,
+    desc: `The kit. ${SHELVES.map((s) => `${s.label}: ${s.items.map((it) => `${it[0]} (${it[1]})`).join(", ")}`).join(". ")}.`,
+    defs: `<style>.in { animation: in .9s linear both; } @keyframes in { ${kf} } .rule { stroke-dasharray: 190; stroke-dashoffset: 190; animation: rule 1.2s cubic-bezier(.6,0,.2,1) forwards; } @keyframes rule { to { stroke-dashoffset: 0 } } @media (prefers-reduced-motion: reduce) { .in, .rule { animation: none; stroke-dashoffset: 0 } }</style>`,
+    body: cols.join("\n"),
   });
 }
 
@@ -535,7 +600,7 @@ ${rows.join("\n")}`,
 // Link pills: a line icon and a label, for the page itself, so in GitHub's two themes.
 
 const THEMES = { dark: { ink: "#e6edf3", faint: "#30363d" }, light: { ink: "#1f2328", faint: "#d8dee4" } };
-const ICONS = {
+const LINK_ICONS = {
   site: (c) => `<circle cx="12" cy="12" r="8.5" fill="none" stroke="${c}" stroke-width="1.3"/><ellipse cx="12" cy="12" rx="3.6" ry="8.5" fill="none" stroke="${c}" stroke-width="1.1"/><path d="M3.8 9.2h16.4M3.8 14.8h16.4" stroke="${c}" stroke-width="1.1"/>`,
   linkedin: (c) => `<rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="${c}" stroke-width="1.3"/><path d="M8 10.5v6M8 7.4v.2M11.5 16.5v-6M11.5 13c0-1.6 1-2.6 2.4-2.6 1.4 0 2.1 1 2.1 2.6v3.5" fill="none" stroke="${c}" stroke-width="1.5" stroke-linecap="round"/>`,
   x: (c) => `<path d="M5 5l14 14M19 5L5 19" stroke="${c}" stroke-width="1.5" stroke-linecap="round"/><path d="M5 5h3.6L19 19h-3.6z" fill="none" stroke="${c}" stroke-width="1.1" stroke-linejoin="round"/>`,
@@ -552,7 +617,7 @@ function pill(l, theme) {
   const w = Math.round(44 + l.label.length * 7.2);
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="40" viewBox="0 0 ${w} 40" role="img" aria-label="${esc(l.label)}">
 <rect x=".5" y=".5" width="${w - 1}" height="39" rx="20" fill="none" stroke="${t.faint}"/>
-<g transform="translate(10 8)">${ICONS[l.id](t.ink)}</g>
+<g transform="translate(10 8)">${LINK_ICONS[l.id](t.ink)}</g>
 <text x="40" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" fill="${t.ink}">${esc(l.label)}</text>
 </svg>
 `;
@@ -560,8 +625,10 @@ function pill(l, theme) {
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   for (const dir of ["shots", "links"]) fs.mkdirSync(path.join(ROOT, "assets", dir), { recursive: true });
-  for (const s of SHOTS) fs.writeFileSync(path.join(ROOT, "assets", "shots", `${s.id}.svg`), s.draw());
-  fs.writeFileSync(path.join(ROOT, "assets", "kit.svg"), kit());
+  for (const theme of ["dark", "light"]) {
+    for (const s of SHOTS) fs.writeFileSync(path.join(ROOT, "assets", "shots", `${s.id}-${theme}.svg`), s.draw(theme));
+    fs.writeFileSync(path.join(ROOT, "assets", `kit-${theme}.svg`), kit(theme));
+  }
   for (const theme of ["dark", "light"]) for (const l of LINKS) fs.writeFileSync(path.join(ROOT, "assets", "links", `${l.id}-${theme}.svg`), pill(l, theme));
   console.log(`[shots] ${SHOTS.length} shots, the kit and ${LINKS.length} links written`);
 }

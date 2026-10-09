@@ -1,16 +1,14 @@
-// Shared by every picture on the profile: each one is a shot, not a card. A dark frame (film is
-// dark on any page), a perspective camera, depth of field, a key light, and the things a real
-// camera adds: grain, a little gate weave, a vignette, the odd flicker of exposure.
+// Shared by every picture on the profile: each one is a shot, not a card. Nothing behind it
+// (the page is the ground, light or dark), a perspective camera, depth of field, one warm light,
+// soft shadows, and the faint gate weave of a film camera.
 
-export const INK = {
-  bg: "#0b0b0c",
-  light: "#efebe3", // tungsten-balanced white
-  mute: "#8d8a84",
-  dim: "#4a4845",
-  warm: "#e3b072", // the one warm light in every shot
-  hot: "#ffe2b8",
-  steel: "#c3c7cc",
+// One palette per GitHub theme. `light` is the brightest ink on that page, `warm` the one warm
+// light in every shot, `steel` the metal.
+export const TH = {
+  dark: { light: "#e6edf3", mute: "#9198a1", dim: "#3d444d", line: "#59616b", warm: "#e3b072", hot: "#ffe2b8", steel: "#c3c7cc", shadow: "#000", shadowOp: 0.55, face: ["#c9c2b6", "#4b4640", "#2d2a27"], empty: ["#2a2724", "#1c1a18", "#141312"] },
+  light: { light: "#1f2328", mute: "#59636e", dim: "#d1d9e0", line: "#9aa3ad", warm: "#b8741f", hot: "#e09a3e", steel: "#8c939b", shadow: "#1f2328", shadowOp: 0.22, face: ["#dcd6ce", "#a9a299", "#8a847b"], empty: ["#ece9e4", "#dcd8d1", "#cfcac2"] },
 };
+export const INK = TH.dark;
 export const SANS = `'Helvetica Neue', Helvetica, Arial, sans-serif`;
 export const MONO = `ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace`;
 export const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -91,34 +89,22 @@ export const anim = (attr, values, dur, extra = "") =>
 // Capitals for Latin letters only: β stays β, subscripts stay subscripts.
 const upper = (s) => s.replace(/[a-z]/g, (c) => c.toUpperCase());
 
-// The frame. `body` is drawn under the camera's artefacts; `caption` is burned in at the foot.
-export function frame({ w, h, p, title, desc, defs = "", body, caption, captionRight }) {
+// The frame. `body` is drawn under the camera's weave; `caption` is set at the foot.
+export function frame({ w, h, p, theme = "dark", desc, defs = "", body, caption }) {
+  const c = TH[theme];
   const R = rng(w * 7 + h);
-  const jumps = Array.from({ length: 12 }, () => `${Math.round(R() * 120)} ${Math.round(R() * 120)}`).join(";");
-  const weave = Array.from({ length: 9 }, () => `${r2((R() - 0.5) * 0.7)} ${r2((R() - 0.5) * 0.7)}`).join(";");
-  const flicker = Array.from({ length: 10 }, () => r2(R() * 0.05)).join(";");
+  const weave = Array.from({ length: 9 }, () => `${r2((R() - 0.5) * 0.6)} ${r2((R() - 0.5) * 0.6)}`).join(";");
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-labelledby="${p}-t">
 <title id="${p}-t">${esc(desc)}</title>
 <defs>
-  <filter id="${p}-grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="7" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  1.6 0 0 0 -.82"/></filter>
-  <pattern id="${p}-gp" width="160" height="160" patternUnits="userSpaceOnUse"><rect width="160" height="160" filter="url(#${p}-grain)"/>
-    <animateTransform attributeName="patternTransform" type="translate" values="${jumps}" dur="1s" calcMode="discrete" repeatCount="indefinite"/></pattern>
-  <radialGradient id="${p}-vig" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".72"/></radialGradient>
-  <linearGradient id="${p}-foot" x1="0" x2="0" y1="0" y2="1"><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".7"/></linearGradient>
   ${dofDefs(p)}
   ${defs}
 </defs>
-<rect width="${w}" height="${h}" fill="${INK.bg}"/>
 <g><animateTransform attributeName="transform" type="translate" values="${weave}" dur="1.5s" calcMode="discrete" repeatCount="indefinite"/>
 ${body}
 </g>
-<rect width="${w}" height="${h}" fill="url(#${p}-vig)"/>
-${caption ? `<rect width="${w}" height="${h}" fill="url(#${p}-foot)"/>` : ""}
-<rect width="${w}" height="${h}" fill="url(#${p}-gp)" opacity=".1"/>
-<rect width="${w}" height="${h}" fill="#000" opacity="0">${anim("opacity", flicker.split(";").map(Number), 2.3, ' calcMode="discrete"')}</rect>
-${caption ? `<text x="20" y="${h - 32}" font-family="${SANS}" font-size="10.5" letter-spacing="3.2" fill="${INK.light}" fill-opacity=".92">${esc(upper(caption[0]))}</text>
-<text x="20" y="${h - 15}" font-family="${SANS}" font-size="11" fill="${INK.warm}">${esc(caption[1])}</text>` : ""}
-${captionRight ? `<text x="${w - 20}" y="${h - 15}" text-anchor="end" font-family="${SANS}" font-size="9.5" letter-spacing="1.6" fill="${INK.mute}">${esc(captionRight.toUpperCase())}</text>` : ""}
+${caption ? `<text x="20" y="${h - 32}" font-family="${SANS}" font-size="10.5" letter-spacing="3.2" fill="${c.light}" fill-opacity=".92">${esc(upper(caption[0]))}</text>
+<text x="20" y="${h - 15}" font-family="${SANS}" font-size="11" fill="${c.warm}">${esc(caption[1])}</text>` : ""}
 </svg>
 `;
 }
