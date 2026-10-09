@@ -1,7 +1,7 @@
-// A weakly compressible SPH dam break, the test case OpenFPM's SPH example runs: a column of
-// water released in a tank, striking an obstacle. 2D, cubic-spline kernel, Tait equation of
-// state, Monaghan artificial viscosity, fixed boundary particles that take part in the density
-// and pressure sums (dynamic boundaries, as in DualSPHysics and OpenFPM). Units are SI.
+// A weakly compressible SPH dam break: a column of water released in a tank, striking an
+// obstacle. 2D, cubic-spline kernel, Tait equation of state, Monaghan artificial viscosity,
+// fixed boundary particles that take part in the density and pressure sums (dynamic
+// boundaries). Units are SI.
 export function damBreak({ dx = 0.03, tEnd = 1.2, fps = 25 } = {}) {
   const g = -9.81, rho0 = 1000, H = 0.6, h = 1.3 * dx;
   const c0 = 10 * Math.sqrt(-g * H), B = (c0 * c0 * rho0) / 7, alpha = 0.1;

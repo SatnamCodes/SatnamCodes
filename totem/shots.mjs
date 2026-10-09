@@ -23,67 +23,123 @@ const sphere = (id, base = "#c3c7cc") =>
   `<radialGradient id="${id}" cx=".38" cy=".34" r=".7"><stop offset="0" stop-color="#fff"/><stop offset=".25" stop-color="${base}"/><stop offset=".8" stop-color="#2b2c2e"/><stop offset="1" stop-color="#121213"/></radialGradient>`;
 
 // ---------------------------------------------------------------------------------------------
-// 1. Custom SGEMM: C = A·B as a room of three walls. A is on the left wall, B on the back wall,
-//    C on the floor. Tile by tile, a strip of A and a strip of B light up and C's tile fills.
+// 1. Custom SGEMM, as a race. The same 8×8 block of C, the same few seconds, three kernels; how
+//    far each gets is in proportion to its measured throughput (169.6, 763.1, 1,052.9 GFLOPS on
+//    an RTX 4060). Naive: each output reads its operands from global memory one at a time.
+//    Coalesced: a warp's reads are adjacent, so a row arrives in one transaction. Tiled: a tile
+//    is lifted once into shared memory and reused by every output in its block.
+const EASE = (u) => (u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2);
+// SMIL through [time, value, eased?] keys; eased stretches are sampled densely so nothing jerks.
+function eased(T, attr, keys, fmt = r1, n = 10) {
+  const out = [];
+  for (const [tt, v, ez] of keys) {
+    if (ez && out.length) {
+      const [t0, v0] = out.at(-1);
+      for (let k = 1; k <= n; k++) {
+        const w = (ez === true ? EASE : ez)(k / n);
+        out.push([t0 + (tt - t0) * (k / n), typeof v === "function" ? v(w) : v0 + (v - v0) * w]);
+      }
+    } else out.push([tt, typeof v === "function" ? v(0) : v]);
+  }
+  if (out[0][0] > 0) out.unshift([0, out[0][1]]);
+  if (out.at(-1)[0] < T) out.push([T, out.at(-1)[1]]);
+  return `<animate attributeName="${attr}" values="${out.map(([, v]) => fmt(v)).join(";")}" keyTimes="${out.map(([tt]) => +(tt / T).toFixed(4)).join(";")}" dur="${T}s" repeatCount="indefinite"/>`;
+}
 function sgemm(theme) {
   const K = TH[theme];
   const p = "sg";
-  const cam = camera({ yaw: -0.72, pitch: 0.4, dist: 24, target: [4, 3.4, 4], focal: 320, cx: 214, cy: 96 });
-  const F = (x, y, z) => cam([x, y, z]);
-  const quad = (a, b, c, d) => pts([a, b, c, d]);
-  const lines = [];
-  for (let i = 0; i <= 8; i++) {
-    lines.push([F(i, 0, 0), F(i, 0, 8), 0], [F(0, 0, i), F(8, 0, i), 0]); // floor
-    lines.push([F(0, i, 0), F(0, i, 8), 1], [F(0, 0, i), F(0, 8, i), 1]); // left wall
-    lines.push([F(i, 0, 8), F(i, 8, 8), 2], [F(0, i, 8), F(8, i, 8), 2]); // back wall
-  }
-  const grid = [0, 1, 2]
-    .map((w) => `<g${dof(p, w === 2 ? 1.4 : w === 1 ? 0.6 : 0)} stroke="${K.steel}" stroke-width=".6" stroke-opacity="${[0.32, 0.24, 0.18][w]}">${lines
-      .filter((l) => l[2] === w)
-      .map(([a, b]) => `<line x1="${r1(a.x)}" y1="${r1(a.y)}" x2="${r1(b.x)}" y2="${r1(b.y)}"/>`)
-      .join("")}</g>`)
-    .join("");
-
-  const T = 8, tiles = 16, step = 0.36, end = tiles * step;
-  const on = (k) => k / T;
-  const parts = [];
-  const aStrips = [0, 1, 2, 3].map(() => []), bStrips = [0, 1, 2, 3].map(() => []);
-  for (let n = 0; n < tiles; n++) {
-    const i = Math.floor(n / 4), j = n % 4, t0 = n * step;
-    aStrips[i].push(t0); bStrips[j].push(t0);
-    const poly = quad(F(2 * j, 0, 2 * i), F(2 * j + 2, 0, 2 * i), F(2 * j + 2, 0, 2 * i + 2), F(2 * j, 0, 2 * i + 2));
-    const ks = [0, on(t0), on(t0 + 0.08), on(t0 + 0.4), on(T - 0.5), 1];
-    const vs = [0, 0, 0.95, 0.2, 0.2, 0];
-    parts.push(`<polygon points="${poly}" fill="${K.warm}" opacity="0"><animate attributeName="opacity" values="${vs.join(";")}"${kt(ks)} dur="${T}s" repeatCount="indefinite"/></polygon>`);
-    parts.push(`<polygon points="${poly}" fill="${K.hot}" opacity="0" filter="url(#${p}b4)"><animate attributeName="opacity" values="0;0;.9;0;0"${kt([0, on(t0), on(t0 + 0.06), on(t0 + 0.42), 1])} dur="${T}s" repeatCount="indefinite"/></polygon>`);
-  }
-  const pulse = (times) => {
-    const ks = [0], vs = [0];
-    for (const t0 of times) ks.push(on(t0), on(t0 + 0.05), on(t0 + step)), vs.push(0, 0.55, 0);
-    ks.push(1), vs.push(0);
-    return `<animate attributeName="opacity" values="${vs.join(";")}"${kt(ks)} dur="${T}s" repeatCount="indefinite"/>`;
-  };
-  const strips = [
-    ...aStrips.map((ts, i) => `<polygon points="${quad(F(0, 0, 2 * i), F(0, 8, 2 * i), F(0, 8, 2 * i + 2), F(0, 0, 2 * i + 2))}" fill="${K.warm}" opacity="0">${pulse(ts)}</polygon>`),
-    ...bStrips.map((ts, j) => `<polygon points="${quad(F(2 * j, 0, 8), F(2 * j, 8, 8), F(2 * j + 2, 8, 8), F(2 * j + 2, 0, 8))}" fill="${K.warm}" opacity="0"${dof(p, 1)}>${pulse(ts)}</polygon>`),
+  const T = 19;
+  const ACTS = [
+    { name: "NAIVE", g: 169.6, t0: 0.6 },
+    { name: "COALESCED", g: 763.1, t0: 6.6 },
+    { name: "SHARED-MEMORY TILING", g: 1052.9, t0: 12.6 },
   ];
-  const label = (q, s) => `<text x="${r1(q.x)}" y="${r1(q.y)}" text-anchor="middle" font-family="${MONO}" font-size="10" fill="${K.mute}">${s}</text>`;
+  const RUN = 4.4; // seconds each kernel gets
+  const filled = ACTS.map((a) => Math.round((64 * a.g) / 1052.9)); // 10, 46, 64
+  const C = { x: 268, y: 40, c: 15 }, G = { x: 26, y: 102, c: 12, cols: 8, rows: 5 }, SH = { x: 168, y: 108, c: 9 };
+  const cell = (i) => [C.x + (i % 8) * C.c, C.y + Math.floor(i / 8) * C.c];
+  const gcell = (i) => [G.x + (i % G.cols) * G.c, G.y + Math.floor(i / G.cols) * G.c];
+  const R = rng(41);
+  const fillAt = Array.from({ length: 64 }, () => [null, null, null]);
+  const packets = [];
+  const packet = (from, to, t0, dur, w = 5, h = 2.4, arcUp = 30) => {
+    const [x0, y0] = from, [x1, y1] = to, top = Math.min(y0, y1) - arcUp;
+    const bz = (u) => [(1 - u) ** 2 * x0 + 2 * (1 - u) * u * ((x0 + x1) / 2) + u * u * x1, (1 - u) ** 2 * y0 + 2 * (1 - u) * u * top + u * u * y1];
+    packets.push(`<rect width="${w}" height="${h}" rx="${Math.min(w, h) / 2}" fill="${K.hot}" opacity="0">${eased(T, "x", [[t0, (u) => bz(u)[0] - w / 2], [t0 + dur, (u) => bz(u)[0] - w / 2, true]])}${eased(T, "y", [[t0, (u) => bz(u)[1] - h / 2], [t0 + dur, (u) => bz(u)[1] - h / 2, true]])}${eased(T, "opacity", [[t0 - 0.01, 0], [t0, 1], [t0 + dur - 0.05, 1], [t0 + dur, 0]], r2)}</rect>`);
+  };
+  // Act 1: one output at a time, two scattered reads each
+  ACTS[0].order = Array.from({ length: filled[0] }, (_, i) => i);
+  ACTS[0].order.forEach((i, n) => {
+    const t0 = ACTS[0].t0 + (n * RUN) / filled[0];
+    const to = cell(i).map((v) => v + C.c / 2);
+    packet(gcell(Math.floor(R() * 40)).map((v) => v + 6), to, t0, 0.42);
+    packet(gcell(Math.floor(R() * 40)).map((v) => v + 6), to, t0 + 0.08, 0.42);
+    fillAt[i][0] = t0 + 0.48;
+  });
+  // Act 2: a row at a time, its reads arriving together
+  for (let r = 0; r * 8 < filled[1]; r++) {
+    const t0 = ACTS[1].t0 + (r * 8 * RUN) / filled[1];
+    const row = Math.floor(R() * 5);
+    packet([G.x + 48, G.y + row * G.c + 6], [C.x + 60, C.y + r * C.c + C.c / 2], t0, 0.55, 96, 3);
+    for (let k = 0; k < 8 && r * 8 + k < filled[1]; k++) fillAt[r * 8 + k][1] = t0 + 0.6 + k * 0.02;
+  }
+  // Act 3: a tile lifted once into shared memory, then fanned out to its 16 outputs
+  for (let tile = 0; tile < 4; tile++) {
+    const t0 = ACTS[2].t0 + (tile * RUN) / 4;
+    const tr = Math.floor(tile / 2) * 4, tc = (tile % 2) * 4;
+    packet([G.x + 24 + (tile % 2) * 48, G.y + 24], [SH.x + 18, SH.y + 18], t0, 0.4, 34, 34, 18);
+    for (let k = 0; k < 16; k++) {
+      const i = (tr + Math.floor(k / 4)) * 8 + tc + (k % 4);
+      packet([SH.x + 4 + (k % 4) * SH.c, SH.y + 4 + Math.floor(k / 4) * SH.c], cell(i).map((v) => v + C.c / 2), t0 + 0.42 + k * 0.012, 0.38, 3, 3, 8);
+      fillAt[i][2] = t0 + 0.82 + k * 0.012;
+    }
+  }
+  const actEnd = (a) => ACTS[a].t0 + RUN + 0.9;
+  const cells = Array.from({ length: 64 }, (_, i) => {
+    const [x, y] = cell(i);
+    const keys = [[0, 0]];
+    fillAt[i].forEach((ft, a) => {
+      if (ft == null) return;
+      keys.push([ft, 0], [ft + 0.25, 0.85, true], [actEnd(a), 0.85], [actEnd(a) + 0.5, 0, true]);
+    });
+    return `<rect x="${x + 0.8}" y="${y + 0.8}" width="${C.c - 1.6}" height="${C.c - 1.6}" rx="1.5" fill="${K.warm}" opacity="0">${eased(T, "opacity", keys, r2, 6)}</rect>`;
+  }).join("");
+  const grid = (x, y, c, cols, rows, op) => Array.from({ length: cols * rows }, (_, i) => `<rect x="${x + (i % cols) * c + 0.6}" y="${y + Math.floor(i / cols) * c + 0.6}" width="${c - 1.2}" height="${c - 1.2}" rx="1" fill="none" stroke="${K.line}" stroke-opacity="${op}" stroke-width=".7"/>`).join("");
+  const show = (a, b) => [[0, a <= 0 ? 1 : 0], [a - 0.5, a <= 0 ? 1 : 0], [a, 1, true], [b - 0.4, 1], [b, 0, true]];
+  const counters = ACTS.map((a, n) => {
+    const b = n < 2 ? ACTS[n + 1].t0 - 0.2 : T - 0.6;
+    return `<g opacity="0">${eased(T, "opacity", show(a.t0, b), r2)}
+<text x="24" y="38" font-family="${SANS}" font-weight="300" font-size="28" letter-spacing="1" fill="${K.light}">${a.g.toLocaleString("en-US", { minimumFractionDigits: 1 })}</text>
+<text x="24" y="54" font-family="${SANS}" font-size="9" letter-spacing="2" fill="${K.mute}">GFLOPS · ${a.name}</text></g>`;
+  }).join("");
+  const bars = ACTS.map((a, n) => {
+    const w = (a.g / 1052.9) * 120;
+    return `<rect x="24" y="${62 + n * 6}" height="3" rx="1.5" width="0" fill="${n === 2 ? K.warm : K.line}">${eased(T, "width", [[a.t0, 0], [a.t0 + RUN, w, true], [T - 0.8, w], [T, 0, true]])}</rect>`;
+  }).join("");
+  const sharedOn = [[0, 0], [ACTS[2].t0 - 0.6, 0], [ACTS[2].t0, 1, true], [T - 0.8, 1], [T, 0, true]];
   const body = `
-${strips.join("")}
-${grid}
-${parts.join("")}
-${label(F(0, 8.9, 4), "A")}${label(F(4, 8.9, 8), "B")}${label(F(9, 0, 8.8), "C")}`;
+${counters}
+<rect x="24" y="62" width="120" height="15" fill="none"/>${bars}
+<text x="${G.x}" y="${G.y - 7}" font-family="${SANS}" font-size="8.5" letter-spacing="1.8" fill="${K.mute}">GLOBAL MEMORY</text>
+<g${dof(p, 0.8)}>${grid(G.x, G.y, G.c, G.cols, G.rows, 0.55)}</g>
+<g opacity="0">${eased(T, "opacity", sharedOn, r2)}
+<text x="${SH.x}" y="${SH.y - 7}" font-family="${SANS}" font-size="8.5" letter-spacing="1.8" fill="${K.mute}">SHARED</text>
+${grid(SH.x, SH.y, SH.c, 4, 4, 0.9)}</g>
+<text x="${C.x}" y="${C.y - 7}" font-family="${SANS}" font-size="8.5" letter-spacing="1.8" fill="${K.mute}">C · SAME BLOCK, SAME TIME</text>
+${grid(C.x, C.y, C.c, 8, 8, 0.7)}
+${cells}
+${packets.join("")}`;
   return frame({
     w: W, h: H, p, theme,
-    desc: "Custom SGEMM: matrix multiplication drawn as a room, A on the left wall, B on the back wall, C on the floor; tile by tile, a strip of A and a strip of B light up and a tile of C fills. 169.6 to 1,052.9 GFLOPS on an RTX 4060, 6.5 times faster.",
+    desc: "Custom SGEMM as a race: three kernels fill the same 8 by 8 block of C in the same time, each getting as far as its measured throughput allows. Naive, 169.6 GFLOPS, reads its operands one at a time; coalesced, 763.1, takes a row per transaction; shared-memory tiling, 1,052.9, lifts a tile once into shared memory and reuses it. 6.5 times faster on an RTX 4060.",
+    defs: "",
     body,
     caption: ["Custom SGEMM", "169.6 to 1,052.9 GFLOPS, one bottleneck at a time · 6.5× on an RTX 4060"],
   });
 }
 
 // ---------------------------------------------------------------------------------------------
-// 2. Warp divergence, from where it comes. An SPH dam break (the case OpenFPM's SPH example runs,
-//    simulated in sph.mjs) plays out; then one warp is taken from it: 32 particles that sit
+// 2. Warp divergence, from where it comes. An SPH dam break (simulated in sph.mjs) plays out; then one warp is taken from it: 32 particles that sit
 //    together in memory, one GPU thread each, each gathering the neighbours inside its kernel
 //    radius 2h. Their real neighbour counts become the work: the warp steps in lockstep, every
 //    lane together, for as many steps as its busiest lane needs; lanes that finish early sit
@@ -107,55 +163,97 @@ function warp(theme) {
     const score = Math.max(...ns) - ns.reduce((a, b) => a + b, 0) / 32;
     if (!best || score > best.score) best = { lanes, ns, score };
   }
-  const { lanes, ns } = best;
-  const L = Math.max(...ns), busy = ns.reduce((a, b) => a + b, 0) / L;
-  const T = 18, tFluid = 6, tPick = 9, tMove = 10.4, tRun = 16.6, tFade = 17.4;
-  const kt_ = (x) => +(x / T).toFixed(4);
+  const { ns } = best;
+  // lanes ordered left to right by where their particles sit, so the paths into them do not cross
+  const lanes = [...best.lanes].sort((a, b) => last[a][0] - last[b][0]);
+  const nsL = lanes.map((i) => counts[i]);
+  const L = Math.max(...nsL), busy = nsL.reduce((a, b) => a + b, 0) / L;
+
+  // The timeline, in seconds.
+  const T = 20;
+  const tFluid = 6.4, tKernel = 6.8, tMorph = 8.6, tLand = 11.4, tRun = 11.8, tDone = 17.4, tOut = 18.6;
   const laneX = (k) => 62 + k * 9.4, TOP = 40, BOT = 168, step = (BOT - TOP) / L;
-  const nf = frames.length - 1;
+  const ease = (u) => (u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2);
+  // A track: [time, value] keys, with eased stretches sampled densely so the motion never jerks.
+  const track = (keys, n = 12) => {
+    const out = [];
+    for (const [tt, v, eased] of keys) {
+      if (eased && out.length) {
+        const [t0, v0] = out.at(-1);
+        for (let k = 1; k <= n; k++) {
+          const u = k / n;
+          out.push([t0 + (tt - t0) * u, typeof v === "function" ? v(ease(u)) : v0 + (v - v0) * ease(u)]);
+        }
+      } else out.push([tt, v]);
+    }
+    return out;
+  };
+  const animT = (attr, keys, round = r1, n = 12) => {
+    const kk = track(keys, n);
+    if (kk.at(-1)[0] < T) kk.push([T, kk.at(-1)[1]]);
+    return `<animate attributeName="${attr}" values="${kk.map(([, v]) => round(v)).join(";")}" keyTimes="${kk.map(([tt]) => +(tt / T).toFixed(4)).join(";")}" dur="${T}s" repeatCount="indefinite"/>`;
+  };
+  const fluidKeys = (i, axis) => frames.map((fr, f) => [(f / (frames.length - 1)) * tFluid, axis ? sy(fr[i][1]) : sx(fr[i][0])]);
+
   const inWarp = new Map(lanes.map((i, k) => [i, k]));
+  const cx0 = lanes.reduce((s, i) => s + sx(last[i][0]), 0) / 32, cy0 = lanes.reduce((s, i) => s + sy(last[i][1]), 0) / 32;
+  const far = Math.max(...last.map(([x, y]) => Math.hypot(sx(x) - cx0, sy(y) - cy0)));
   const parts = [];
   for (let i = 0; i < nF; i++) {
-    const ks = frames.map((_, f) => +((f / nf) * (tFluid / T)).toFixed(3));
-    const xs = frames.map((fr) => sx(fr[i][0])), ys = frames.map((fr) => sy(fr[i][1]));
+    const x1 = sx(last[i][0]), y1 = sy(last[i][1]);
     const k = inWarp.get(i);
     if (k === undefined) {
-      ks.push(kt_(tPick), 1); xs.push(xs.at(-1), xs[0]); ys.push(ys.at(-1), ys[0]);
-      parts.push(`<circle r="2.1" fill="url(#${p}-ball)"><animate attributeName="cx" values="${xs.map(Math.round).join(";")}" keyTimes="${ks.join(";")}" dur="${T}s" repeatCount="indefinite"/><animate attributeName="cy" values="${ys.map(Math.round).join(";")}" keyTimes="${ks.join(";")}" dur="${T}s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;${kt_(tPick - 0.4)};${kt_(tPick + 0.4)};.99;1" dur="${T}s" repeatCount="indefinite"/></circle>`);
+      // dissolve in a ripple spreading out from the warp, sinking a little as it goes. The water
+      // runs on a shared clock (wp-clk), so each particle carries only its positions.
+      const d = tMorph - 0.4 + (Math.hypot(x1 - cx0, y1 - cy0) / far) * 1.4;
+      const at = (s) => `wp-clk.begin+${r2(s)}s`;
+      const ez = ' calcMode="spline" keyTimes="0;1" keySplines=".65 0 .35 1" fill="freeze"';
+      parts.push(`<circle r="2.1" fill="url(#${p}-ball)" cx="${Math.round(sx(frames[0][i][0]))}" cy="${Math.round(sy(frames[0][i][1]))}">\
+<animate attributeName="cx" values="${frames.map((fr) => Math.round(sx(fr[i][0]))).join(";")}" dur="${tFluid}s" begin="${at(0)}" fill="freeze"/>\
+<animate attributeName="cy" values="${frames.map((fr) => Math.round(sy(fr[i][1]))).join(";")}" dur="${tFluid}s" begin="${at(0)}" fill="freeze"/>\
+<animate attributeName="cy" values="${Math.round(y1)};${Math.round(y1 + 10)}" dur="1.1s" begin="${at(d)}"${ez}/>\
+<animate attributeName="opacity" values="1;0" dur="1.1s" begin="${at(d)}"${ez}/>\
+<set attributeName="cx" to="${Math.round(sx(frames[0][i][0]))}" begin="${at(T - 0.9)}"/><set attributeName="cy" to="${Math.round(sy(frames[0][i][1]))}" begin="${at(T - 0.9)}"/>\
+<animate attributeName="opacity" values="0;1" dur=".9s" begin="${at(T - 0.9)}"${ez}/></circle>`);
       continue;
     }
-    // into the lane, then down it in lockstep
-    ks.push(kt_(tPick), kt_(tMove)); xs.push(xs.at(-1), laneX(k)); ys.push(ys.at(-1), TOP);
-    const op = [1, 1];
-    for (let it = 1; it <= L; it++) {
-      ks.push(kt_(tMove + ((tRun - tMove) * it) / L));
-      xs.push(laneX(k));
-      ys.push(TOP + Math.min(it, ns[k]) * step);
-    }
-    ks.push(kt_(tFade), 1); xs.push(xs.at(-1), xs[0]); ys.push(ys.at(-1), ys[0]);
-    const opK = [0, kt_(tMove)], opV = [1, 1];
-    for (let it = 1; it <= L; it++) opK.push(kt_(tMove + ((tRun - tMove) * it) / L)), opV.push(it > ns[k] ? 0.3 : 1);
-    opK.push(kt_(tRun + 0.2), kt_(tFade), 1); opV.push(1, 0, 0);
-    parts.push(`<circle r="2.6" fill="url(#${p}-warm)"><animate attributeName="cx" values="${xs.map(r1).join(";")}" keyTimes="${ks.join(";")}" dur="${T}s" repeatCount="indefinite"/><animate attributeName="cy" values="${ys.map(r1).join(";")}" keyTimes="${ks.join(";")}" dur="${T}s" repeatCount="indefinite"/><animate attributeName="opacity" values="${opV.join(";")}" keyTimes="${opK.join(";")}" dur="${T}s" calcMode="discrete" repeatCount="indefinite"/></circle>`);
+    // lift out of the water and arc into the lane, then step down it in lockstep
+    const go = tMorph + 0.2 + k * 0.05, arrive = go + 1.7;
+    const tx = laneX(k), lift = Math.min(y1, TOP) - 26;
+    const bez = (u) => {
+      const a = 1 - u;
+      return [a ** 3 * x1 + 3 * a * a * u * x1 + 3 * a * u * u * tx + u ** 3 * tx, a ** 3 * y1 + 3 * a * a * u * lift + 3 * a * u * u * lift + u ** 3 * TOP];
+    };
+    const steps = (axis) => Array.from({ length: L }, (_, it) => [tRun + ((tDone - tRun) * (it + 1)) / L, axis ? TOP + Math.min(it + 1, nsL[k]) * step : tx]);
+    const xs = [...fluidKeys(i, 0), [go, x1], [arrive, (u) => bez(u)[0], true], ...steps(0), [T - 0.9, tx], [T - 0.89, sx(frames[0][i][0])], [T, sx(frames[0][i][0])]];
+    const ys = [...fluidKeys(i, 1), [go, y1], [arrive, (u) => bez(u)[1], true], ...steps(1), [T - 0.9, BOT], [T - 0.89, sy(frames[0][i][1])], [T, sy(frames[0][i][1])]];
+    // idle lanes dim as they finish, then everything fades together
+    const idleAt = tRun + ((tDone - tRun) * nsL[k]) / L;
+    const op = [[0, 1], [idleAt, 1], [idleAt + 0.35, nsL[k] < L ? 0.3 : 1, true], [tDone + 0.2, nsL[k] < L ? 0.3 : 1], [tDone + 0.5, 1, true], [tOut, 1], [T - 0.9, 0, true], [T, 1, true]];
+    parts.push(`<circle r="2.6" fill="url(#${p}-warm)">${animT("cx", xs)}${animT("cy", ys)}${animT("opacity", op, r2)}</circle>`);
   }
-  // the kernel radius of one particle in the warp, 2h, with its neighbour count
-  const probe = lanes[ns.indexOf(Math.max(...ns))];
+  // the kernel radius of the busiest particle, 2h, opening out and closing again
+  const probe = lanes[nsL.indexOf(L)];
   const [px, py] = last[probe];
-  const kernel = `<circle cx="${r1(sx(px))}" cy="${r1(sy(py))}" r="${r1(2 * h * S)}" fill="${K.warm}" fill-opacity=".08" stroke="${K.warm}" stroke-width=".9" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;${kt_(tFluid + 0.4)};${kt_(tFluid + 0.8)};${kt_(tPick)};${kt_(tPick + 0.3)};1" dur="${T}s" repeatCount="indefinite"/></circle>`;
-  const tank = `<g opacity="1"><animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;${kt_(tPick - 0.3)};${kt_(tPick + 0.4)};.97;1" dur="${T}s" repeatCount="indefinite"/>
+  const kernel = `<circle cx="${r1(sx(px))}" cy="${r1(sy(py))}" r="0" fill="${K.warm}" fill-opacity=".08" stroke="${K.warm}" stroke-width=".9">${animT("r", [[0, 0], [tKernel, 0], [tKernel + 1, 2 * h * S, true], [tMorph, 2 * h * S], [tMorph + 0.8, 0, true], [T, 0]])}</circle>`;
+  const tank = `<g>${animT("opacity", [[0, 1], [tMorph, 1], [tMorph + 1.2, 0, true], [T - 0.9, 0], [T, 1, true]], r2)}
 <path d="M ${sx(0) - 2} ${sy(0.95)} V ${FLOOR + 2} H ${sx(1.6) + 2} V ${sy(0.95)}" fill="none" stroke="${K.line}" stroke-width="1.2"/>
 <rect x="${sx(0.9)}" y="${sy(0.12)}" width="${0.12 * S}" height="${0.12 * S}" fill="${K.line}" fill-opacity=".5"/></g>`;
-  const rods = `<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;${kt_(tMove - 0.6)};${kt_(tMove)};${kt_(tRun + 0.3)};${kt_(tFade)};1" dur="${T}s" repeatCount="indefinite"/>
-${lanes.map((_, k) => `<line x1="${r1(laneX(k))}" y1="${TOP}" x2="${r1(laneX(k))}" y2="${BOT}" stroke="${K.line}" stroke-width=".7" stroke-opacity=".6"/><line x1="${r1(laneX(k) - 3)}" y1="${r1(TOP + ns[k] * step)}" x2="${r1(laneX(k) + 3)}" y2="${r1(TOP + ns[k] * step)}" stroke="${K.warm}" stroke-width="1"/>`).join("")}
-<line x1="${laneX(0) - 8}" y1="${BOT}" x2="${laneX(31) + 8}" y2="${BOT}" stroke="${K.line}" stroke-width=".7"/></g>`;
-  const say = (a, b, s) => `<text x="20" y="22" font-family="${SANS}" font-size="9.5" letter-spacing="2" fill="${K.light}" fill-opacity=".85" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;${Math.max(0, kt_(a)) || 0};${kt_(a + 0.3)};${kt_(b - 0.3)};${kt_(b)};1" dur="${T}s" repeatCount="indefinite"/>${s}</text>`;
-  const body = `${tank}${rods}${kernel}${parts.join("")}
-${`<text x="20" y="22" font-family="${SANS}" font-size="9.5" letter-spacing="2" fill="${K.light}" fill-opacity=".85"><animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;${kt_(tFluid - 0.3)};${kt_(tFluid)};.98;1" dur="${T}s" repeatCount="indefinite"/>SPH DAM BREAK, AS IN OPENFPM · 5× SLOWER</text>`}
-${say(tFluid, tMove, `ONE WARP: 32 PARTICLES, 32 THREADS`)}
-${say(tMove, tFade, `LOCKSTEP · ${L} STEPS · ${busy.toFixed(1)} OF 32 LANES BUSY`)}`;
+  const len = BOT - TOP;
+  const rods = lanes.map((_, k) => {
+    const arrive = tMorph + 0.2 + k * 0.05 + 1.7;
+    return `<line x1="${r1(laneX(k))}" y1="${TOP}" x2="${r1(laneX(k))}" y2="${BOT}" stroke="${K.line}" stroke-width=".7" stroke-opacity=".6" stroke-dasharray="${len}">${animT("stroke-dashoffset", [[0, len], [arrive - 0.3, len], [arrive + 0.6, 0, true], [tOut, 0], [T - 0.9, len, true], [T, len]])}</line>
+<line x1="${r1(laneX(k) - 3)}" y1="${r1(TOP + nsL[k] * step)}" x2="${r1(laneX(k) + 3)}" y2="${r1(TOP + nsL[k] * step)}" stroke="${K.warm}" stroke-width="1">${animT("opacity", [[0, 0], [arrive, 0], [arrive + 0.6, 1, true], [tOut, 1], [T - 0.9, 0, true], [T, 0]], r2)}</line>`;
+  }).join("");
+  const say = (a, b, s, first = false) => `<text x="20" y="22" font-family="${SANS}" font-size="9.5" letter-spacing="2" fill="${K.light}" fill-opacity=".85">${animT("opacity", first ? [[0, 1], [b - 0.5, 1], [b + 0.3, 0, true], [T - 0.7, 0], [T, 1, true]] : [[0, 0], [a - 0.3, 0], [a + 0.5, 1, true], [b - 0.5, 1], [b + 0.3, 0, true], [T, 0]], r2)}${s}</text>`;
+  const body = `<rect width="0" height="0"><animate id="wp-clk" attributeName="x" values="0;0" dur="${T}s" begin="0s;wp-clk.end"/></rect>
+${tank}${rods}${kernel}${parts.join("")}
+${say(0, tKernel, "SPH DAM BREAK · 5× SLOWER", true)}
+${say(tKernel, tMorph + 1.4, "ONE WARP: 32 PARTICLES, 32 THREADS")}
+${say(tMorph + 1.4, tOut, `LOCKSTEP · ${L} STEPS · ${busy.toFixed(1)} OF 32 LANES BUSY`)}`;
   return frame({
     w: W, h: H, p, theme,
-    desc: `Warp divergence, from where it comes: an SPH dam break of ${nF} particles plays out; one warp of 32 neighbouring particles is taken from it, each a GPU thread gathering the neighbours inside its kernel radius; their real neighbour counts (${Math.min(...ns)} to ${L}) become the work, and the warp steps in lockstep for ${L} steps with ${busy.toFixed(1)} of 32 lanes busy on average, the rest masked off. Measured on a million particles: 33.34% branch efficiency, and still faster, 158.87 against 153.13 GB/s.`,
+    desc: `Warp divergence, from where it comes: an SPH dam break of ${nF} particles plays out; one warp of 32 neighbouring particles lifts out of the water into 32 lanes, each a GPU thread gathering the neighbours inside its kernel radius; their real neighbour counts (${Math.min(...nsL)} to ${L}) become the work, and the warp steps in lockstep for ${L} steps with ${busy.toFixed(1)} of 32 lanes busy on average, the rest masked off. Measured on a million particles: 33.34% branch efficiency, and still faster, 158.87 against 153.13 GB/s.`,
     defs: `${sphere(`${p}-ball`)}<radialGradient id="${p}-warm" cx=".38" cy=".34" r=".7"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="${K.hot}"/><stop offset="1" stop-color="#7a4f24"/></radialGradient>`,
     body,
     caption: ["Warp divergence", "A third of the efficiency, and still faster · 158.87 vs 153.13 GB/s, 1M particles"],
@@ -177,60 +275,135 @@ function dopants(theme) {
   const p = "dp";
   const { a, b, c, beta, sites } = GA2O3;
   const cart = ([fx, fy, fz]) => [fx * a + fz * c * Math.cos(beta), fz * c * Math.sin(beta), fy * b]; // x, up, depth
-  const atoms = [];
-  const seen = new Set();
+  // Every gallium inside the box, then every oxygen bonded to one, so each polyhedron is whole.
+  const pool = [];
   for (const [kind, [x, z]] of Object.entries(sites))
     for (const [fx, fy, fz] of [[x, 0, z], [-x, 0, -z], [x + 0.5, 0.5, z], [-x + 0.5, 0.5, -z]])
-      for (let i = -1; i <= 1; i++) for (let j = -1; j <= 2; j++) for (let k = -1; k <= 1; k++) {
+      for (let i = -1; i <= 2; i++) for (let j = -1; j <= 2; j++) for (let k = -1; k <= 2; k++) {
         const f = [((fx % 1) + 1) % 1 + i, fy + j, ((fz % 1) + 1) % 1 + k];
-        if (f[0] < -0.04 || f[0] > 1.54 || f[1] < -0.01 || f[1] > 1.01 || f[2] < -0.04 || f[2] > 1.04) continue;
-        const key = f.map((v) => v.toFixed(3)).join();
-        if (seen.has(key)) continue;
-        seen.add(key);
-        atoms.push({ kind, ga: kind.startsWith("Ga"), pos: cart(f) });
+        pool.push({ kind, ga: kind.startsWith("Ga"), f, pos: cart(f) });
       }
+  const inBox = ({ f }) => f[0] > -0.04 && f[0] < 1.3 && f[1] > -0.01 && f[1] < 1.01 && f[2] > -0.04 && f[2] < 1.04;
+  const gas = pool.filter((A) => A.ga && inBox(A));
+  const atoms = [...gas, ...pool.filter((A) => !A.ga && gas.some((G) => Math.hypot(...G.pos.map((v, q) => v - A.pos[q])) < 2.15))];
+  const dist = (A, B) => Math.hypot(...A.pos.map((v, q) => v - B.pos[q]));
   const bonds = [];
-  atoms.forEach((A, i) => atoms.forEach((B, j) => {
-    if (!A.ga || B.ga) return;
-    if (Math.hypot(...A.pos.map((v, q) => v - B.pos[q])) < 2.15) bonds.push([i, j]);
-  }));
+  atoms.forEach((A, i) => atoms.forEach((B, j) => { if (A.ga && !B.ga && dist(A, B) < 2.15) bonds.push([i, j]); }));
   const center = [0, 1, 2].map((q) => atoms.reduce((s, A) => s + A.pos[q], 0) / atoms.length);
-  // the two dopant sites: the Ga(I) and the Ga(II) nearest the middle of the front layer
-  const front = (A) => A.pos[2] < 1;
-  const nearest = (kind) => atoms.map((A, i) => [A, i]).filter(([A]) => A.kind === kind && front(A)).sort((x, y) => Math.hypot(x[0].pos[0] - center[0], x[0].pos[1] - center[1]) - Math.hypot(y[0].pos[0] - center[0], y[0].pos[1] - center[1]))[0][1];
-  const sitesD = [nearest("Ga1"), nearest("Ga2")];
-  const R = rng(29);
-  const vib = atoms.map(() => [0, 1, 2].map(() => [1 + Math.floor(R() * 2), R() * 2 * Math.PI]));
-  const F = 24, T = 16;
-  const frames = [];
-  for (let f = 0; f <= F; f++) {
-    const ph = (2 * Math.PI * f) / F;
-    const cam = camera({ yaw: 0.3 * Math.sin(ph) + 0.25, pitch: 0.22, dist: 34, target: center, focal: 520, cx: 210, cy: 96 });
-    frames.push(atoms.map((A, i) => cam(A.pos.map((v, q) => v + 0.1 * Math.sin(vib[i][q][0] * ph + vib[i][q][1])))));
-  }
-  const meanD = (i) => frames.reduce((s, fr) => s + fr[i].d, 0) / frames.length;
-  const focusD = meanD(sitesD[0]);
+  // the two sites, each fully coordinated, nearest the middle
+  const cn = (i) => bonds.filter(([g]) => g === i).length;
+  const pick = (kind, n) => atoms.map((A, i) => [A, i]).filter(([A, i]) => A.kind === kind && cn(i) === Math.min(n, Math.max(...atoms.map((B, j) => (B.kind === kind ? cn(j) : 0)))))
+    .sort((x, y) => Math.hypot(x[0].pos[0] - center[0], x[0].pos[1] - center[1]) - Math.hypot(y[0].pos[0] - center[0], y[0].pos[1] - center[1]))[0][1];
+  const siteI = pick("Ga1", 4), siteII = pick("Ga2", 6);
+  const cam = camera({ yaw: 0.42, pitch: 0.3, dist: 34, target: center, focal: 520, cx: 210, cy: 96 });
+  const P = atoms.map((A) => cam(A.pos));
+  const focusD = (P[siteI].d + P[siteII].d) / 2;
   const blurOf = (d) => Math.abs(d - focusD) * 0.45;
-  const half = (which) => `<animate attributeName="opacity" values="${which ? "0;1;1;0;0" : "1;0;0;1;1"}" keyTimes="0;.5;.5;1;1" dur="${T}s" calcMode="discrete" repeatCount="indefinite"/>`;
-  const line = (i, j, stroke, w, op, extra = "") => `<line stroke="${stroke}" stroke-width="${w}" stroke-opacity="${op}"${extra}>${anim("x1", frames.map((fr) => fr[i].x), T)}${anim("y1", frames.map((fr) => fr[i].y), T)}${anim("x2", frames.map((fr) => fr[j].x), T)}${anim("y2", frames.map((fr) => fr[j].y), T)}</line>`;
-  const bondSvg = bonds.map(([i, j]) => line(i, j, K.steel, 0.9, 0.55, dof(p, blurOf((meanD(i) + meanD(j)) / 2)))).join("");
-  const warmBonds = sitesD.map((site, w) => `<g opacity="${w ? 0 : 1}">${half(w)}${bonds.filter(([i]) => i === site).map(([i, j]) => line(i, j, K.warm, 1.6, 0.95)).join("")}</g>`).join("");
-  const order = atoms.map((_, i) => i).sort((x, y) => meanD(y) - meanD(x));
+
+  // The choreography, in seconds.
+  const T = 22;
+  const ease = (u) => (u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2);
+  const springy = (u) => 1 - Math.exp(-6 * u) * Math.cos(9 * u); // settles with one small overshoot
+  const track = (keys, n = 14) => {
+    const out = [];
+    for (const [tt, v, fn] of keys) {
+      if (fn && out.length) {
+        const [t0, v0] = out.at(-1);
+        for (let k = 1; k <= n; k++) {
+          const u = k / n, w = (fn === true ? ease : fn)(u);
+          out.push([t0 + (tt - t0) * u, Array.isArray(v) ? v.map((x, q) => v0[q] + (x - v0[q]) * w) : v0 + (v - v0) * w]);
+        }
+      } else out.push([tt, v]);
+    }
+    if (out.at(-1)[0] < T) out.push([T, out.at(-1)[1]]);
+    return out;
+  };
+  const sm = (attr, keys, fmt = r1, n) => {
+    const kk = track(keys, n);
+    return `<animate attributeName="${attr}" values="${kk.map(([, v]) => (Array.isArray(v) ? v.map(fmt).join(" ") : fmt(v))).join(";")}" keyTimes="${kk.map(([tt]) => +(tt / T).toFixed(4)).join(";")}" dur="${T}s" repeatCount="indefinite"/>`;
+  };
+  const tIn = 1.6, tSet = 3.2, tMove = 9.6, tSet2 = 11.8, tOutS = 19, tOut = 21;
+  const up = (i, h = 1.6) => cam(atoms[i].pos.map((v, q) => (q === 1 ? v + h : v)));
+  // the dopant: down into site I, an arc across to site II, up and away
+  const A0 = up(siteI, 3), AI = P[siteI], AII = P[siteII];
+  const arc = (u) => {
+    const m = cam(atoms[siteI].pos.map((v, q) => (atoms[siteI].pos[q] + atoms[siteII].pos[q]) / 2 + (q === 1 ? 2.2 : 0)));
+    const x = (1 - u) ** 2 * AI.x + 2 * (1 - u) * u * m.x + u * u * AII.x, y = (1 - u) ** 2 * AI.y + 2 * (1 - u) * u * m.y + u * u * AII.y;
+    return [x, y];
+  };
+  const arcKeys = Array.from({ length: 16 }, (_, k) => {
+    const u = ease((k + 1) / 16);
+    return [tMove + ((tSet2 - 0.6 - tMove) * (k + 1)) / 16, arc(u)];
+  });
+  const dop = [[0, [A0.x, A0.y]], [tIn, [A0.x, A0.y]], [tSet, [AI.x, AI.y], springy], [tMove, [AI.x, AI.y]], ...arcKeys, [tSet2, [AII.x, AII.y], springy], [tOutS, [AII.x, AII.y]], [tOut, [up(siteII, 3).x, up(siteII, 3).y], true]];
+  const dopX = dop.map(([tt, v, f]) => [tt, typeof v[0] === "number" ? v[0] : v, f]);
+  const dopSvg = `<g>${sm("opacity", [[0, 0], [tIn, 0], [tIn + 0.8, 1, true], [tOutS + 0.4, 1], [tOut, 0, true]], r2)}
+<circle r="${r1(P[siteI].s * 1.3)}" fill="${K.hot}" opacity=".4" filter="url(#${p}b4)">${sm("cx", dop.map(([tt, v, f]) => [tt, v[0], f]))}${sm("cy", dop.map(([tt, v, f]) => [tt, v[1], f]))}</circle>
+<circle r="${r1(P[siteI].s * 0.58)}" fill="url(#${p}-dop)">${sm("cx", dop.map(([tt, v, f]) => [tt, v[0], f]))}${sm("cy", dop.map(([tt, v, f]) => [tt, v[1], f]))}</circle></g>`;
+
+  // a Ga lifting out of its site and returning
+  const lift = (i, t0, t1, t2, t3) => {
+    const U = up(i);
+    return `${sm("cx", [[0, P[i].x], [t0, P[i].x], [t1, U.x, true], [t2, U.x], [t3, P[i].x, true]])}${sm("cy", [[0, P[i].y], [t0, P[i].y], [t1, U.y, true], [t2, U.y], [t3, P[i].y, true]])}${sm("opacity", [[0, 1], [t0, 1], [t1, 0, true], [t2, 0], [t3, 1, true]], r2)}`;
+  };
+  // neighbours of a site, relaxing outward a little (≈0.08 Å) while the dopant sits there
+  const nb = (site) => bonds.filter(([g]) => g === site).map(([, o]) => o);
+  const relaxed = (o, site) => cam(atoms[o].pos.map((v, q) => v + ((v - atoms[site].pos[q]) / dist(atoms[o], atoms[site])) * 0.08));
+  const moves = new Map();
+  for (const [site, t0, t1] of [[siteI, tSet - 0.6, tMove + 0.4], [siteII, tSet2 - 0.6, tOutS + 0.6]]) for (const o of nb(site)) moves.set(o, [site, t0, t1]);
+  const posAnim = (o) => {
+    if (!moves.has(o)) return "";
+    const [site, t0, t1] = moves.get(o), R0 = P[o], R1 = relaxed(o, site);
+    return `${sm("cx", [[0, R0.x], [t0, R0.x], [t0 + 1, R1.x, true], [t1, R1.x], [t1 + 0.8, R0.x, true]], r2)}${sm("cy", [[0, R0.y], [t0, R0.y], [t0 + 1, R1.y, true], [t1, R1.y], [t1 + 0.8, R0.y, true]], r2)}`;
+  };
+
+  // thermal motion: each atom on its own small, slow loop (CSS), to scale (≈0.1 Å)
+  const R = rng(29);
+  const shake = Array.from({ length: 6 }, (_, k) => `@keyframes j${k} { ${Array.from({ length: 5 }, (_, q) => `${q * 25}% { transform: translate(${q % 4 ? r2((R() - 0.5) * 3) : 0}px, ${q % 4 ? r2((R() - 0.5) * 3) : 0}px) }`).join(" ")} } .j${k} { animation: j${k} ${(2.6 + k * 0.4).toFixed(1)}s ease-in-out infinite; }`).join("\n");
+  const order = atoms.map((_, i) => i).sort((x, y) => P[y].d - P[x].d);
   const atomSvg = order.map((i) => {
     const A = atoms[i];
-    const k = A.ga ? 0.5 : 0.36;
     const fill = A.kind === "Ga1" ? `${p}-ga1` : A.kind === "Ga2" ? `${p}-ga2` : `${p}-o`;
-    return `<circle fill="url(#${fill})"${dof(p, blurOf(meanD(i)))}>${anim("cx", frames.map((fr) => fr[i].x), T)}${anim("cy", frames.map((fr) => fr[i].y), T)}${anim("r", frames.map((fr) => fr[i].s * k), T)}</circle>`;
+    const extra = i === siteI ? lift(i, tIn - 0.4, tSet - 0.6, tMove, tMove + 1.2) : i === siteII ? lift(i, tMove + 0.6, tSet2 - 0.6, tOutS, tOut) : posAnim(i);
+    return `<g class="j${i % 6}"><circle cx="${r1(P[i].x)}" cy="${r1(P[i].y)}" r="${r1(P[i].s * (A.ga ? 0.5 : 0.36))}" fill="url(#${fill})"${dof(p, blurOf(P[i].d))}>${extra}</circle></g>`;
   }).join("");
-  const dopantSvg = sitesD.map((site, w) => `<g opacity="${w ? 0 : 1}">${half(w)}
-<circle fill="${K.hot}" opacity=".4" filter="url(#${p}b4)">${anim("cx", frames.map((fr) => fr[site].x), T)}${anim("cy", frames.map((fr) => fr[site].y), T)}${anim("r", frames.map((fr) => fr[site].s * 1.3), T)}</circle>
-<circle fill="url(#${p}-dop)">${anim("cx", frames.map((fr) => fr[site].x), T)}${anim("cy", frames.map((fr) => fr[site].y), T)}${anim("r", frames.map((fr) => fr[site].s * 0.6), T)}</circle></g>`).join("");
-  const label = (w, s) => `<text x="${W - 20}" y="26" text-anchor="end" font-family="${SANS}" font-size="9.5" letter-spacing="2" fill="${K.light}" fill-opacity=".8" opacity="${w ? 0 : 1}">${half(w)}${s}</text>`;
+  const bondSvg = bonds.filter(([g]) => g !== siteI && g !== siteII).map(([i, j]) => `<line x1="${r1(P[i].x)}" y1="${r1(P[i].y)}" x2="${r1(P[j].x)}" y2="${r1(P[j].y)}" stroke="${K.steel}" stroke-width=".9" stroke-opacity=".5"${dof(p, blurOf((P[i].d + P[j].d) / 2))}/>`).join("");
+  // the site's own bonds: steel while Ga holds it; warm, drawn in, while the dopant does
+  const siteBonds = (site, tA, tB, tC, tD) => nb(site).map((o) => {
+    const L = Math.hypot(P[o].x - P[site].x, P[o].y - P[site].y);
+    return `<line x1="${r1(P[site].x)}" y1="${r1(P[site].y)}" x2="${r1(P[o].x)}" y2="${r1(P[o].y)}" stroke="${K.steel}" stroke-width=".9" stroke-opacity=".5">${sm("opacity", [[0, 1], [tA - 0.6, 1], [tA, 0, true], [tD, 0], [tD + 0.8, 1, true]], r2)}</line>
+<line x1="${r1(P[site].x)}" y1="${r1(P[site].y)}" x2="${r1(P[o].x)}" y2="${r1(P[o].y)}" stroke="${K.warm}" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="${r1(L)}">${sm("stroke-dashoffset", [[0, L], [tB, L], [tB + 0.9, 0, true], [tC, 0], [tC + 0.7, L, true]])}</line>`;
+  }).join("");
+  // the coordination polyhedron: the faces of the hull of the site's oxygens
+  const hull = (site) => {
+    const v = nb(site), faces = [];
+    for (let x = 0; x < v.length; x++) for (let y = x + 1; y < v.length; y++) for (let z = y + 1; z < v.length; z++) {
+      const [A, B, C] = [v[x], v[y], v[z]].map((i) => atoms[i].pos);
+      const n = [(B[1] - A[1]) * (C[2] - A[2]) - (B[2] - A[2]) * (C[1] - A[1]), (B[2] - A[2]) * (C[0] - A[0]) - (B[0] - A[0]) * (C[2] - A[2]), (B[0] - A[0]) * (C[1] - A[1]) - (B[1] - A[1]) * (C[0] - A[0])];
+      const sides = v.filter((i) => ![v[x], v[y], v[z]].includes(i)).map((i) => Math.sign(n.reduce((s, q, k) => s + q * (atoms[i].pos[k] - A[k]), 0)));
+      if (sides.every((s) => s >= 0) || sides.every((s) => s <= 0)) faces.push([v[x], v[y], v[z]]);
+    }
+    return faces;
+  };
+  const poly = (site, tA, tB) => `<g opacity="0">${sm("opacity", [[0, 0], [tA, 0], [tA + 1, 1, true], [tB, 1], [tB + 0.8, 0, true]], r2)}
+${hull(site).map((f) => `<polygon points="${f.map((i) => `${r1(P[i].x)},${r1(P[i].y)}`).join(" ")}" fill="${K.warm}" fill-opacity=".09" stroke="${K.warm}" stroke-opacity=".45" stroke-width=".7" stroke-linejoin="round"/>`).join("")}</g>`;
+  const label = (tA, tB, s) => `<text x="${W - 20}" y="26" text-anchor="end" font-family="${SANS}" font-size="9.5" letter-spacing="2" fill="${K.light}" fill-opacity=".85" opacity="0">${sm("opacity", [[0, 0], [tA, 0], [tA + 0.8, 1, true], [tB, 1], [tB + 0.6, 0, true]], r2)}${s}</text>`;
+  const body = `<g><animateTransform attributeName="transform" type="scale" values="1;1.07;1" dur="${T}s" calcMode="spline" keyTimes="0;.5;1" keySplines=".45 0 .55 1;.45 0 .55 1" repeatCount="indefinite" additive="sum"/><animateTransform attributeName="transform" type="translate" values="0 0;-14 -6;0 0" dur="${T}s" calcMode="spline" keyTimes="0;.5;1" keySplines=".45 0 .55 1;.45 0 .55 1" repeatCount="indefinite" additive="sum"/>
+${bondSvg}
+${siteBonds(siteI, tSet - 0.8, tSet, tMove, tMove + 1)}
+${siteBonds(siteII, tSet2 - 0.8, tSet2, tOutS, tOut)}
+${poly(siteI, tSet + 0.4, tMove - 0.2)}
+${poly(siteII, tSet2 + 0.4, tOutS)}
+${atomSvg}
+${dopSvg}
+</g>
+${label(tSet, tMove, "DOPANT ON Ga(I) · TETRAHEDRAL · 4 O")}
+${label(tSet2, tOutS, "DOPANT ON Ga(II) · OCTAHEDRAL · 6 O")}`;
   return frame({
     w: W, h: H, p, theme,
-    desc: "p-type dopants in beta-Ga2O3: the real monoclinic crystal, two unit cells deep, its atoms in room-temperature thermal motion to scale; a dopant sits first on a tetrahedral Ga(I) site with four oxygen bonds, then on an octahedral Ga(II) site with six. Graph neural networks over the defect's real structure; abstract under review at IIM ATM 2026.",
-    defs: `${sphere(`${p}-ga1`)}${sphere(`${p}-ga2`, "#9aa1a9")}${sphere(`${p}-o`, "#c98f7a")}<radialGradient id="${p}-dop" cx=".38" cy=".34" r=".7"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="${K.hot}"/><stop offset=".85" stop-color="${K.warm}"/><stop offset="1" stop-color="#6a4520"/></radialGradient>`,
-    body: `${bondSvg}${atomSvg}${warmBonds}${dopantSvg}${label(0, "DOPANT ON Ga(I) · TETRAHEDRAL · 4 O")}${label(1, "DOPANT ON Ga(II) · OCTAHEDRAL · 6 O")}`,
+    desc: "p-type dopants in beta-Ga2O3: the real monoclinic crystal in thermal motion. A gallium lifts out of a tetrahedral Ga(I) site and a dopant settles into it, its four bonds drawing in and the oxygen tetrahedron lighting up as the neighbours relax; then the dopant arcs across to an octahedral Ga(II) site and does the same with six. Graph neural networks over the defect's real structure; abstract under review at IIM ATM 2026.",
+    defs: `<style>${shake} @media (prefers-reduced-motion: reduce) { ${Array.from({ length: 6 }, (_, k) => `.j${k}`).join(", ")} { animation: none } }</style>${sphere(`${p}-ga1`)}${sphere(`${p}-ga2`, "#9aa1a9")}${sphere(`${p}-o`, "#c98f7a")}<radialGradient id="${p}-dop" cx=".38" cy=".34" r=".7"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="${K.hot}"/><stop offset=".85" stop-color="${K.warm}"/><stop offset="1" stop-color="#6a4520"/></radialGradient>`,
+    body,
     caption: ["p-type dopants in β-Ga₂O₃", "Teaching a network the shape of a defect · under review, IIM ATM 2026"],
   });
 }
@@ -301,13 +474,11 @@ function graph(theme) {
 }
 
 // ---------------------------------------------------------------------------------------------
-// 5. Exoplanet habitability, in three movements. A survey satellite stares at a star and its
-//    camera collects the light; the light becomes numbers, flux readings that dip; the numbers
-//    become the system, a planet on a Kepler orbit crossing its star.
-//    The transit is computed, not drawn: a planet a tenth of the star's radius (k = 0.1, a
-//    Jupiter round a Sun) over a limb-darkened star (quadratic, u₁ = 0.40, u₂ = 0.26), so the dip
-//    is about 1% with a rounded floor and sloped ingress and egress. The star is drawn far too
-//    large for its orbit, as it must be to be seen; the light curve is not affected.
+// 5. Exoplanet habitability: a star through an anamorphic lens, a planet on an eccentric Kepler
+//    orbit seen almost edge-on, so it transits; its lit side always faces the star. Top right,
+//    the star's light curve, computed: a planet a tenth of the star's radius (k = 0.1) over a
+//    limb-darkened star (quadratic, u₁ = 0.40, u₂ = 0.26), a dip of under 1% with a rounded
+//    floor. The two are drawn at the sizes that let them be seen, not to scale.
 const LD = [0.4, 0.26];
 const KR = 0.1;
 function blocked(z) {
@@ -330,117 +501,73 @@ function blocked(z) {
 function exoplanet(theme) {
   const K = TH[theme];
   const p = "ex";
-  const T = 21, P1 = [0, 6], P2 = [6, 12], P3 = [12, 21];
-  const phase = ([a, b]) => {
-    const k = (x) => (x / T).toFixed(4);
-    const ks = a === 0 ? `0;${k(b - 0.5)};${k(b)};${k(T - 0.5)};1` : `0;${k(a - 0.5)};${k(a)};${k(b - 0.5)};${k(b)};1`;
-    const vs = a === 0 ? "1;1;0;0;1" : "0;0;1;1;0;0";
-    return `<animate attributeName="opacity" values="${b === T ? "0;0;1;1" : vs}" keyTimes="${b === T ? `0;${k(a - 0.5)};${k(a)};1` : ks}" dur="${T}s" repeatCount="indefinite"/>`;
-  };
-
-  // --- the system: Kepler orbit, seen nearly edge-on so the planet transits
   const cam = camera({ yaw: 0.25, pitch: 0.075, dist: 9, target: [0, 0, 0], focal: 330, cx: 196, cy: 100 });
-  const a = 3.1, e = 0.32, F = 120, TO = 9; // one orbit fills the third movement
+  const a = 3.1, e = 0.32, F = 160, T = 12;
+  const tilt = -Math.tan(0.075) * 0.8;
   const star = cam([0, 0, 0]);
-  const RS = 14; // the star's drawn radius
   const fr = [];
   for (let f = 0; f <= F; f++) {
     const M = (2 * Math.PI * f) / F;
     let E = M;
     for (let k = 0; k < 8; k++) E -= (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
     const x = a * (Math.cos(E) - e), z = a * Math.sqrt(1 - e * e) * Math.sin(E);
-    const q = cam([x, 0, z]);
-    const dist = Math.hypot(x, z);
-    const cosAlpha = (q.d - star.d) / dist; // planet beyond the star: we see its day side
-    const lit = (1 + cosAlpha) / 2;
-    const zSep = Math.hypot(q.x - star.x, q.y - star.y) / RS;
-    const flux = q.d < star.d ? 1 - blocked(zSep) : 1;
-    fr.push({ ...q, lit, flux, behind: q.d > star.d });
+    // the orbit tipped so the line of sight passes close to the star's centre: a central transit
+    const q = cam([x, tilt * z, z]);
+    // Phase: the lit fraction of the disc we see, (1 + cos α)/2, α the star–planet–observer angle.
+    const view = q.d - star.d; // positive: planet beyond the star
+    const phase = (1 + view / Math.hypot(x, z)) / 2;
+    const rr = q.s * 0.17;
+    // The light curve is computed for a planet a tenth of the star's radius over a limb-darkened
+    // star, whatever size they are drawn: a dip of under 1%.
+    const flux = view < 0 ? 1 - blocked(Math.hypot(q.x - star.x, q.y - star.y) / 7.5) : 1;
+    fr.push({ ...q, rr, phase, behind: view > 0, flux });
   }
+  const R = rng(3);
+  const stars = Array.from({ length: 70 }, () => `<circle cx="${r1(R() * W)}" cy="${r1(R() * (H - 30))}" r="${r1(0.3 + R() * 0.8)}" fill="${K.light}" opacity="${r2(0.1 + R() * 0.4)}"/>`).join("");
+  const hz = Array.from({ length: 220 }, () => {
+    const th = R() * 2 * Math.PI, rad = 2.3 + R() * 1.4;
+    const q = cam([rad * Math.cos(th), (R() - 0.5) * 0.3, rad * Math.sin(th)]);
+    return `<circle cx="${r1(q.x)}" cy="${r1(q.y)}" r="${r2(0.4 + R() * 0.6)}" fill="${K.warm}" opacity="${r2(0.08 + R() * 0.2)}"/>`;
+  }).join("");
   const orbit = Array.from({ length: 73 }, (_, i) => {
     const E = (2 * Math.PI * i) / 72;
-    return cam([a * (Math.cos(E) - e), 0, a * Math.sqrt(1 - e * e) * Math.sin(E)]);
+    const z = a * Math.sqrt(1 - e * e) * Math.sin(E);
+    return cam([a * (Math.cos(E) - e), tilt * z, z]);
   });
-  const planet = (behind) => `<g opacity="0">${anim("opacity", fr.map((q) => (q.behind === behind ? 1 : 0)), TO, ' calcMode="discrete"')}
-  <circle r="2.4" fill="#141618">${anim("cx", fr.map((q) => q.x), TO)}${anim("cy", fr.map((q) => q.y), TO)}</circle>
-  <circle r="2.4" fill="#d9c3a5">${anim("cx", fr.map((q) => q.x), TO)}${anim("cy", fr.map((q) => q.y), TO)}${anim("opacity", fr.map((q) => q.lit), TO)}</circle></g>`;
-  const minF = Math.min(...fr.map((q) => q.flux));
-  const lc = { x: 250, y: 24, w: 150, h: 30 };
-  const fy = (v) => lc.y + 6 + ((1 - v) / 0.012) * lc.h;
-  const curve = fr.map((q, i) => `${r1(lc.x + (i / F) * lc.w)},${r1(fy(q.flux))}`).join(" ");
-  const R = rng(3);
-  const stars = Array.from({ length: 60 }, () => `<circle cx="${r1(R() * W)}" cy="${r1(R() * (H - 40))}" r="${r1(0.3 + R() * 0.7)}" fill="${K.light}" opacity="${r2(0.08 + R() * 0.3)}"/>`).join("");
-  const system = `<g opacity="0">${phase(P3)}
-<polyline points="${pts(orbit)}" fill="none" stroke="${K.steel}" stroke-opacity=".25" stroke-dasharray="1.5 3"/>
+  const planet = (behind) => {
+    const vis = fr.map((q) => (q.behind === behind ? 1 : 0));
+    return `<g opacity="0">${anim("opacity", vis, T, ' calcMode="discrete"')}
+  <circle fill="#15171a">${anim("cx", fr.map((q) => q.x), T)}${anim("cy", fr.map((q) => q.y), T)}${anim("r", fr.map((q) => q.rr), T)}</circle>
+  <circle fill="url(#${p}-lit)">${anim("cx", fr.map((q) => q.x), T)}${anim("cy", fr.map((q) => q.y), T)}${anim("r", fr.map((q) => q.rr), T)}${anim("opacity", fr.map((q) => 0.25 + 0.75 * q.phase), T)}</circle>
+</g>`;
+  };
+  // The light curve: flux against time, with a cursor riding it.
+  const lc = { x: 274, y: 22, w: 126, h: 30 };
+  const flux = fr.map((q) => q.flux);
+  const depth = 1 - Math.min(...flux);
+  const fy = (v) => lc.y + 6 + ((1 - v) / 0.0125) * lc.h; // full height = a 1.25% dip
+  const curve = flux.map((v, i) => `${r1(lc.x + (i / F) * lc.w)},${r1(fy(v))}`).join(" ");
+  const body = `
+${stars}
+<polyline points="${pts(orbit)}" fill="none" stroke="${K.steel}" stroke-opacity=".16" stroke-dasharray="1.5 3"/>
+${hz}
 ${planet(true)}
-<circle cx="${r1(star.x)}" cy="${r1(star.y)}" r="${RS * 3}" fill="url(#${p}-glow)"/>
-<ellipse cx="${r1(star.x)}" cy="${r1(star.y)}" rx="170" ry="1.1" fill="url(#${p}-flare)" opacity=".7"/>
-<circle cx="${r1(star.x)}" cy="${r1(star.y)}" r="${RS}" fill="url(#${p}-limb)"/>
+<circle cx="${r1(star.x)}" cy="${r1(star.y)}" r="44" fill="url(#${p}-glow)"/>
+<ellipse cx="${r1(star.x)}" cy="${r1(star.y)}" rx="190" ry="1.3" fill="url(#${p}-flare)">${anim("opacity", [0.75, 0.6, 0.8, 0.7, 0.75], 3.1)}</ellipse>
+<circle cx="${r1(star.x)}" cy="${r1(star.y)}" r="7.5" fill="#fff8ee"/>
 ${planet(false)}
-<g font-family="${SANS}" font-size="8.5" letter-spacing="1.4" fill="${K.mute}">
-  <text x="${lc.x}" y="${lc.y - 6}">FLUX · DEPTH ${((1 - minF) * 100).toFixed(2)}%</text>
-  <line x1="${lc.x}" y1="${fy(1)}" x2="${lc.x + lc.w}" y2="${fy(1)}" stroke="${K.dim}" stroke-width=".6"/>
-  <polyline points="${curve}" fill="none" stroke="${K.light}" stroke-opacity=".8" stroke-width=".9"/>
-  <circle r="2" fill="${K.warm}">${anim("cx", fr.map((_, i) => lc.x + (i / F) * lc.w), TO)}${anim("cy", fr.map((q) => fy(q.flux)), TO)}</circle>
-  <text x="${lc.x}" y="${fy(1) + lc.h + 16}" font-size="7.5" letter-spacing=".6">k = 0.1 · limb-darkened · not to scale</text>
-</g></g>`;
-
-  // --- the satellite: a survey telescope staring at a star; photons arrive, the CCD fills
-  const sat = (x, y) => `<g transform="translate(${x} ${y}) rotate(-8)">
-  <rect x="-40" y="-26" width="26" height="52" fill="none" stroke="${K.line}" stroke-width=".8"/>${[1, 2, 3, 4, 5].map((i) => `<line x1="-40" y1="${-26 + i * 8.7}" x2="-14" y2="${-26 + i * 8.7}" stroke="${K.line}" stroke-width=".5"/>`).join("")}<line x1="-27" y1="-26" x2="-27" y2="26" stroke="${K.line}" stroke-width=".5"/>
-  <line x1="-14" y1="0" x2="-8" y2="0" stroke="${K.line}"/>
-  <rect x="-8" y="-11" width="20" height="22" rx="1.5" fill="url(#${p}-foil)"/>
-  <path d="M 12 -9 L 40 -12 L 40 12 L 12 9 Z" fill="url(#${p}-barrel)"/>
-  <ellipse cx="40" cy="0" rx="2.4" ry="12" fill="#0d0f12" stroke="${K.steel}" stroke-width=".8"/>
+<g font-family="${SANS}" font-size="8.5" letter-spacing="1.6" fill="${K.mute}">
+  <text x="${lc.x}" y="${lc.y - 6}">STELLAR FLUX · ${(depth * 100).toFixed(2)}% DIP</text>
+  <polyline points="${curve}" fill="none" stroke="${K.light}" stroke-opacity=".7" stroke-width=".8"/>
+  <circle r="1.8" fill="${K.warm}">${anim("cx", flux.map((_, i) => lc.x + (i / F) * lc.w), T)}${anim("cy", flux.map(fy), T)}</circle>
 </g>`;
-  const sx = 120, sy = 96, tx = 360, ty = 70;
-  const photons = Array.from({ length: 14 }, (_, i) => {
-    const d0 = ((i / 14) * 1.6).toFixed(2);
-    return `<circle r="1.1" fill="${K.warm}"><animate attributeName="cx" values="${tx};${sx + 44}" dur="1.6s" begin="-${d0}s" repeatCount="indefinite"/><animate attributeName="cy" values="${ty + (R() - 0.5) * 4};${sy - 6 + (R() - 0.5) * 6}" dur="1.6s" begin="-${d0}s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.1;.9;1" dur="1.6s" begin="-${d0}s" repeatCount="indefinite"/></circle>`;
-  }).join("");
-  const ccd = { x: 206, y: 122, n: 7, c: 7 };
-  const pixels = [];
-  for (let i = 0; i < ccd.n; i++) for (let j = 0; j < ccd.n; j++) {
-    const r2_ = (i - 3) ** 2 + (j - 3) ** 2, g = Math.exp(-r2_ / 2.2);
-    const noise = Array.from({ length: 6 }, () => r2(Math.min(1, g * (0.9 + R() * 0.2) + R() * 0.06))).join(";");
-    pixels.push(`<rect x="${ccd.x + j * ccd.c}" y="${ccd.y + i * ccd.c}" width="${ccd.c - 0.8}" height="${ccd.c - 0.8}" fill="${K.warm}">${anim("opacity", noise.split(";").map(Number), 1.2, ' calcMode="discrete"')}</rect>`);
-  }
-  const satellite = `<g opacity="1">${phase(P1)}
-${sat(sx, sy)}
-<circle cx="${tx}" cy="${ty}" r="2.6" fill="#fff8ee"/><circle cx="${tx}" cy="${ty}" r="12" fill="url(#${p}-glow)"/>
-${photons}
-<rect x="${ccd.x - 3}" y="${ccd.y - 3}" width="${ccd.n * ccd.c + 5}" height="${ccd.n * ccd.c + 5}" fill="none" stroke="${K.line}" stroke-width=".7"/>
-${pixels.join("")}
-<text x="${ccd.x + ccd.n * ccd.c + 10}" y="${ccd.y + 14}" font-family="${SANS}" font-size="8.5" letter-spacing="1.4" fill="${K.mute}">THE STAR ON THE CCD</text>
-<text x="${ccd.x + ccd.n * ccd.c + 10}" y="${ccd.y + 27}" font-family="${SANS}" font-size="8.5" letter-spacing="1.4" fill="${K.mute}">A FEW PIXELS OF LIGHT</text>
-</g>`;
-
-  // --- the numbers: readings across a transit, with 150 ppm of photometric noise
-  const N = 9;
-  const iMin = fr.findIndex((q) => q.flux === minF);
-  const picks = Array.from({ length: N }, (_, i) => Math.max(0, Math.min(F, iMin + Math.round((i - 4) * 0.55))));
-  const readings = picks.map((i, n) => {
-    const v = fr[i].flux + (R() - 0.5) * 0.0003;
-    return { t: (1325.0412 + n * 0.0208).toFixed(4), v: v.toFixed(5), y: v };
-  });
-  const rowT = (n) => (P2[0] + 0.3 + n * 0.45) / T;
-  const numbers = `<g opacity="0">${phase(P2)}
-<text x="40" y="34" font-family="${SANS}" font-size="8.5" letter-spacing="1.6" fill="${K.mute}">TIME (BTJD)</text><text x="128" y="34" font-family="${SANS}" font-size="8.5" letter-spacing="1.6" fill="${K.mute}">FLUX</text>
-${readings.map((r, n) => `<text x="40" y="${52 + n * 13}" font-family="${MONO}" font-size="10.5" fill="${r.y < 0.997 ? K.warm : K.light}" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;${rowT(n).toFixed(4)};${(rowT(n) + 0.01).toFixed(4)};1" dur="${T}s" repeatCount="indefinite"/><tspan>${r.t}</tspan><tspan x="128">${r.v}</tspan></text>`).join("")}
-${readings.map((r, n) => `<circle cx="${240 + n * 15}" cy="${r1(80 + ((1 - r.y) / 0.012) * 50)}" r="2.2" fill="${r.y < 0.997 ? K.warm : K.light}" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;${(rowT(n) + 0.02).toFixed(4)};${(rowT(n) + 0.03).toFixed(4)};1" dur="${T}s" repeatCount="indefinite"/></circle>`).join("")}
-<line x1="232" y1="80" x2="${240 + N * 15}" y2="80" stroke="${K.dim}" stroke-width=".6"/>
-<text x="232" y="66" font-family="${SANS}" font-size="8.5" letter-spacing="1.4" fill="${K.mute}">SOMETHING PASSES IN FRONT</text>
-</g>`;
-
   return frame({
     w: W, h: H, p, theme,
-    desc: "Exoplanet habitability in three movements: a survey satellite staring at a star while its camera collects the light; the light becoming flux readings that dip by about one percent; and the system itself, a planet on an eccentric Kepler orbit transiting a limb-darkened star, its light curve computed for a planet a tenth of the star's radius. Do habitability indices reduce to a few physical quantities?",
-    defs: `<radialGradient id="${p}-glow"><stop offset="0" stop-color="${K.hot}" stop-opacity=".9"/><stop offset=".25" stop-color="${K.warm}" stop-opacity=".4"/><stop offset="1" stop-color="${K.warm}" stop-opacity="0"/></radialGradient>
+    desc: "Exoplanet habitability: a star seen through an anamorphic lens and a planet on an eccentric Kepler orbit, nearly edge-on, transiting the star; a dust ring marks the habitable zone, and the star's light curve dips during the transit. Do habitability indices reduce to a few physical quantities?",
+    defs: `<radialGradient id="${p}-glow"><stop offset="0" stop-color="${K.hot}" stop-opacity=".9"/><stop offset=".2" stop-color="${K.warm}" stop-opacity=".45"/><stop offset="1" stop-color="${K.warm}" stop-opacity="0"/></radialGradient>
 <radialGradient id="${p}-flare" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff2df"/><stop offset=".4" stop-color="#cfe0ff" stop-opacity=".35"/><stop offset="1" stop-color="#cfe0ff" stop-opacity="0"/></radialGradient>
-<radialGradient id="${p}-limb" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fffaf0"/><stop offset=".6" stop-color="#fff1d8"/><stop offset=".9" stop-color="#ffd9a0"/><stop offset="1" stop-color="#f0b46a"/></radialGradient>
-<linearGradient id="${p}-foil" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#e8c27a"/><stop offset=".5" stop-color="#b8862f"/><stop offset="1" stop-color="#7a5418"/></linearGradient>
-<linearGradient id="${p}-barrel" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#d9dcdf"/><stop offset=".5" stop-color="#8d9196"/><stop offset="1" stop-color="#4c4f53"/></linearGradient>`,
-    body: `${stars}${satellite}${numbers}${system}`,
+<radialGradient id="${p}-lit" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#d9c3a5"/><stop offset=".7" stop-color="#7d6a55"/><stop offset="1" stop-color="#2a241e"/></radialGradient>`,
+    body,
     caption: ["Exoplanet habitability", "Is a habitable world a few numbers, or many? · independent study"],
   });
 }
@@ -457,13 +584,15 @@ function riscv(theme) {
     { asm: "addi x1, x0, 42", bits: "000000101010" + "00000" + "000" + "00001" + "0010011", fields: [["imm[11:0]", 12], ["rs1", 5], ["f3", 3], ["rd", 5], ["opcode", 7]] },
   ];
   // first the fetch (0–O s), then the decoder spells out the three words, 3 s each
-  const O = 5, per = 3, T = O + per * words.length, CW = 9.6, CH = 24, X0 = 34, Y0 = 70;
+  const O = 5.6, per = 3, T = O + per * words.length, CW = 9.6, CH = 24, X0 = 34, Y0 = 70;
   const cells = [];
   for (let b = 0; b < 32; b++) {
     const x = X0 + b * (CW + 1.3);
     const ks = [0], sy = [1];
     const zero = [], one = [], dk = [0];
+    // the board takes over showing the first word, as the register held it; then it flips
     words.forEach((w, n) => {
+      if (n === 0) return;
       const t0 = O + n * per + b * 0.025;
       // the flap falls, accelerating, then slaps down and settles
       const seq = [[0, 1], [0.06, 0.82], [0.1, 0.45], [0.13, 0], [0.16, -0.0], [0.19, 0.92], [0.22, 1.04], [0.26, 1]];
@@ -473,8 +602,8 @@ function riscv(theme) {
       one.push(w.bits[b] === "1" ? 1 : 0);
     });
     ks.push(1), sy.push(1);
-    const last = words.at(-1).bits[b];
-    const dv = (arr) => [last === (arr === zero ? "0" : "1") ? 1 : 0, ...arr].join(";");
+    const firstBit = words[0].bits[b];
+    const dv = (arr) => [firstBit === (arr === zero ? "0" : "1") ? 1 : 0, ...arr].join(";");
     const cx = x + CW / 2, cy = Y0 + CH / 2;
     cells.push(`<g>
   <rect x="${r1(x)}" y="${Y0}" width="${CW}" height="${CH}" rx="1.4" fill="url(#${p}-flap)"/>
@@ -495,8 +624,8 @@ function riscv(theme) {
       })
       .join("");
     const vis = words.map((_, k) => (k === n ? 1 : 0));
-    const ks = words.map((_, k) => (O + k * per + 0.3) / T);
-    return `<g opacity="0"><animate attributeName="opacity" values="${[vis.at(-1), ...vis].join(";")}"${kt([0, ...ks])} dur="${T}s" calcMode="discrete" repeatCount="indefinite"/>
+    const ks = words.map((_, k) => (O + k * per + (k ? 0.13 : 0)) / T);
+    return `<g opacity="0"><animate attributeName="opacity" values="${[n === 0 ? 1 : 0, ...vis].join(";")}"${kt([0, ...ks])} dur="${T}s" calcMode="discrete" repeatCount="indefinite"/>
 ${brackets}
 <text x="${X0}" y="${Y0 - 14}" font-family="${MONO}" font-size="12" fill="${K.warm}">${esc(w.asm)}</text>
 <text x="${X0 + 32 * (CW + 1.3) - 1.3}" y="${Y0 - 14}" text-anchor="end" font-family="${MONO}" font-size="11" fill="${K.mute}">0x${parseInt(w.bits, 2).toString(16).toUpperCase().padStart(8, "0")}</text></g>`;
@@ -511,20 +640,29 @@ ${brackets}
     const x = cellX(b) + CW / 2, mx = MEM.x + 8 + (b / 31) * (MEM.w - 16);
     const path = `M ${r1(mx)} ${MEM.y + MEM.h} C ${r1(mx)} ${MEM.y + MEM.h + 14}, ${r1(x)} ${Y0 - 26}, ${r1(x)} ${Y0 - 2}`;
     const one = first[b] === "1";
-    return `<path d="${path}" fill="none" stroke="${K.line}" stroke-width=".6" stroke-opacity=".7"/>
+    // after the bits arrive, the wire itself drains down into the register
+    return `<path d="${path}" fill="none" stroke="${K.line}" stroke-width=".6" stroke-opacity=".7" stroke-dasharray="140 140"><animate attributeName="stroke-dashoffset" values="0;0;-140;-140" keyTimes="0;${k(3.1 + b * 0.012)};${k(4.4 + b * 0.012)};1" calcMode="spline" keySplines="0 0 1 1;.65 0 .35 1;0 0 1 1" dur="${T}s" repeatCount="indefinite"/></path>
 <circle r="${one ? 1.9 : 1.1}" fill="${one ? K.warm : K.line}" opacity="0"><animateMotion path="${path}" dur="${T}s" keyPoints="0;0;1;1" keyTimes="0;${k(1.2 + b * 0.004)};${k(2.4 + b * 0.004)};1" calcMode="linear" repeatCount="indefinite"/><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;${k(1.15)};${k(1.25)};${k(2.4)};${k(2.5)};1" dur="${T}s" repeatCount="indefinite"/></circle>`;
   }).join("");
   const latched = Array.from({ length: 32 }, (_, b) => `<rect x="${r1(cellX(b))}" y="${Y0}" width="${CW}" height="${CH}" rx="1.4" fill="url(#${p}-flap)"/><text x="${r1(cellX(b) + CW / 2)}" y="${Y0 + CH / 2 + 5}" text-anchor="middle" font-family="${MONO}" font-size="12.5" fill="${first[b] === "1" ? "#e3b072" : "#efebe3"}" opacity="0"><animate attributeName="opacity" values="0;0;1;1" keyTimes="0;${k(2.5)};${k(2.55)};1" dur="${T}s" repeatCount="indefinite"/>${first[b]}</text>`).join("");
-  const fetch = `<g><animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;${k(O - 0.5)};${k(O)};.97;1" dur="${T}s" repeatCount="indefinite"/>
+  // eased fades: in from the loop's end, out as the decoder takes over
+  const ez = (vals, times) => `values="${vals}" keyTimes="${times.map(k).join(";")}" calcMode="spline" keySplines="${times.slice(1).map(() => ".65 0 .35 1").join(";")}" dur="${T}s" repeatCount="indefinite"`;
+  const BW = 32 * (CW + 1.3) + 14;
+  const fetch = `<g>
+<g><animate attributeName="opacity" ${ez("1;1;0;0;1", [0, 3.6, 4.6, T - 0.8, T])}/><animateTransform attributeName="transform" type="translate" ${ez("0 0;0 0;0 -8;0 -8;0 0", [0, 3.6, 4.6, T - 0.8, T])}/>
 <rect x="${MEM.x}" y="${MEM.y}" width="${MEM.w}" height="${MEM.h}" rx="2" fill="url(#${p}-flap)" stroke="${K.line}" stroke-width=".6"/>
 ${Array.from({ length: 14 }, (_, i) => `<line x1="${MEM.x + 8 + i * 12.6}" y1="${MEM.y - 3}" x2="${MEM.x + 8 + i * 12.6}" y2="${MEM.y}" stroke="${K.line}"/>`).join("")}
-<text x="${MEM.x + MEM.w / 2}" y="${MEM.y + 14.5}" text-anchor="middle" font-family="${MONO}" font-size="8.5" letter-spacing="1" fill="#c9c4bb">INSTRUCTION MEMORY · PC 0x0</text>
-${wires}
-<rect x="${X0 - 8}" y="${Y0 - 8}" width="${32 * (CW + 1.3) + 14}" height="${CH + 16}" rx="3" fill="none" stroke="${K.line}" stroke-width=".8"/>
+<text x="${MEM.x + MEM.w / 2}" y="${MEM.y + 14.5}" text-anchor="middle" font-family="${MONO}" font-size="8.5" letter-spacing="1" fill="#c9c4bb">INSTRUCTION MEMORY · PC 0x0</text></g>
+<g><animate attributeName="opacity" ${ez("1;1;0;0;1", [0, 4.4, 4.9, T - 0.8, T])}/>${wires}</g>
+<rect x="${X0 - 8}" y="${Y0 - 8}" width="${BW}" height="${CH + 16}" rx="3" fill="none" stroke="${K.line}" stroke-width=".8">
+  <animate attributeName="x" ${ez(`${X0 - 8};${X0 - 8};${X0 - 1.5};${X0 - 1.5};${X0 - 8}`, [0, 4.2, O, T - 0.8, T])}/><animate attributeName="width" ${ez(`${BW};${BW};${BW - 13};${BW - 13};${BW}`, [0, 4.2, O, T - 0.8, T])}/>
+  <animate attributeName="y" ${ez(`${Y0 - 8};${Y0 - 8};${Y0 - 1.5};${Y0 - 1.5};${Y0 - 8}`, [0, 4.2, O, T - 0.8, T])}/><animate attributeName="height" ${ez(`${CH + 16};${CH + 16};${CH + 3};${CH + 3};${CH + 16}`, [0, 4.2, O, T - 0.8, T])}/>
+  <animate attributeName="opacity" ${ez("1;1;0;0;1", [0, O - 0.3, O + 0.3, T - 0.8, T])}/></rect>
+<g><animate attributeName="opacity" ${ez("1;1;0;0;1", [0, 3.8, 4.6, T - 0.8, T])}/>
 ${Array.from({ length: 24 }, (_, i) => `<line x1="${X0 - 2 + i * 15}" y1="${Y0 + CH + 8}" x2="${X0 - 2 + i * 15}" y2="${Y0 + CH + 12}" stroke="${K.line}"/>`).join("")}
 <text x="${X0 - 8}" y="${Y0 + CH + 26}" font-family="${SANS}" font-size="8.5" letter-spacing="1.6" fill="${K.mute}">RV32I CORE · INSTRUCTION REGISTER</text>
-${latched}
-<text x="20" y="${H - 58}" font-family="${SANS}" font-size="9.5" letter-spacing="2" fill="${K.light}" fill-opacity=".85">FETCH: 32 BITS OVER 32 WIRES, ALL AT ONCE</text>
+<text x="20" y="${H - 58}" font-family="${SANS}" font-size="9.5" letter-spacing="2" fill="${K.light}" fill-opacity=".85">FETCH: 32 BITS OVER 32 WIRES, ALL AT ONCE</text></g>
+<g><animate attributeName="opacity" ${ez("1;1;0;0;1", [0, O, O + 0.05, T - 0.8, T])}/>${latched}</g>
 </g>`;
   return frame({
     w: W, h: H, p, theme,
@@ -532,7 +670,7 @@ ${latched}
     defs: `<linearGradient id="${p}-flap" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3b3b3e"/><stop offset=".49" stop-color="#28282b"/><stop offset=".51" stop-color="#1c1c1e"/><stop offset="1" stop-color="#2c2c2f"/></linearGradient>
 <linearGradient id="${p}-rf" x1="0" x2="0" y1="${Y0 + CH}" y2="${Y0 + CH + 30}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
 <mask id="${p}-rm" maskUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}"><rect y="${Y0 + CH}" width="${W}" height="40" fill="url(#${p}-rf)"/></mask>`,
-    body: `${fetch}<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;${((O - 0.5) / T).toFixed(4)};${(O / T).toFixed(4)};.97;1" dur="${T}s" repeatCount="indefinite"/>
+    body: `${fetch}<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;${((O - 0.05) / T).toFixed(4)};${(O / T).toFixed(4)};${((T - 0.8) / T).toFixed(4)};1" dur="${T}s" repeatCount="indefinite"/>
 <g id="${p}-board">${cells.join("")}</g>
 <g mask="url(#${p}-rm)"><g transform="translate(0 ${2 * (Y0 + CH) + 2}) scale(1 -1)" opacity=".35" filter="url(#${p}b2)"><use href="#${p}-board"/></g></g>
 ${fieldSets.join("")}</g>`,
