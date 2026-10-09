@@ -1,13 +1,16 @@
-// The totem: a spinning top that runs on the last two weeks of work.
+// The totem: a steel spinning top that runs on the last two weeks of work, and that anyone on
+// GitHub can spin.
 //
 // Reads the daily contribution calendar, measures how steadily things have been built lately,
-// and writes three files:
-//   assets/totem-dark.svg, assets/totem-light.svg   the README's top, for each GitHub theme
-//   docs/totem.json                                 the same measurement, for the interactive page
+// and writes:
+//   assets/totem.svg     the top, on a transparent ground so it sits in light and dark mode alike
+//   totem/state.json     the measurement and the last spin
+//   README.md            the caption between <!-- totem --> and <!-- /totem -->
 //
-// Every number in the picture comes from the calendar. Nothing is tuned by hand afterwards.
+// Every number in the picture comes from the calendar or from a real spin. Nothing is tuned by hand.
 //
-//   node totem/build.mjs                     GitHub GraphQL (GITHUB_TOKEN), else the public calendar page
+//   node totem/build.mjs                     measure (GitHub GraphQL with GITHUB_TOKEN, else the public calendar page)
+//   SPINNER=login node totem/build.mjs       a visitor spun it: record who and when, then redraw
 //   node totem/build.mjs --from days.json    a saved {"YYYY-MM-DD": count} map, for working offline
 
 import fs from "node:fs";
@@ -16,7 +19,8 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const USER = process.env.TOTEM_USER ?? "SatnamCodes";
-const PAGE = process.env.TOTEM_PAGE ?? "https://satnamcodes.github.io/SatnamCodes/";
+const STATE = path.join(ROOT, "totem", "state.json");
+const SPIN_LASTS_HOURS = 24; // a visitor's spin keeps the top going this long
 
 // ---------------------------------------------------------------------------------------------
 // 1. The calendar
@@ -81,7 +85,6 @@ const median = (xs) => {
 export function measure(days) {
   const dates = Object.keys(days).sort();
   const counts = dates.map((d) => days[d]);
-  const today = dates.at(-1);
   const recent = counts.slice(-14);
   const last14 = recent.reduce((a, b) => a + b, 0);
   const active14 = recent.filter((n) => n > 0).length;
@@ -96,228 +99,268 @@ export function measure(days) {
 
   let idle = 0;
   for (let i = counts.length - 1; i >= 0 && counts[i] === 0; i--) idle++;
-  const lastActive = idle < counts.length ? dates[counts.length - 1 - idle] : null;
 
-  // Momentum: this fortnight against a usual one. Rhythm: how many of its days had any work
-  // (half of them counts as full rhythm). Steadiness weighs both.
+  // Momentum: this fortnight against a usual one. Rhythm: how many of its days had any work (half
+  // of them counts as full rhythm). Steadiness weighs both.
   const momentum = clamp(last14 / usual / 1.2);
   const rhythm = clamp(active14 / 7);
   const steadiness = 0.6 * momentum + 0.4 * rhythm;
-  const fallen = idle >= 21;
-
-  const state = fallen
-    ? "at rest"
-    : steadiness >= 0.66
-      ? "spinning true"
-      : steadiness >= 0.33
-        ? "spinning"
-        : "wobbling";
 
   return {
-    user: USER,
-    measuredAt: today,
+    measuredAt: dates.at(-1),
     last14,
     active14,
     usualFortnight: usual,
     idleDays: idle,
-    lastActive,
     yearTotal: counts.slice(-365).reduce((a, b) => a + b, 0),
     steadiness: Number(steadiness.toFixed(3)),
+  };
+}
+
+// How the top moves, from the measurement and the last spin. A spin from a visitor sets it going
+// fast for a day; otherwise it runs on the work alone. Faster spin means slower precession and a
+// smaller lean, as in a real top.
+export function motion(m, spin, now = new Date()) {
+  const spunHoursAgo = spin ? (now - new Date(spin.at)) / 36e5 : Infinity;
+  const fresh = spunHoursAgo < SPIN_LASTS_HOURS;
+  const s = fresh ? Math.max(m.steadiness, lerp(1, 0.75, spunHoursAgo / SPIN_LASTS_HOURS)) : m.steadiness;
+  const fallen = !fresh && m.idleDays >= 21;
+  const state = fallen ? "at rest" : s >= 0.66 ? "spinning true" : s >= 0.33 ? "spinning" : "wobbling";
+  return {
     state,
-    // How the top moves. Faster spin means slower precession and a smaller lean, as in a real top.
-    spinPeriod: Number(lerp(1.5, 0.3, steadiness).toFixed(3)), // seconds per turn of the body
-    leanDeg: Number(lerp(17, 2.5, steadiness).toFixed(2)), // precession lean
-    precessionPeriod: Number(lerp(1.7, 6.5, steadiness).toFixed(3)), // seconds per sway
     fallen,
-    recent,
+    fresh,
+    spinPeriod: Number(lerp(1.6, 0.34, s).toFixed(3)), // seconds per turn
+    leanDeg: Number(lerp(15, 1.8, s).toFixed(2)),
+    precessionPeriod: Number(lerp(1.8, 7, s).toFixed(3)), // seconds per sway
   };
 }
 
 // ---------------------------------------------------------------------------------------------
-// 3. The picture
+// 3. The picture: machined steel, lit like a studio product shot, on nothing.
 
-const W = 840;
-const H = 352; // 2.39:1, the widescreen frame
-const TIP = { x: 420, y: 268 };
+const W = 720;
+const H = 300;
+const TIP = { x: 360, y: 266 };
+const SCALE = 1.25;
 
-// The top in profile, tip at the origin, y up the axis (negative is up on screen).
-// A squat brass-banded body, an ogive underneath to the point, a slim stem with a knob.
-const BODY = [
-  "M 0 0",
-  "C 6 -4, 16 -22, 30 -44",
-  "C 40 -58, 52 -70, 54 -80",
-  "C 55 -86, 50 -94, 40 -99",
-  "C 30 -103, 14 -105, 6 -106",
-  "L 6 -138",
-  "C 6 -144, 10 -146, 10 -150",
-  "C 10 -156, 4 -158, 0 -158",
-  "C -4 -158, -10 -156, -10 -150",
-  "C -10 -146, -6 -144, -6 -138",
-  "L -6 -106",
-  "C -14 -105, -30 -103, -40 -99",
-  "C -50 -94, -55 -86, -54 -80",
-  "C -52 -70, -40 -58, -30 -44",
-  "C -16 -22, -6 -4, 0 0 Z",
-].join(" ");
+// The right half of the profile, tip at the origin, up the axis (negative y). Mirrored for the left.
+// A pointed underside, a rounded crown, a slim stem and a domed cap.
+const HALF = [
+  ["M", 0, 0],
+  ["C", 6, -6, 18, -26, 30, -44],
+  ["C", 40, -58, 48, -70, 50, -79],
+  ["C", 51, -86, 47, -95, 38, -102],
+  ["C", 29, -108, 15, -111, 6.5, -112],
+  ["C", 5.4, -114, 5, -116, 5, -119],
+  ["L", 5, -149],
+  ["C", 5, -151, 7.6, -152, 7.6, -156],
+  ["C", 7.6, -161, 4, -163, 0, -163],
+];
 
-// Where a top that has stopped comes to rest: on its side, touching the table at the body's widest
-// edge and the knob. Found by turning it until those two points sit at the same height, then setting
-// it down on the floor line with its middle near the centre of the frame.
+function profilePath() {
+  const fmt = (n) => +n.toFixed(2);
+  const right = HALF.map(([c, ...p]) => `${c} ${p.map(fmt).join(" ")}`).join(" ");
+  // Walk back down the left side: reverse each curve, mirroring x.
+  const pts = [];
+  for (let i = HALF.length - 1; i >= 1; i--) {
+    const [c, ...p] = HALF[i];
+    const start = HALF[i - 1].slice(-2);
+    if (c === "L") pts.push(`L ${fmt(-start[0])} ${fmt(start[1])}`);
+    else pts.push(`C ${fmt(-p[2])} ${fmt(p[3])}, ${fmt(-p[0])} ${fmt(p[1])}, ${fmt(-start[0])} ${fmt(start[1])}`);
+  }
+  return `${right} ${pts.join(" ")} Z`;
+}
+const BODY = profilePath();
+
+// Half-width of the body at height y (for lathe lines), sampled from the curves.
+function halfWidth(y) {
+  let best = 0;
+  let x0 = 0, y0 = 0;
+  for (const [c, ...p] of HALF.slice(1)) {
+    const seg = c === "L" ? [[x0, y0], [x0, y0], [p[0], p[1]], [p[0], p[1]]] : [[x0, y0], [p[0], p[1]], [p[2], p[3]], [p[4], p[5]]];
+    for (let t = 0; t <= 1; t += 0.01) {
+      const u = 1 - t;
+      const px = u ** 3 * seg[0][0] + 3 * u * u * t * seg[1][0] + 3 * u * t * t * seg[2][0] + t ** 3 * seg[3][0];
+      const py = u ** 3 * seg[0][1] + 3 * u * u * t * seg[1][1] + 3 * u * t * t * seg[2][1] + t ** 3 * seg[3][1];
+      if (Math.abs(py - y) < 0.8) best = Math.max(best, px);
+    }
+    [x0, y0] = seg[3];
+  }
+  return best;
+}
+
+// Where a stopped top comes to rest: on its side, on the body's widest edge and the cap, tip raised.
 function restingPose() {
-  const rim = [-54, -80];
-  const knob = [-10, -152];
-  // Points round the near side of the outline, to find the lowest one once it is turned.
-  const outline = [rim, knob, [-55, -86], [-50, -94], [-40, -99], [-10, -146], [-10, -156], [-30, -44], [0, 0]];
+  const rim = [-50, -79];
+  const cap = [-7.6, -156];
+  const outline = [rim, cap, [-51, -86], [-47, -95], [-38, -102], [-7.6, -152], [-4, -163], [-30, -44], [0, 0]];
   const turn = (p, deg) => {
     const a = (deg * Math.PI) / 180;
     return [p[0] * Math.cos(a) - p[1] * Math.sin(a), p[0] * Math.sin(a) + p[1] * Math.cos(a)];
   };
-  const gap = (deg) => Math.abs(turn(rim, deg)[1] - turn(knob, deg)[1]);
+  const gap = (deg) => Math.abs(turn(rim, deg)[1] - turn(cap, deg)[1]);
   let best = -90;
   for (let deg = -60; deg >= -140; deg -= 0.25) if (gap(deg) < gap(best)) best = deg;
   const low = Math.max(...outline.map((p) => turn(p, best)[1]));
   const mid = turn([0, -80], best);
-  return `translate(${(TIP.x - mid[0]).toFixed(1)} ${(TIP.y - low).toFixed(1)}) rotate(${best})`;
+  return `translate(${(TIP.x - mid[0] * SCALE).toFixed(1)} ${(TIP.y - low * SCALE).toFixed(1)}) rotate(${best})`;
 }
 
-const THEMES = {
-  dark: {
-    bg: "#000000",
-    ink: "#e8e6e1",
-    mute: "#8a8780",
-    faint: "#3a3936",
-    accent: "#d9a35b",
-    metal: ["#2b2b2b", "#9a9a96", "#efefe9", "#8c8c88", "#1f1f1f"],
-    shadow: "#000000",
-    floor: "#151513",
-  },
-  light: {
-    bg: "#f4f2ec",
-    ink: "#141412",
-    mute: "#6c6a64",
-    faint: "#d6d3ca",
-    accent: "#9a5f17",
-    metal: ["#4a4a48", "#a9a9a4", "#fbfbf8", "#9b9b96", "#3c3c3a"],
-    shadow: "#3a3530",
-    floor: "#e8e5dc",
-  },
-};
+// Studio reflections across a polished cylinder: two soft boxes, a dark gap, a kicker on the far edge.
+const STEEL = [
+  [0, "#141517"], [0.07, "#2f3134"], [0.18, "#7d8085"], [0.27, "#cfd2d5"], [0.33, "#f3f4f5"],
+  [0.4, "#b4b7bb"], [0.5, "#55585c"], [0.6, "#3b3d40"], [0.7, "#74777b"], [0.79, "#c7c9cc"],
+  [0.85, "#8d9094"], [0.93, "#3a3c3f"], [1, "#151618"],
+];
 
-const fmtDate = (iso) =>
-  new Date(`${iso}T00:00:00Z`)
-    .toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })
-    .toUpperCase();
+export function svg(m, mo) {
+  const lean = mo.fallen ? 0 : mo.leanDeg;
+  const desc = mo.fallen
+    ? `A machined steel spinning top lying still on its side: no contributions for ${m.idleDays} days.`
+    : `A machined steel spinning top, ${mo.state}: ${m.last14} contributions on ${m.active14} of the last 14 days. It turns once every ${mo.spinPeriod} seconds and leans ${lean} degrees as it precesses.`;
+  const pose = `${mo.fallen ? restingPose() : `translate(${TIP.x} ${TIP.y})`} scale(${SCALE})`;
 
-function topMarkup(m, t, id) {
-  // Grooves turned into the body, and the brass band at its widest.
-  const grooves = [-62, -72, -90]
-    .map((y) => {
-      const r = y === -90 ? 46 : y === -72 ? 52 : 47;
-      return `<ellipse cx="0" cy="${y}" rx="${r}" ry="2.2" fill="none" stroke="${t.metal[0]}" stroke-opacity=".55" stroke-width=".8"/>`;
-    })
-    .join("");
-  // Highlights that sweep across the turning body: x = R·cos(ψ), seen only on the near side.
-  const streaks = m.fallen
-    ? ""
-    : [0, 1, 2, 3]
+  // Lathe lines: fine turned rings across the body, alternately catching and losing the light.
+  const lathe = [];
+  for (let y = -110.5, i = 0; y < -3; y += 1.7, i++) {
+    const r = halfWidth(y);
+    if (r < 6) continue;
+    const light = i % 3 === 0;
+    // Turned rings are never perfectly even: vary their strength a little, seeded by position.
+    const vary = 0.6 + 0.4 * Math.abs(Math.sin(i * 12.9898));
+    lathe.push(
+      `<ellipse cx="0" cy="${y.toFixed(1)}" rx="${r.toFixed(1)}" ry="${(r * 0.035 + 0.6).toFixed(2)}" fill="none" stroke="${light ? "#fff" : "#000"}" stroke-opacity="${((light ? 0.06 : 0.07) * vary).toFixed(3)}" stroke-width=".4"/>`,
+    );
+  }
+  // Two engraved marks on the crown: the only way to see a symmetric top turning. They sweep
+  // across the near face and blur with speed.
+  const blur = Math.min(9, 3.2 / mo.spinPeriod);
+  const marks = mo.fallen
+    ? `<rect x="-10" y="-95" width="5" height="1.6" rx=".8" fill="#0e0f10" opacity=".55"/>`
+    : [0, 0.5]
         .map(
-          (i) =>
-            `<rect class="streak" x="-3" y="-108" width="6" height="110" fill="${t.metal[2]}" style="animation-delay:-${((m.spinPeriod / 4) * i).toFixed(3)}s"/>`,
+          (k) =>
+            `<rect class="mark" x="-2.5" y="-96" width="5" height="1.8" rx=".9" fill="#0e0f10" style="animation-delay:-${(mo.spinPeriod * k).toFixed(3)}s"/>`,
         )
         .join("");
-  return `
-    <g clip-path="url(#${id}-clip)">
-      <path d="${BODY}" fill="url(#${id}-metal)"/>
-      ${grooves}
-      <rect x="-56" y="-83" width="112" height="7" fill="${t.accent}" opacity=".9"/>
-      <g class="streaks" opacity=".5">${streaks}</g>
+  const top = `
+    <g clip-path="url(#tt-clip)">
+      <path d="${BODY}" fill="url(#tt-steel)"/>
+      <!-- The stem is a narrower cylinder, so it carries the same reflections at its own scale. -->
+      <rect x="-8" y="-164" width="16" height="52" fill="url(#tt-stem)"/>
+      <path d="${BODY}" fill="url(#tt-shade)"/>
+      <!-- The key light's hotspot on the crown. -->
+      <ellipse cx="-17" cy="-93" rx="12" ry="9" fill="url(#tt-hot)"/>
+      ${lathe.join("\n      ")}
+      <g filter="url(#tt-blur)">${marks}</g>
     </g>
-    <path d="${BODY}" fill="none" stroke="${t.ink}" stroke-opacity=".7" stroke-width="1.1"/>`;
-}
+    <!-- The machined edge at the widest point, and a fine rim light on the crown. -->
+    <path d="M -50 -79 Q 0 -75.2 50 -79" fill="none" stroke="#000" stroke-opacity=".35" stroke-width=".7" clip-path="url(#tt-clip)"/>
+    <path d="M -49.6 -77.6 Q 0 -73.8 49.6 -77.6" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width=".5" clip-path="url(#tt-clip)"/>
+    <path d="M -38 -102 C -29 -108 -15 -111 -6.5 -112" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width=".6"/>`;
 
-export function svg(m, theme) {
-  const t = THEMES[theme];
-  const id = `totem-${theme}`;
-  const lean = m.fallen ? 0 : m.leanDeg;
-  const label = `${m.state.toUpperCase()}   ·   ${m.last14} CONTRIBUTIONS IN 14 DAYS   ·   MEASURED ${fmtDate(m.measuredAt)}`;
-  const desc = m.fallen
-    ? `A spinning top lying still on its side: no contributions for ${m.idleDays} days.`
-    : `A spinning top, ${m.state}: ${m.last14} contributions on ${m.active14} of the last 14 days. It turns once every ${m.spinPeriod} seconds and leans ${lean} degrees as it precesses.`;
-  // Fallen: the top lies on its side, resting on the knob and the body's widest edge.
-  const rest = m.fallen ? `transform="${restingPose()}"` : "";
-
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-labelledby="${id}-t">
-<title id="${id}-t">${desc}</title>
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-labelledby="tt-title">
+<title id="tt-title">${desc}</title>
 <style>
   .sway { transform-box: view-box; transform-origin: ${TIP.x}px ${TIP.y}px;
-          animation: sway ${m.precessionPeriod}s ease-in-out infinite alternate; }
+          animation: sway ${mo.precessionPeriod}s ease-in-out infinite alternate; }
   @keyframes sway { from { transform: rotate(-${lean}deg) } to { transform: rotate(${lean}deg) } }
   .shadow { transform-box: view-box; transform-origin: ${TIP.x}px ${TIP.y}px;
-            animation: drift ${m.precessionPeriod}s ease-in-out infinite alternate; }
-  @keyframes drift { from { transform: translateX(${(-lean * 2.2).toFixed(1)}px) scaleX(${(1 + lean / 60).toFixed(3)}) }
-                     to   { transform: translateX(${(lean * 2.2).toFixed(1)}px) scaleX(${(1 + lean / 60).toFixed(3)}) } }
-  .streak { opacity: 0; animation: turn ${m.spinPeriod}s linear infinite; }
+            animation: drift ${mo.precessionPeriod}s ease-in-out infinite alternate; }
+  @keyframes drift { from { transform: translateX(${(-lean * 2.4).toFixed(1)}px) } to { transform: translateX(${(lean * 2.4).toFixed(1)}px) } }
+  .mark { opacity: 0; animation: turn ${mo.spinPeriod}s linear infinite; }
   @keyframes turn {
-    0%   { transform: translateX(-52px) scaleX(.3); opacity: 0 }
-    12%  { opacity: .9 }
-    25%  { transform: translateX(-37px) scaleX(.75) }
-    50%  { transform: translateX(0) scaleX(1); opacity: 1 }
-    75%  { transform: translateX(37px) scaleX(.75) }
-    88%  { opacity: .9 }
-    100% { transform: translateX(52px) scaleX(.3); opacity: 0 }
+    0%   { transform: translateX(-46px) scaleX(.2); opacity: 0 }
+    10%  { opacity: .55 }
+    25%  { transform: translateX(-33px) scaleX(.7) }
+    50%  { transform: translateX(0) scaleX(1); opacity: .75 }
+    75%  { transform: translateX(33px) scaleX(.7) }
+    90%  { opacity: .55 }
+    100% { transform: translateX(46px) scaleX(.2); opacity: 0 }
   }
-  .caption { font: 500 10.5px "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing: 3.2px; fill: ${t.mute}; }
-  .rise { opacity: 0; animation: rise 1.6s ease-out .3s forwards; }
-  @keyframes rise { to { opacity: 1 } }
-  @media (prefers-reduced-motion: reduce) {
-    .sway, .shadow, .streak, .rise { animation: none; opacity: 1; }
-    .streak { opacity: 0; }
-  }
+  @media (prefers-reduced-motion: reduce) { .sway, .shadow, .mark { animation: none } }
 </style>
 <defs>
-  <linearGradient id="${id}-metal" x1="-56" x2="56" y1="0" y2="0" gradientUnits="userSpaceOnUse">
-    ${t.metal.map((c, i) => `<stop offset="${[0, 0.28, 0.42, 0.68, 1][i]}" stop-color="${c}"/>`).join("")}
+  <linearGradient id="tt-steel" x1="-51" x2="51" y1="0" y2="0" gradientUnits="userSpaceOnUse">
+    ${STEEL.map(([o, c]) => `<stop offset="${o}" stop-color="${c}"/>`).join("")}
   </linearGradient>
-  <clipPath id="${id}-clip"><path d="${BODY}"/></clipPath>
-  <radialGradient id="${id}-shadow"><stop offset="0" stop-color="${t.shadow}" stop-opacity=".55"/><stop offset="1" stop-color="${t.shadow}" stop-opacity="0"/></radialGradient>
-  <linearGradient id="${id}-fade" x1="0" x2="0" y1="${TIP.y}" y2="${TIP.y + 90}" gradientUnits="userSpaceOnUse">
-    <stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+  <linearGradient id="tt-stem" x1="-5.2" x2="5.2" y1="0" y2="0" gradientUnits="userSpaceOnUse">
+    ${STEEL.map(([o, c]) => `<stop offset="${o}" stop-color="${c}"/>`).join("")}
   </linearGradient>
-  <mask id="${id}-reflect"><rect x="0" y="${TIP.y}" width="${W}" height="${H - TIP.y}" fill="url(#${id}-fade)"/></mask>
+  <radialGradient id="tt-hot"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+  <!-- Key light from above: the crown catches it, the underside falls into shade. -->
+  <linearGradient id="tt-shade" x1="0" x2="0" y1="-163" y2="0" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#fff" stop-opacity=".12"/>
+    <stop offset=".3" stop-color="#fff" stop-opacity=".1"/>
+    <stop offset=".5" stop-color="#fff" stop-opacity="0"/>
+    <stop offset=".55" stop-color="#000" stop-opacity=".05"/>
+    <stop offset="1" stop-color="#000" stop-opacity=".5"/>
+  </linearGradient>
+  <clipPath id="tt-clip"><path d="${BODY}"/></clipPath>
+  <filter id="tt-blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${blur.toFixed(1)} 0.2"/></filter>
+  <filter id="tt-soft" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="6 2.2"/></filter>
 </defs>
 
-<rect width="${W}" height="${H}" fill="${t.bg}"/>
-<rect x="0" y="${TIP.y}" width="${W}" height="${H - TIP.y}" fill="${t.floor}"/>
-<line x1="0" y1="${TIP.y + 0.5}" x2="${W}" y2="${TIP.y + 0.5}" stroke="${t.faint}"/>
+<!-- Contact shadow only: no floor, no frame. It reads on a light page and fades into a dark one. -->
+<ellipse class="shadow" cx="${mo.fallen ? TIP.x - 30 : TIP.x}" cy="${TIP.y + 1}" rx="${mo.fallen ? 115 : 58}" ry="5.5" fill="#000" opacity=".38" filter="url(#tt-soft)"/>
+<ellipse class="shadow" cx="${mo.fallen ? TIP.x - 30 : TIP.x}" cy="${TIP.y + 0.5}" rx="${mo.fallen ? 50 : 9}" ry="1.6" fill="#000" opacity=".45" filter="url(#tt-soft)"/>
 
-<ellipse class="shadow" cx="${m.fallen ? TIP.x - 40 : TIP.x}" cy="${TIP.y + 2}" rx="${m.fallen ? 120 : 64}" ry="7" fill="url(#${id}-shadow)"/>
-
-<!-- The polished table's reflection: the same top, mirrored across the floor line. -->
-<g class="mirror" mask="url(#${id}-reflect)">
-  <g transform="translate(0 ${2 * TIP.y}) scale(1 -1)">
-    <g class="sway"><g ${rest || `transform="translate(${TIP.x} ${TIP.y})"`}>${topMarkup(m, t, `${id}-r`)}</g></g>
-  </g>
-</g>
-
-<g class="sway"><g ${rest || `transform="translate(${TIP.x} ${TIP.y})"`}>${topMarkup(m, t, id)}</g></g>
-
-<text class="caption rise" x="36" y="${H - 22}">${label}</text>
-<text class="caption rise" x="${W - 36}" y="${H - 22}" text-anchor="end">FLICK IT  ↗</text>
+<g class="sway"><g transform="${pose}">${top}</g></g>
 </svg>
-`.replace(/^\s*\n/gm, "");
+`;
+}
+
+// ---------------------------------------------------------------------------------------------
+// 4. The caption in the README
+
+const fmtDate = (iso) =>
+  new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+
+function caption(m, mo, state) {
+  const parts = [
+    `<b>${mo.state[0].toUpperCase()}${mo.state.slice(1)}</b>`,
+    `${m.last14} contributions in the last 14 days`,
+    `measured ${fmtDate(`${m.measuredAt}T00:00:00Z`)}`,
+  ];
+  const spin = state.lastSpin
+    ? `Last spun by <a href="https://github.com/${state.lastSpin.by}">@${state.lastSpin.by}</a> on ${fmtDate(state.lastSpin.at)} · spun ${state.spins} ${state.spins === 1 ? "time" : "times"} so far`
+    : "Nobody has spun it yet.";
+  return `<sub>${parts.join(" · ")}<br>${spin}</sub>`;
+}
+
+function writeCaption(text) {
+  const file = path.join(ROOT, "README.md");
+  const readme = fs.readFileSync(file, "utf8");
+  const next = readme.replace(/<!-- totem -->[\s\S]*?<!-- \/totem -->/, `<!-- totem -->\n${text}\n<!-- /totem -->`);
+  if (next === readme && !readme.includes("<!-- totem -->")) throw new Error("README has no <!-- totem --> block");
+  fs.writeFileSync(file, next);
 }
 
 // ---------------------------------------------------------------------------------------------
 
 async function main() {
-  const days = await calendar();
-  const m = measure(days);
-  fs.mkdirSync(path.join(ROOT, "assets"), { recursive: true });
-  fs.mkdirSync(path.join(ROOT, "docs"), { recursive: true });
-  for (const theme of ["dark", "light"])
-    fs.writeFileSync(path.join(ROOT, "assets", `totem-${theme}.svg`), svg(m, theme));
-  fs.writeFileSync(path.join(ROOT, "docs", "totem.json"), `${JSON.stringify({ ...m, page: PAGE }, null, 2)}\n`);
-  console.log(`[totem] ${m.measuredAt}: ${m.state}, ${m.last14} in 14 days (usual ${m.usualFortnight}), steadiness ${m.steadiness}`);
+  const state = fs.existsSync(STATE) ? JSON.parse(fs.readFileSync(STATE, "utf8")) : { spins: 0 };
+  const spinner = process.env.SPINNER;
+  if (spinner) {
+    // GitHub logins are letters, digits and single hyphens; anything else is not a real spin.
+    if (!/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/.test(spinner)) throw new Error(`Not a GitHub login: ${spinner}`);
+    state.lastSpin = { by: spinner, at: new Date().toISOString() };
+    state.spins = (state.spins ?? 0) + 1;
+  }
+
+  // A spin redraws with the last measurement, so a visitor never waits on the calendar.
+  let m = state.measurement;
+  if (!spinner || !m) m = measure(await calendar());
+  const mo = motion(m, state.lastSpin);
+
+  fs.writeFileSync(path.join(ROOT, "assets", "totem.svg"), svg(m, mo));
+  fs.writeFileSync(STATE, `${JSON.stringify({ ...state, measurement: m, motion: mo }, null, 2)}\n`);
+  writeCaption(caption(m, mo, state));
+  console.log(
+    `[totem] ${m.measuredAt}: ${mo.state}, ${m.last14} in 14 days (usual ${m.usualFortnight}), steadiness ${m.steadiness}` +
+      (spinner ? `; spun by @${spinner}` : ""),
+  );
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) await main();

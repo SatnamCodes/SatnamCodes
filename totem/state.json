@@ -1,0 +1,20 @@
+{
+  "spins": 0,
+  "measurement": {
+    "measuredAt": "2026-10-09",
+    "last14": 46,
+    "active14": 6,
+    "usualFortnight": 7.5,
+    "idleDays": 1,
+    "yearTotal": 264,
+    "steadiness": 0.943
+  },
+  "motion": {
+    "state": "spinning true",
+    "fallen": false,
+    "fresh": false,
+    "spinPeriod": 0.412,
+    "leanDeg": 2.55,
+    "precessionPeriod": 6.704
+  }
+}

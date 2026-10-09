@@ -1,5 +1,5 @@
 # The totem is measured once a day from the contribution calendar and redrawn:
-# assets/totem-dark.svg, assets/totem-light.svg and docs/totem.json (read by the interactive page).
+# assets/totem.svg, totem/state.json and the caption in README.md.
 name: Totem
 
 on:
@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["totem/**", ".github/workflows/totem.yml"]
+    paths: ["totem/build.mjs", ".github/workflows/totem.yml"]
 
 permissions:
   contents: write
@@ -34,7 +34,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/totem-dark.svg assets/totem-light.svg docs/totem.json
+          git add assets/totem.svg totem/state.json README.md
           git diff --cached --quiet && exit 0
           git commit -m "Totem: measured $(date -u +%Y-%m-%d)"
-          git push
+          for i in 1 2 3; do git pull --rebase --quiet && git push && break; sleep 5; done
