@@ -1,7 +1,7 @@
 <div align="center">
 
 <details>
-<summary><a name="totem"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/totem-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/totem-light.svg"><img src="assets/totem-light.svg" width="840" alt="A steel spinning top, running on my last two weeks of work: spinning true when I've been building steadily, wobbling when I haven't, at rest when I stop. Click it to open its blueprint."></picture></a><br><sub>Click the top for its blueprint and its other states</sub></summary>
+<summary><a name="totem"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/totem-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/totem-light.svg"><img src="assets/totem-light.svg" width="840" alt="A steel spinning top, simulated from the equations of a heavy top and run on my last two weeks of work: spinning true when I have been building steadily, wobbling when I have not, at rest when I stop. Click it to open its blueprint."></picture></a><br><sub>Click the top for its blueprint and its other states</sub></summary>
 <br>
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/blueprint-dark.svg">
@@ -37,18 +37,20 @@
 
 </div>
 
-## Satnam Singh
+<div align="center">
 
-**Machine learning engineering · AI infrastructure · AI research · Software engineering**
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/title-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/title-light.svg"><img src="assets/title-light.svg" width="840" alt="Satnam Singh. I build models of physical systems, and the GPU code they run on. Machine learning engineering, AI infrastructure, AI research, software engineering."></picture>
 
-I build machine learning models of physical systems and the GPU code they run on, and I profile both until the numbers make sense.
+</div>
 
-- **AI infrastructure.** A CUDA SGEMM taken from a naive kernel through coalescing and shared-memory tiling, 169.6 → 1,052.9 GFLOPS on an RTX 4060 (6.5×), profiled in Nsight Systems and Nsight Compute; register blocking, warp tiling and Tensor Cores next. Warp divergence measured in neighbor-gather kernels over a million particles.
-- **AI research.** Graph neural networks over a defect's real crystal structure, to predict formation energy and ionization levels of p-type dopants in β-Ga₂O₃ (abstract under review at IIM ATM 2026). An independent study of whether exoplanet habitability indices reduce to a few physical quantities.
-- **ML engineering.** NodeGuard, a GCN in PyTorch Geometric that finds fraud rings under heavy class imbalance; recall-only checkpointing converged on a degenerate model, so it checkpoints on F1. A multi-agent retrieval system (LangGraph, FAISS) that checks each generated claim against its sources with sentence-level NLI.
-- **Software engineering.** A pipeline that loads 1,700+ RISC-V YAML specification files into PostgreSQL: 8 tables, 1,351 instructions, 396 control and status registers. Python, C++, FastAPI, Docker, Linux.
+I work where the equations meet the hardware. On one side, models of physical things: crystals, fluids, planets. On the other, the GPU code those models run on, measured until every number has an explanation.
 
-**Education.** Indian Institute of Technology Madras, B.S. in Data Science and Applications (2025–2029) · Delhi Public School, Bathinda
+- **AI infrastructure.** *Making the machine explain itself.* A CUDA SGEMM taken from a naive kernel through coalescing and shared-memory tiling, 169.6 → 1,052.9 GFLOPS on an RTX 4060 (6.5×), profiled in Nsight Systems and Nsight Compute; register blocking, warp tiling and Tensor Cores next. Warp divergence in the neighbour-gather step of SPH, as OpenFPM runs it, over a million particles.
+- **AI research.** *Teaching a network the shape of a defect.* Graph neural networks over a defect's real crystal structure, predicting formation energies and ionization levels of p-type dopants in β-Ga₂O₃; abstract under review at IIM ATM 2026. An independent study asking whether exoplanet habitability indices reduce to a few physical quantities.
+- **ML engineering.** *Models that survive contact with real data.* NodeGuard, a GCN in PyTorch Geometric that finds fraud rings under heavy class imbalance; recall-only checkpointing settled on a degenerate model, so it checkpoints on F1. A multi-agent retrieval system (LangGraph, FAISS) that checks every generated claim against its sources with sentence-level NLI.
+- **Software engineering.** *A specification made queryable.* A pipeline that loads 1,700+ RISC-V YAML specification files into PostgreSQL: 8 tables, 1,351 instructions, 396 control and status registers. Python, C++, FastAPI, Docker, Linux.
+
+**Education.** Indian Institute of Technology Madras, B.S. in Data Science and Applications (2025–2029). Delhi Public School, Bathinda.
 
 <div align="center">
 
@@ -66,6 +68,12 @@ I build machine learning models of physical systems and the GPU code they run on
 <br><br>
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/city-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/city-light.svg"><img src="assets/city-light.svg" width="840" alt="The last year of contributions as a city, a block a day, as tall as that day's work; the past recedes into haze and the last fortnight is lit."></picture>
+
+<details>
+<summary><sub>See the year flat</sub></summary>
+<br>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/heatmap-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/heatmap-light.svg"><img src="assets/heatmap-light.svg" width="840" alt="The same year as a flat calendar, a square a day, with the fortnight the top is measured on marked."></picture>
+</details>
 
 <br><br>
 

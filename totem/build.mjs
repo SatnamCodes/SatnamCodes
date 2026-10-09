@@ -17,8 +17,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { frame, anim, rng, r1, r2, TH } from "./film.mjs";
-import { city } from "./shots.mjs";
+import { frame, anim, rng, r1, r2, TH, SANS, withFonts } from "./film.mjs";
+import { city, heatmap } from "./shots.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const USER = process.env.TOTEM_USER ?? "SatnamCodes";
@@ -119,19 +119,94 @@ export function measure(days) {
   };
 }
 
-// How the top moves, from the measurement. Faster spin means slower precession and a smaller lean,
-// as in a real top; three weeks without work and it is lying on its side.
+// How the top moves, from the measurement. The top is a real body: the drawn profile, turned in
+// steel, gives its mass, centre of mass and moments of inertia (physics() below). Steadiness sets
+// how fast it spins, relative to the speed below which a heavy top cannot stand upright (it can
+// no longer "sleep"): at 0.5 it spins exactly that fast. Above it the top stands nearly upright
+// and precesses steadily; below it, it can only stay up by leaning far over, and it wobbles.
+// Its motion is then integrated from the equations of a heavy symmetric top. Three weeks without
+// work and it is lying on its side.
 export function motion(m) {
   const s = m.steadiness;
   const fallen = m.idleDays >= 21;
   const state = fallen ? "at rest" : s >= 0.5 ? "spinning true" : "wobbling";
+  const P = physics();
+  const w = P.wc * (0.8 + 0.4 * s); // rad/s about the axis
+  const ratio2 = (w / P.wc) ** 2;
+  let theta;
+  if (s >= 0.5) theta = (lerp(10, 2, (s - 0.5) / 0.5) * Math.PI) / 180;
+  // Below the sleeping speed, steady precession needs cos θ < (ω/ωc)²: lean past that, short of
+  // the angle where the rim would touch the table.
+  else theta = Math.min(Math.acos(0.85 * ratio2), (52 * Math.PI) / 180);
+  const disc = (P.I3 * w) ** 2 - 4 * P.I1 * P.mgl * Math.cos(theta);
+  const steady = (P.I3 * w - Math.sqrt(Math.max(0, disc))) / (2 * P.I1 * Math.cos(theta));
+  // Launched a little off steady precession, as a real top always is: the difference is the nutation.
+  const phid0 = steady * (s >= 0.5 ? 0.96 : 0.85);
+  const traj = fallen ? null : integrate(P, w, theta, phid0);
   return {
     state,
     fallen,
-    spinPeriod: Number(lerp(1.6, 0.34, s).toFixed(3)), // seconds per turn
-    leanDeg: Number(lerp(15, 1.8, s).toFixed(2)),
-    precessionPeriod: Number(lerp(1.8, 7, s).toFixed(3)), // seconds per sway
+    spinHz: Number((w / (2 * Math.PI)).toFixed(1)),
+    spinPeriod: Number(((2 * Math.PI) / w).toFixed(4)), // seconds per turn
+    leanDeg: Number(((theta * 180) / Math.PI).toFixed(2)),
+    precessionPeriod: traj ? Number(traj.period.toFixed(3)) : 0, // seconds per turn of the axis
+    nutationDeg: traj ? Number(((traj.span * 180) / Math.PI).toFixed(2)) : 0,
+    sleepHz: Number((P.wc / (2 * Math.PI)).toFixed(1)),
+    launch: { w, theta, phid0 },
   };
+}
+
+// The top as a body of steel: the profile drawn below at 0.25 mm a unit, turned about its axis.
+let PHYS;
+export function physics() {
+  if (PHYS) return PHYS;
+  const U = 0.25e-3, rho = 7850, g = 9.81, dh = 0.5;
+  let m = 0, mz = 0, I3 = 0, I1 = 0;
+  for (let h = dh / 2; h < 163; h += dh) {
+    const R = halfWidth(-h) * U, z = h * U, dm = rho * Math.PI * R * R * dh * U;
+    m += dm; mz += dm * z;
+    I3 += 0.5 * dm * R * R; // about the axis
+    I1 += dm * (R * R / 4 + z * z); // about a line through the tip, across the axis
+  }
+  const l = mz / m, mgl = m * g * l;
+  PHYS = { m, l, I1, I3, mgl, wc: Math.sqrt(4 * mgl * I1) / I3 };
+  return PHYS;
+}
+
+// Lagrange's equations for a heavy symmetric top on a fixed tip. θ is the lean, φ the direction
+// of lean (precession), ω₃ the spin; p_φ and p_ψ are conserved. Integrated over two turns of φ
+// and sampled at 60 frames a second.
+function integrate(P, w, theta0, phid0) {
+  const pPsi = P.I3 * w;
+  const pPhi = P.I1 * phid0 * Math.sin(theta0) ** 2 + pPsi * Math.cos(theta0);
+  const acc = (th) => {
+    const phid = (pPhi - pPsi * Math.cos(th)) / (P.I1 * Math.sin(th) ** 2);
+    return [phid, (Math.sin(th) * (P.I1 * phid * phid * Math.cos(th) - pPsi * phid + P.mgl)) / P.I1];
+  };
+  let th = theta0, thd = 0, phi = 0, t = 0, next = 0;
+  const dt = 2e-6, fps = 60, samples = [];
+  let lo = th, hi = th;
+  while (phi < 4 * Math.PI && t < 20) {
+    if (t >= next) samples.push([th, phi]), (next += 1 / fps);
+    // semi-implicit Euler at 2 µs is plenty for a few seconds of motion
+    const [phid, a] = acc(th);
+    thd += a * dt;
+    th += thd * dt;
+    phi += phid * dt;
+    t += dt;
+    lo = Math.min(lo, th); hi = Math.max(hi, th);
+  }
+  samples.push([th, phi]);
+  return { samples, duration: t, period: t / 2, span: hi - lo };
+}
+
+// The lean as the camera sees it: the axis (sin θ cos φ, cos θ, sin θ sin φ), seen from a little
+// above, gives a screen angle and a foreshortened height.
+const PITCH = 0.1;
+function projected(th, phi) {
+  const x = Math.sin(th) * Math.cos(phi), y = Math.cos(th), z = Math.sin(th) * Math.sin(phi);
+  const up = y * Math.cos(PITCH) + z * Math.sin(PITCH);
+  return { angle: (Math.atan2(x, up) * 180) / Math.PI, k: Math.hypot(x, up) };
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -238,17 +313,11 @@ export function svg(m, mo, theme = "dark") {
       `<ellipse cx="0" cy="${y.toFixed(1)}" rx="${r.toFixed(1)}" ry="${(r * 0.035 + 0.6).toFixed(2)}" fill="none" stroke="${light ? "#fff" : "#000"}" stroke-opacity="${((light ? 0.06 : 0.07) * vary).toFixed(3)}" stroke-width=".4"/>`,
     );
   }
-  // Two engraved marks on the crown: the only way to see a symmetric top turning. They sweep
-  // across the near face and blur with speed.
-  const blur = Math.min(9, 3.2 / mo.spinPeriod);
+  // Two engraved marks on the crown. At forty-odd turns a second no camera can follow them:
+  // in every frame they are smeared all the way round, a faint band, as in film of a real top.
   const marks = mo.fallen
     ? `<rect x="-10" y="-95" width="5" height="1.6" rx=".8" fill="#0e0f10" opacity=".55"/>`
-    : [0, 0.5]
-        .map(
-          (k) =>
-            `<rect class="mark" x="-2.5" y="-96" width="5" height="1.8" rx=".9" fill="#0e0f10" style="animation-delay:-${(mo.spinPeriod * k).toFixed(3)}s"/>`,
-        )
-        .join("");
+    : `<rect x="-46" y="-96.2" width="92" height="2.2" fill="#0e0f10" opacity=".22"/>`;
   const top = `
     <g clip-path="url(#tt-clip)">
       <path d="${BODY}" fill="url(#tt-steel)"/>
@@ -267,18 +336,14 @@ export function svg(m, mo, theme = "dark") {
     <path d="M -38 -102 C -29 -108 -15 -111 -6.5 -112" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width=".6"/>`;
 
 
-  // Precession and nutation, sampled over one precession period; the tip's wander over three.
-  const N = 60, T = mo.precessionPeriod;
-  const tilt = [], wander = [];
-  for (let i = 0; i <= N; i++) {
-    const ph = (2 * Math.PI * i) / N;
-    tilt.push(r2(lean * Math.cos(ph) + lean * 0.16 * Math.cos(7 * ph)));
-    wander.push(`${r1(lean * 0.9 * Math.sin(ph))} ${r1(lean * 0.15 * Math.sin(2 * ph))}`);
-  }
-  const moving = (inner) =>
-    mo.fallen
-      ? inner
-      : `<g><animateTransform attributeName="transform" type="translate" values="${wander.join(";")}" dur="${r2(3 * T)}s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="rotate" values="${tilt.join(";")}" dur="${T}s" repeatCount="indefinite"/>${inner}</g></g>`;
+  // The axis's path, integrated in motion(): its angle on screen and its foreshortened height.
+  const traj = mo.fallen ? null : integrate(physics(), mo.launch.w, mo.launch.theta, mo.launch.phid0);
+  const moving = (inner) => {
+    if (!traj) return inner;
+    const pr = traj.samples.map(([th, phi]) => projected(th, phi));
+    const dur = r2(traj.duration);
+    return `<g><animateTransform attributeName="transform" type="rotate" values="${pr.map((q) => r2(q.angle)).join(";")}" dur="${dur}s" repeatCount="indefinite"/><g><animateTransform attributeName="transform" type="scale" values="${pr.map((q) => `1 ${q.k.toFixed(4)}`).join(";")}" dur="${dur}s" repeatCount="indefinite"/>${inner}</g></g>`;
+  };
   const pose = mo.fallen ? `${restingPose(HTIP, HSCALE)} scale(${HSCALE})` : `translate(${HTIP.x} ${HTIP.y}) scale(${HSCALE})`;
 
   // The shadow: the silhouette projected onto the table along the lamp's direction.
@@ -288,39 +353,13 @@ export function svg(m, mo, theme = "dark") {
     : `<g transform="matrix(1 0 ${-kx * HSCALE} ${-ky * HSCALE} ${HTIP.x} ${HTIP.y})" opacity="${FILM.shadowOp}" filter="url(#tt-sh)">${moving(`<path d="${BODY}" fill="${FILM.shadow}"/>`)}</g>
 <ellipse cx="${HTIP.x}" cy="${HTIP.y + 0.5}" rx="7" ry="1.8" fill="${FILM.shadow}" opacity="${FILM.shadowOp + 0.2}" filter="url(#tt-soft)"/>`;
 
-  const R = rng(11);
-  const dust = Array.from({ length: 18 }, (_, i) => {
-    const x = 150 + R() * 360, y = 20 + R() * 230, rad = r1(0.5 + R() * 1.3), o = r2(0.15 + R() * 0.45);
-    const xs = [], ys = [];
-    for (let k = 0; k <= 8; k++) {
-      xs.push(x + Math.sin(k * 0.9 + i) * 9 + k * 1.6);
-      ys.push(y + Math.cos(k * 0.7 + i * 2) * 6 - k * 0.8);
-    }
-    xs.push(xs[0]); ys.push(ys[0]);
-    return `<circle r="${rad}" fill="${FILM.warm}" opacity="${o}"${rad > 1.2 ? ' filter="url(#tt-b1)"' : ""}>${anim("cx", xs, 18 + (i % 5) * 3)}${anim("cy", ys, 18 + (i % 5) * 3)}</circle>`;
-  }).join("");
-
   const body = `
 <ellipse cx="${HTIP.x}" cy="${HTIP.y + 2}" rx="210" ry="14" fill="url(#tt-floor)"/>
 <g mask="url(#tt-refmask)"><g transform="translate(0 ${2 * HTIP.y}) scale(1 -1)" opacity=".16" filter="url(#tt-b2)"><use href="#tt-top"/></g></g>
 ${shadow}
-<g id="tt-top" transform="${pose}">${moving(top)}</g>
-${dust}`;
+<g id="tt-top" transform="${pose}">${moving(top)}</g>`;
 
-  const defs = `<style>
-  .mark { opacity: 0; animation: turn ${mo.spinPeriod}s linear infinite; }
-  @keyframes turn {
-    0%   { transform: translateX(-46px) scaleX(.2); opacity: 0 }
-    10%  { opacity: .55 }
-    25%  { transform: translateX(-33px) scaleX(.7) }
-    50%  { transform: translateX(0) scaleX(1); opacity: .75 }
-    75%  { transform: translateX(33px) scaleX(.7) }
-    90%  { opacity: .55 }
-    100% { transform: translateX(46px) scaleX(.2); opacity: 0 }
-  }
-  @media (prefers-reduced-motion: reduce) { .mark { animation: none } }
-</style>
-
+  const defs = `
   <linearGradient id="tt-steel" x1="-51" x2="51" y1="0" y2="0" gradientUnits="userSpaceOnUse">
     ${STEEL.map(([o, c]) => `<stop offset="${o}" stop-color="${c}"/>`).join("")}
   </linearGradient>
@@ -337,7 +376,7 @@ ${dust}`;
     <stop offset="1" stop-color="#000" stop-opacity=".5"/>
   </linearGradient>
   <clipPath id="tt-clip"><path d="${BODY}"/></clipPath>
-  <filter id="tt-blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${blur.toFixed(1)} 0.2"/></filter>
+  <filter id="tt-blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${mo.fallen ? 0.3 : 6} 0.4"/></filter>
   <filter id="tt-soft" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="6 2.2"/></filter>
 
   <radialGradient id="tt-floor"><stop offset="0" stop-color="${FILM.shadow}" stop-opacity="${theme === "dark" ? 0.35 : 0.07}"/><stop offset="1" stop-color="${FILM.shadow}" stop-opacity="0"/></radialGradient>
@@ -377,6 +416,17 @@ export function blueprint(m, mo, theme, example = null) {
   const rad = (lean * Math.PI) / 180;
   const top = { x: tip.x + Math.sin(rad) * L, y: tip.y - Math.cos(rad) * L };
   const live = (s) => `<tspan fill="${t.accent}">${s}</tspan>`;
+  const slow = mo.fallen ? 1 : Math.round(1.5 / mo.spinPeriod); // the plan view's slow motion
+  // A steep lean leaves no room for leaders around the body: the readings go into a list instead.
+  const listed = mo.fallen || lean > 20;
+  const leanText = mo.fallen ? `LEAN ${live("90°")}: ON ITS SIDE` : `LEAN ${live(`${lean.toFixed(1)}°`)}`;
+  const list = [
+    `${live(m.last14)} CONTRIBUTIONS / 14 DAYS`,
+    `STEADINESS ${live(m.steadiness)}`,
+    `USUAL FORTNIGHT ${live(m.usualFortnight)}`,
+    `${live(m.idleDays)} ${m.idleDays === 1 ? "DAY" : "DAYS"} SINCE THE LAST COMMIT`,
+    leanText,
+  ].map((s, i) => txt(40, 58 + i * 18, s)).join("\n");
   const dimY = tip.y - 163 * S - 16; // the width dimension runs above the cap
   // A point on the upright body (local units) where it sits once leaned.
   const at = (x, y) => ({
@@ -397,7 +447,7 @@ export function blueprint(m, mo, theme, example = null) {
 <style>
   .draw { stroke-dasharray: 900; stroke-dashoffset: 900; animation: draw 2.2s ease-out .2s forwards; }
   @keyframes draw { to { stroke-dashoffset: 0 } }
-  .turn { transform-box: view-box; transform-origin: ${plan.x}px ${plan.y}px; animation: turn ${mo.fallen ? 0 : mo.spinPeriod * 6}s linear infinite; }
+  .turn { transform-box: view-box; transform-origin: ${plan.x}px ${plan.y}px; animation: turn ${mo.fallen ? 0 : r2(mo.spinPeriod * slow)}s linear infinite; }
   @keyframes turn { to { transform: rotate(360deg) } }
   @media (prefers-reduced-motion: reduce) { .draw { animation: none; stroke-dashoffset: 0 } .turn { animation: none } }
 </style>
@@ -414,7 +464,7 @@ ${txt(560, 22, "NOTES", { ls: 2 })}
   <rect width="${BW}" height="${BH}" fill="#fff"/>
   <rect x="${tip.x - 86}" y="${dimY - 19}" width="172" height="15" fill="#000"/>
 </mask>
-${mo.fallen ? "" : `<line x1="${tip.x}" y1="${tip.y + 14}" x2="${tip.x}" y2="${dimY - 22}" stroke="${t.faint}" stroke-dasharray="10 3 2 3" mask="url(#bp-gap)"/>`}
+${mo.fallen ? "" : `<line x1="${tip.x}" y1="${tip.y + 14}" x2="${tip.x}" y2="${listed ? 150 : dimY - 22}" stroke="${t.faint}" stroke-dasharray="10 3 2 3" mask="url(#bp-gap)"/>`}
 <g transform="${mo.fallen ? restingPose(tip, S) : `translate(${tip.x} ${tip.y}) rotate(${lean})`} scale(${S})">
   <path class="draw" d="${BODY}" fill="none" stroke="${t.ink}" stroke-width="${(1 / S).toFixed(2)}"/>
   <path class="draw" d="M -50 -79 Q 0 -75 50 -79" fill="none" stroke="${t.mute}" stroke-width="${(0.7 / S).toFixed(2)}"/>
@@ -422,30 +472,26 @@ ${mo.fallen ? "" : `<line x1="${tip.x}" y1="${tip.y + 14}" x2="${tip.x}" y2="${d
 ${
   mo.fallen
     ? `<line x1="${tip.x - 120}" y1="${tip.y + 0.5}" x2="${tip.x + 120}" y2="${tip.y + 0.5}" stroke="${t.mute}" stroke-width=".7"/>
-${[
-  `${live(m.last14)} CONTRIBUTIONS / 14 DAYS`,
-  `STEADINESS ${live(m.steadiness)}`,
-  `USUAL FORTNIGHT ${live(m.usualFortnight)}`,
-  `${live(m.idleDays)} DAYS SINCE THE LAST COMMIT`,
-  `LEAN ${live("90°")}: ON ITS SIDE`,
-]
-  .map((s, i) => txt(40, 58 + i * 18, s))
-  .join("\n")}`
+${list}`
     : `<line x1="${tip.x}" y1="${tip.y}" x2="${top.x.toFixed(1)}" y2="${top.y.toFixed(1)}" stroke="${t.accent}" stroke-width=".9" stroke-dasharray="4 3" mask="url(#bp-gap)"/>
 <path d="M ${tip.x} ${tip.y - 60} A 60 60 0 0 1 ${(tip.x + Math.sin(rad) * 60).toFixed(1)} ${(tip.y - Math.cos(rad) * 60).toFixed(1)}" fill="none" stroke="${t.accent}" stroke-width=".9"/>
-<path d="M ${(tip.x + Math.sin(rad) * 60 + 3).toFixed(1)} ${tip.y - 58} L ${tip.x + 50} ${tip.y - 46}" fill="none" stroke="${t.mute}" stroke-width=".7"/>
-${txt(tip.x + 54, tip.y - 43, `LEAN ${live(`${lean}°`)}`)}`
+${
+  listed
+    ? list
+    : `<path d="M ${(tip.x + Math.sin(rad) * 60 + 3).toFixed(1)} ${tip.y - 58} L ${tip.x + 50} ${tip.y - 46}" fill="none" stroke="${t.mute}" stroke-width=".7"/>
+${txt(tip.x + 54, tip.y - 43, leanText)}`
+}`
 }
 
 <!-- Dimensions: the body's width carries the fortnight; the height, the steadiness. -->
 ${
-  mo.fallen
+  listed
     ? ""
     : `<path d="M ${rimL.x.toFixed(1)} ${(rimL.y - 4).toFixed(1)} V ${dimY - 4} M ${rimR.x.toFixed(1)} ${(rimR.y - 4).toFixed(1)} V ${dimY - 4}" stroke="${t.faint}" stroke-width=".7"/>
 ${arrow(rimL.x, dimY, rimR.x, dimY)}`
 }
 ${
-  mo.fallen
+  listed
     ? ""
     : `${txt(tip.x, dimY - 8, `${live(m.last14)} CONTRIBUTIONS / 14 DAYS`, { anchor: "middle" })}
 ${arrow(tip.x - 104, tip.y, tip.x - 104, tip.y - 163 * S)}
@@ -454,7 +500,7 @@ ${arrow(tip.x - 104, tip.y, tip.x - 104, tip.y - 163 * S)}
 ${txt(Math.max(tip.x + 64, stem.x + 24), stem.y + 3, `USUAL FORTNIGHT ${live(m.usualFortnight)}`)}`
 }
 ${
-  mo.fallen
+  listed
     ? ""
     : `<path d="M ${tip.x + 3} ${tip.y - 4} L ${tip.x + 40} ${tip.y + 16} H ${tip.x + 58}" fill="none" stroke="${t.mute}" stroke-width=".7"/>
 ${txt(tip.x + 62, tip.y + 19, `${live(m.idleDays)} ${m.idleDays === 1 ? "DAY" : "DAYS"} SINCE THE LAST COMMIT`)}`
@@ -469,21 +515,21 @@ ${txt(tip.x + 62, tip.y + 19, `${live(m.idleDays)} ${m.idleDays === 1 ? "DAY" : 
   <line x1="0" y1="${-plan.r - 12}" x2="0" y2="${plan.r + 12}" stroke="${t.faint}" stroke-dasharray="10 3 2 3"/>
 </g>
 <g class="turn"><path d="M ${plan.x} ${plan.y - plan.r * 0.78} L ${plan.x} ${plan.y - plan.r + 1}" stroke="${t.accent}" stroke-width="2.4" stroke-linecap="round"/><circle cx="${plan.x + plan.r * 0.55}" cy="${plan.y + plan.r * 0.55}" r="2" fill="${t.accent}"/></g>
-${txt(plan.x, plan.y + plan.r + 34, mo.fallen ? `NOT TURNING` : `ONE TURN EVERY ${live(`${mo.spinPeriod} s`)}`, { anchor: "middle" })}
-${mo.fallen ? "" : txt(plan.x, plan.y + plan.r + 48, "SHOWN SIX TIMES SLOWER", { anchor: "middle", size: 9 })}
+${txt(plan.x, plan.y + plan.r + 34, mo.fallen ? `NOT TURNING` : `${live(mo.spinHz)} TURNS A SECOND`, { anchor: "middle" })}
+${mo.fallen ? "" : txt(plan.x, plan.y + plan.r + 48, `SHOWN ${slow}× SLOWER · AXIS ROUND EVERY ${mo.precessionPeriod} S`, { anchor: "middle", size: 9 })}
 
 <!-- Notes. -->
 ${[
-  "1. EVERY DIMENSION IS MEASURED DAILY FROM",
-  "   THE GITHUB CONTRIBUTION CALENDAR.",
-  "2. STEADINESS = 0.6 × MOMENTUM + 0.4 × RHYTHM:",
-  "   THIS FORTNIGHT AGAINST A USUAL ONE, AND",
-  "   HOW MANY OF ITS DAYS HAD ANY WORK.",
-  "3. FASTER SPIN, SLOWER PRECESSION, LESS LEAN,",
-  "   AS IN A REAL TOP (Ω ≈ mgl / Iω).",
-  "4. AT REST AFTER 21 DAYS WITHOUT WORK.",
+  "1. MEASURED DAILY FROM THE CALENDAR.",
+  "2. STEADINESS = 0.6 × MOMENTUM + 0.4 × RHYTHM.",
+  `3. STEEL, ${(physics().m * 1000).toFixed(0)} G, CENTRE OF MASS ${(physics().l * 1000).toFixed(1)} MM UP.`,
+  `   BELOW ${(physics().wc / (2 * Math.PI)).toFixed(0)} TURNS/S IT CANNOT STAND UPRIGHT;`,
+  "   STEADINESS 0.5 SPINS IT AT EXACTLY THAT.",
+  "4. MOTION INTEGRATED FROM LAGRANGE'S",
+  "   EQUATIONS FOR A HEAVY SYMMETRIC TOP.",
+  "5. AT REST AFTER 21 DAYS WITHOUT WORK.",
 ]
-  .map((line, i) => txt(560, 46 + i * 17, line, { size: 9.5 }))
+  .map((line, i) => txt(560, 46 + i * 17, line, { size: 9.5 }).replace("<text ", '<text style="white-space:pre" '))
   .join("\n")}
 
 <!-- Title block. -->
@@ -527,7 +573,7 @@ function stateButton(s, theme) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="40" viewBox="0 0 ${w} 40" role="img" aria-label="${label}">
 <rect x=".5" y=".5" width="${w - 1}" height="39" rx="20" fill="none" stroke="${t.faint}"/>
 <g transform="translate(6 0)">${glyph(s.id, t.accent)}</g>
-<text x="42" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" fill="${t.ink}">${label}</text>
+<text x="42" y="25" font-family="${SANS}" font-size="13" letter-spacing=".4" fill="${t.ink}">${label}</text>
 </svg>
 `;
 }
@@ -559,7 +605,7 @@ function writeStates() {
     for (const theme of ["dark", "light"]) {
       fs.writeFileSync(path.join(dir, `${s.id}-top-${theme}.svg`), svg(m, mo, theme));
       fs.writeFileSync(path.join(dir, `${s.id}-blueprint-${theme}.svg`), blueprint(m, mo, theme, s));
-      fs.writeFileSync(path.join(dir, `${s.id}-button-${theme}.svg`), stateButton(s, theme));
+      fs.writeFileSync(path.join(dir, `${s.id}-button-${theme}.svg`), withFonts(stateButton(s, theme)));
     }
   }
 }
@@ -597,7 +643,10 @@ async function main() {
   for (const theme of ["dark", "light"])
     fs.writeFileSync(path.join(ROOT, "assets", `blueprint-${theme}.svg`), blueprint(m, mo, theme));
   fs.writeFileSync(STATE, `${JSON.stringify({ measurement: m, motion: mo }, null, 2)}\n`);
-  for (const theme of ["dark", "light"]) fs.writeFileSync(path.join(ROOT, "assets", `city-${theme}.svg`), city(days, theme));
+  for (const theme of ["dark", "light"]) {
+    fs.writeFileSync(path.join(ROOT, "assets", `city-${theme}.svg`), withFonts(city(days, theme)));
+    fs.writeFileSync(path.join(ROOT, "assets", `heatmap-${theme}.svg`), withFonts(heatmap(days, theme)));
+  }
   writeStates();
   writeBlock("totem", caption(m, mo));
   writeBlock("states", statesBlock(mo));

@@ -11,8 +11,16 @@
   "motion": {
     "state": "spinning true",
     "fallen": false,
-    "spinPeriod": 0.412,
-    "leanDeg": 2.55,
-    "precessionPeriod": 6.704
+    "spinHz": 56.2,
+    "spinPeriod": 0.0178,
+    "leanDeg": 2.91,
+    "precessionPeriod": 0.532,
+    "nutationDeg": 0.1,
+    "sleepHz": 47.8,
+    "launch": {
+      "w": 353.4197342843106,
+      "theta": 0.050823987818074894,
+      "phid0": 11.34757860695959
+    }
   }
 }

@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="840" height="330" viewBox="0 0 840 330" role="img" aria-labelledby="bp-title">
-<title id="bp-title">Blueprint of the totem, an example reading: spinning true, 40 contributions in the last 14 days against a usual fortnight of 8, steadiness 0.9. It turns once every 0.466 seconds and leans 3.12 degrees.</title>
+<title id="bp-title">Blueprint of the totem, an example reading: spinning true, 40 contributions in the last 14 days against a usual fortnight of 8, steadiness 0.9. It turns once every 0.018 seconds and leans 3.6 degrees.</title>
 <style>
   .draw { stroke-dasharray: 900; stroke-dashoffset: 900; animation: draw 2.2s ease-out .2s forwards; }
   @keyframes draw { to { stroke-dashoffset: 0 } }
-  .turn { transform-box: view-box; transform-origin: 400px 160px; animation: turn 2.7960000000000003s linear infinite; }
+  .turn { transform-box: view-box; transform-origin: 400px 160px; animation: turn 1.49s linear infinite; }
   @keyframes turn { to { transform: rotate(360deg) } }
   @media (prefers-reduced-motion: reduce) { .draw { animation: none; stroke-dashoffset: 0 } .turn { animation: none } }
 </style>
@@ -21,23 +21,23 @@
   <rect x="64" y="45.55000000000001" width="172" height="15" fill="#000"/>
 </mask>
 <line x1="150" y1="282" x2="150" y2="42.55000000000001" stroke="#d8dee4" stroke-dasharray="10 3 2 3" mask="url(#bp-gap)"/>
-<g transform="translate(150 268) rotate(3.12) scale(1.15)">
+<g transform="translate(150 268) rotate(3.6) scale(1.15)">
   <path class="draw" d="M 0 0 C 6 -6 18 -26 30 -44 C 40 -58 48 -70 50 -79 C 51 -86 47 -95 38 -102 C 29 -108 15 -111 6.5 -112 C 5.4 -114 5 -116 5 -119 L 5 -149 C 5 -151 7.6 -152 7.6 -156 C 7.6 -161 4 -163 0 -163 C -4 -163, -7.6 -161, -7.6 -156 C -7.6 -152, -5 -151, -5 -149 L -5 -119 C -5 -116, -5.4 -114, -6.5 -112 C -15 -111, -29 -108, -38 -102 C -47 -95, -51 -86, -50 -79 C -48 -70, -40 -58, -30 -44 C -18 -26, -6 -6, 0 0 Z" fill="none" stroke="#1f2328" stroke-width="0.87"/>
   <path class="draw" d="M -50 -79 Q 0 -75 50 -79" fill="none" stroke="#59636e" stroke-width="0.61"/>
 </g>
-<line x1="150" y1="268" x2="161.0" y2="67.0" stroke="#9a5f17" stroke-width=".9" stroke-dasharray="4 3" mask="url(#bp-gap)"/>
-<path d="M 150 208 A 60 60 0 0 1 153.3 208.1" fill="none" stroke="#9a5f17" stroke-width=".9"/>
-<path d="M 156.3 210 L 200 222" fill="none" stroke="#59636e" stroke-width=".7"/>
-<text x="204" y="225" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e">LEAN <tspan fill="#9a5f17">3.12°</tspan></text>
+<line x1="150" y1="268" x2="162.6" y2="67.1" stroke="#9a5f17" stroke-width=".9" stroke-dasharray="4 3" mask="url(#bp-gap)"/>
+<path d="M 150 208 A 60 60 0 0 1 153.8 208.1" fill="none" stroke="#9a5f17" stroke-width=".9"/>
+<path d="M 156.8 210 L 200 222" fill="none" stroke="#59636e" stroke-width=".7"/>
+<text x="204" y="225" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e">LEAN <tspan fill="#9a5f17">3.6°</tspan></text>
 
 <!-- Dimensions: the body's width carries the fortnight; the height, the steadiness. -->
-<path d="M 97.5 170.2 V 60.55000000000001 M 212.4 176.4 V 60.55000000000001" stroke="#d8dee4" stroke-width=".7"/>
-<path class="draw" d="M 97.52995647171394 64.55000000000001 L 212.3594957006372 64.55000000000001 M 212.3594957006372 64.55000000000001 l -5.4 2.6 M 212.3594957006372 64.55000000000001 l -5.4 -2.6 M 97.52995647171394 64.55000000000001 l 5.4 -2.6 M 97.52995647171394 64.55000000000001 l 5.4 2.6" fill="none" stroke="#59636e" stroke-width=".8"/>
+<path d="M 98.3 169.7 V 60.55000000000001 M 213.1 176.9 V 60.55000000000001" stroke="#d8dee4" stroke-width=".7"/>
+<path class="draw" d="M 98.31798181461251 64.55000000000001 L 213.09105558386372 64.55000000000001 M 213.09105558386372 64.55000000000001 l -5.4 2.6 M 213.09105558386372 64.55000000000001 l -5.4 -2.6 M 98.31798181461251 64.55000000000001 l 5.4 -2.6 M 98.31798181461251 64.55000000000001 l 5.4 2.6" fill="none" stroke="#59636e" stroke-width=".8"/>
 <text x="150" y="56.55000000000001" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e" text-anchor="middle"><tspan fill="#9a5f17">40</tspan> CONTRIBUTIONS / 14 DAYS</text>
 <path class="draw" d="M 46 268 L 46 80.55000000000001 M 46 80.55000000000001 l 2.6 5.4 M 46 80.55000000000001 l -2.6 5.4 M 46 268 l -2.6 -5.4 M 46 268 l 2.6 -5.4" fill="none" stroke="#59636e" stroke-width=".8"/>
 <g transform="translate(40 173.7) rotate(-90)"><text x="0" y="0" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e" text-anchor="middle">STEADINESS <tspan fill="#9a5f17">0.9</tspan></text></g>
-<path d="M 167.3 112.1 H 210.0" fill="none" stroke="#59636e" stroke-width=".7"/>
-<text x="214" y="115.14478399589063" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e">USUAL FORTNIGHT <tspan fill="#9a5f17">8</tspan></text>
+<path d="M 168.6 112.3 H 210.0" fill="none" stroke="#59636e" stroke-width=".7"/>
+<text x="214" y="115.26966516111187" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e">USUAL FORTNIGHT <tspan fill="#9a5f17">8</tspan></text>
 <path d="M 153 264 L 190 284 H 208" fill="none" stroke="#59636e" stroke-width=".7"/>
 <text x="212" y="287" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e"><tspan fill="#9a5f17">0</tspan> DAYS SINCE THE LAST COMMIT</text>
 
@@ -50,18 +50,18 @@
   <line x1="0" y1="-69.5" x2="0" y2="69.5" stroke="#d8dee4" stroke-dasharray="10 3 2 3"/>
 </g>
 <g class="turn"><path d="M 400 115.15 L 400 103.5" stroke="#9a5f17" stroke-width="2.4" stroke-linecap="round"/><circle cx="431.625" cy="191.625" r="2" fill="#9a5f17"/></g>
-<text x="400" y="251.5" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e" text-anchor="middle">ONE TURN EVERY <tspan fill="#9a5f17">0.466 s</tspan></text>
-<text x="400" y="265.5" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9" fill="#59636e" text-anchor="middle">SHOWN SIX TIMES SLOWER</text>
+<text x="400" y="251.5" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e" text-anchor="middle"><tspan fill="#9a5f17">55.4</tspan> TURNS A SECOND</text>
+<text x="400" y="265.5" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9" fill="#59636e" text-anchor="middle">SHOWN 83× SLOWER · AXIS ROUND EVERY 0.517 S</text>
 
 <!-- Notes. -->
-<text x="560" y="46" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">1. EVERY DIMENSION IS MEASURED DAILY FROM</text>
-<text x="560" y="63" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">   THE GITHUB CONTRIBUTION CALENDAR.</text>
-<text x="560" y="80" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">2. STEADINESS = 0.6 × MOMENTUM + 0.4 × RHYTHM:</text>
-<text x="560" y="97" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">   THIS FORTNIGHT AGAINST A USUAL ONE, AND</text>
-<text x="560" y="114" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">   HOW MANY OF ITS DAYS HAD ANY WORK.</text>
-<text x="560" y="131" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">3. FASTER SPIN, SLOWER PRECESSION, LESS LEAN,</text>
-<text x="560" y="148" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">   AS IN A REAL TOP (Ω ≈ mgl / Iω).</text>
-<text x="560" y="165" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">4. AT REST AFTER 21 DAYS WITHOUT WORK.</text>
+<text style="white-space:pre" x="560" y="46" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">1. MEASURED DAILY FROM THE CALENDAR.</text>
+<text style="white-space:pre" x="560" y="63" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">2. STEADINESS = 0.6 × MOMENTUM + 0.4 × RHYTHM.</text>
+<text style="white-space:pre" x="560" y="80" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">3. STEEL, 53 G, CENTRE OF MASS 18.5 MM UP.</text>
+<text style="white-space:pre" x="560" y="97" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">   BELOW 48 TURNS/S IT CANNOT STAND UPRIGHT;</text>
+<text style="white-space:pre" x="560" y="114" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">   STEADINESS 0.5 SPINS IT AT EXACTLY THAT.</text>
+<text style="white-space:pre" x="560" y="131" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">4. MOTION INTEGRATED FROM LAGRANGE'S</text>
+<text style="white-space:pre" x="560" y="148" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">   EQUATIONS FOR A HEAVY SYMMETRIC TOP.</text>
+<text style="white-space:pre" x="560" y="165" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">5. AT REST AFTER 21 DAYS WITHOUT WORK.</text>
 
 <!-- Title block. -->
 <g transform="translate(560 214)">

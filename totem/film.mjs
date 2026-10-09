@@ -9,7 +9,8 @@ export const TH = {
   light: { light: "#1f2328", mute: "#59636e", dim: "#d1d9e0", line: "#9aa3ad", warm: "#b8741f", hot: "#e09a3e", steel: "#8c939b", shadow: "#1f2328", shadowOp: 0.22, face: ["#dcd6ce", "#a9a299", "#8a847b"], empty: ["#ece9e4", "#dcd8d1", "#cfcac2"] },
 };
 export const INK = TH.dark;
-export const SANS = `'Helvetica Neue', Helvetica, Arial, sans-serif`;
+export const SANS = `Jost, 'Helvetica Neue', Helvetica, Arial, sans-serif`;
+export const BOOK = `'Cormorant Garamond', Georgia, 'Times New Roman', serif`;
 export const MONO = `ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace`;
 export const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 export const r1 = (n) => +n.toFixed(1);
@@ -18,6 +19,34 @@ export const r2 = (n) => +n.toFixed(2);
 export function rng(seed) {
   let s = seed >>> 0;
   return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
+}
+
+// Type. An image on GitHub cannot fetch fonts, so each SVG carries the faces it uses, subset
+// to Latin text (totem/fonts, SIL Open Font License): Jost for titles and labels, tracked out
+// like a title card; Cormorant Garamond for the lines meant to be read slowly.
+import fs from "node:fs";
+const FONT_DIR = new URL("./fonts/", import.meta.url);
+const FACES = [
+  ["Jost", "normal", 300, "jost-300"],
+  ["Jost", "normal", 400, "jost-400"],
+  ["Cormorant Garamond", "normal", 400, "cormorant-400"],
+  ["Cormorant Garamond", "italic", 500, "cormorant-500-italic"],
+];
+const fontCache = {};
+export function withFonts(svg) {
+  const used = FACES.filter(([fam, style, weight]) => {
+    if (!svg.includes(fam)) return false;
+    if (fam === "Jost") return weight === 400 || svg.includes('font-weight="300"');
+    return style === "italic" ? svg.includes('font-style="italic"') : /font-family="'Cormorant Garamond'[^"]*"(?![^>]*font-style="italic")/.test(svg);
+  });
+  if (!used.length) return svg;
+  const css = used
+    .map(([fam, style, weight, file]) => {
+      fontCache[file] ??= fs.readFileSync(new URL(`${file}.woff2`, FONT_DIR)).toString("base64");
+      return `@font-face{font-family:'${fam}';font-style:${style};font-weight:${weight};src:url(data:font/woff2;base64,${fontCache[file]}) format('woff2')}`;
+    })
+    .join("");
+  return svg.replace(/(<svg[^>]*>)/, `$1\n<style>${css}text{font-variant-numeric:lining-nums}</style>`);
 }
 
 // A pinhole camera orbiting a target: yaw about the vertical, pitch looking down.
@@ -103,8 +132,8 @@ export function frame({ w, h, p, theme = "dark", desc, defs = "", body, caption 
 <g><animateTransform attributeName="transform" type="translate" values="${weave}" dur="1.5s" calcMode="discrete" repeatCount="indefinite"/>
 ${body}
 </g>
-${caption ? `<text x="20" y="${h - 32}" font-family="${SANS}" font-size="10.5" letter-spacing="3.2" fill="${c.light}" fill-opacity=".92">${esc(upper(caption[0]))}</text>
-<text x="20" y="${h - 15}" font-family="${SANS}" font-size="11" fill="${c.warm}">${esc(caption[1])}</text>` : ""}
+${caption ? `<text x="20" y="${h - 33}" font-family="${SANS}" font-size="10.5" letter-spacing="3.6" fill="${c.light}" fill-opacity=".92">${esc(upper(caption[0]))}</text>
+<text x="20" y="${h - 13}" font-family="${BOOK}" font-style="italic" font-weight="500" font-size="14" fill="${c.warm}">${esc(caption[1])}</text>` : ""}
 </svg>
 `;
 }

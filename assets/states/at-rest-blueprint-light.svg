@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="840" height="330" viewBox="0 0 840 330" role="img" aria-labelledby="bp-title">
-<title id="bp-title">Blueprint of the totem, an example reading: at rest, 0 contributions in the last 14 days against a usual fortnight of 8, steadiness 0. It turns once every 1.6 seconds and leans 0 degrees.</title>
+<title id="bp-title">Blueprint of the totem, an example reading: at rest, 0 contributions in the last 14 days against a usual fortnight of 8, steadiness 0. It turns once every 0.0262 seconds and leans 0 degrees.</title>
 <style>
   .draw { stroke-dasharray: 900; stroke-dashoffset: 900; animation: draw 2.2s ease-out .2s forwards; }
   @keyframes draw { to { stroke-dashoffset: 0 } }
@@ -50,14 +50,14 @@
 
 
 <!-- Notes. -->
-<text x="560" y="46" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">1. EVERY DIMENSION IS MEASURED DAILY FROM</text>
-<text x="560" y="63" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">   THE GITHUB CONTRIBUTION CALENDAR.</text>
-<text x="560" y="80" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">2. STEADINESS = 0.6 × MOMENTUM + 0.4 × RHYTHM:</text>
-<text x="560" y="97" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">   THIS FORTNIGHT AGAINST A USUAL ONE, AND</text>
-<text x="560" y="114" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">   HOW MANY OF ITS DAYS HAD ANY WORK.</text>
-<text x="560" y="131" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">3. FASTER SPIN, SLOWER PRECESSION, LESS LEAN,</text>
-<text x="560" y="148" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">   AS IN A REAL TOP (Ω ≈ mgl / Iω).</text>
-<text x="560" y="165" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">4. AT REST AFTER 21 DAYS WITHOUT WORK.</text>
+<text style="white-space:pre" x="560" y="46" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">1. MEASURED DAILY FROM THE CALENDAR.</text>
+<text style="white-space:pre" x="560" y="63" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">2. STEADINESS = 0.6 × MOMENTUM + 0.4 × RHYTHM.</text>
+<text style="white-space:pre" x="560" y="80" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">3. STEEL, 53 G, CENTRE OF MASS 18.5 MM UP.</text>
+<text style="white-space:pre" x="560" y="97" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">   BELOW 48 TURNS/S IT CANNOT STAND UPRIGHT;</text>
+<text style="white-space:pre" x="560" y="114" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">   STEADINESS 0.5 SPINS IT AT EXACTLY THAT.</text>
+<text style="white-space:pre" x="560" y="131" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">4. MOTION INTEGRATED FROM LAGRANGE'S</text>
+<text style="white-space:pre" x="560" y="148" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">   EQUATIONS FOR A HEAVY SYMMETRIC TOP.</text>
+<text style="white-space:pre" x="560" y="165" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#59636e">5. AT REST AFTER 21 DAYS WITHOUT WORK.</text>
 
 <!-- Title block. -->
 <g transform="translate(560 214)">
