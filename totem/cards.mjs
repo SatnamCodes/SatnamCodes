@@ -462,9 +462,11 @@ function pill(l, theme) {
 `;
 }
 
-for (const dir of ["cards", "links"]) fs.mkdirSync(path.join(ROOT, "assets", dir), { recursive: true });
-for (const theme of ["dark", "light"]) {
-  for (const c of CARDS) fs.writeFileSync(path.join(ROOT, "assets", "cards", `${c.id}-${theme}.svg`), card(c, theme));
-  for (const l of LINKS) fs.writeFileSync(path.join(ROOT, "assets", "links", `${l.id}-${theme}.svg`), pill(l, theme));
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  for (const dir of ["cards", "links"]) fs.mkdirSync(path.join(ROOT, "assets", dir), { recursive: true });
+  for (const theme of ["dark", "light"]) {
+    for (const c of CARDS) fs.writeFileSync(path.join(ROOT, "assets", "cards", `${c.id}-${theme}.svg`), card(c, theme));
+    for (const l of LINKS) fs.writeFileSync(path.join(ROOT, "assets", "links", `${l.id}-${theme}.svg`), pill(l, theme));
+  }
+  console.log(`[cards] ${CARDS.length} cards and ${LINKS.length} links written`);
 }
-console.log(`[cards] ${CARDS.length} cards and ${LINKS.length} links written`);

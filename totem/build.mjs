@@ -6,7 +6,8 @@
 //   assets/totem.svg                              the top, on a transparent ground (light and dark alike)
 //   assets/blueprint-dark.svg, -light.svg         its engineering drawing, one per GitHub theme
 //   totem/state.json                              the measurement
-//   README.md                                     the caption between <!-- totem --> and <!-- /totem -->
+//   assets/states/*, assets/heatmap-*.svg         the other states' examples and buttons; the year's calendar
+//   README.md                                     the caption and the state buttons, between their markers
 //
 // Every number in the pictures comes from the calendar. Nothing is tuned by hand.
 //
@@ -16,6 +17,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { heatmap } from "./profile.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const USER = process.env.TOTEM_USER ?? "SatnamCodes";
@@ -121,7 +123,7 @@ export function measure(days) {
 export function motion(m) {
   const s = m.steadiness;
   const fallen = m.idleDays >= 21;
-  const state = fallen ? "at rest" : s >= 0.66 ? "spinning true" : s >= 0.33 ? "spinning" : "wobbling";
+  const state = fallen ? "at rest" : s >= 0.5 ? "spinning true" : "wobbling";
   return {
     state,
     fallen,
@@ -186,7 +188,7 @@ function halfWidth(y) {
 }
 
 // Where a stopped top comes to rest: on its side, on the body's widest edge and the cap, tip raised.
-function restingPose() {
+function restingPose(tip = TIP, scale = SCALE) {
   const rim = [-50, -79];
   const cap = [-7.6, -156];
   const outline = [rim, cap, [-51, -86], [-47, -95], [-38, -102], [-7.6, -152], [-4, -163], [-30, -44], [0, 0]];
@@ -199,7 +201,7 @@ function restingPose() {
   for (let deg = -60; deg >= -140; deg -= 0.25) if (gap(deg) < gap(best)) best = deg;
   const low = Math.max(...outline.map((p) => turn(p, best)[1]));
   const mid = turn([0, -80], best);
-  return `translate(${(TIP.x - mid[0] * SCALE).toFixed(1)} ${(TIP.y - low * SCALE).toFixed(1)}) rotate(${best})`;
+  return `translate(${(tip.x - mid[0] * scale).toFixed(1)} ${(tip.y - low * scale).toFixed(1)}) rotate(${best})`;
 }
 
 // Studio reflections across a polished cylinder: two soft boxes, a dark gap, a kicker on the far edge.
@@ -316,7 +318,7 @@ const INK = {
 };
 const MONO = `ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace`;
 
-export function blueprint(m, mo, theme) {
+export function blueprint(m, mo, theme, example = null) {
   const t = INK[theme];
   const BW = 840, BH = 330;
   const S = 1.15; // drawing scale
@@ -334,7 +336,14 @@ export function blueprint(m, mo, theme) {
   const rad = (lean * Math.PI) / 180;
   const top = { x: tip.x + Math.sin(rad) * L, y: tip.y - Math.cos(rad) * L };
   const live = (s) => `<tspan fill="${t.accent}">${s}</tspan>`;
-  const date = fmtDate(`${m.measuredAt}T00:00:00Z`).toUpperCase();
+  const dimY = tip.y - 163 * S - 16; // the width dimension runs above the cap
+  // A point on the upright body (local units) where it sits once leaned.
+  const at = (x, y) => ({
+    x: tip.x + (x * Math.cos(rad) - y * Math.sin(rad)) * S,
+    y: tip.y + (x * Math.sin(rad) + y * Math.cos(rad)) * S,
+  });
+  const rimL = at(-50, -79), rimR = at(50, -79), stem = at(5, -136);
+  const date = example ? "EXAMPLE" : fmtDate(`${m.measuredAt}T00:00:00Z`).toUpperCase();
 
   // Plan view: the body seen from above, turned rings and an index mark that turns at the measured rate.
   const plan = { x: 400, y: 160, r: 50 * S };
@@ -343,7 +352,7 @@ export function blueprint(m, mo, theme) {
     .join("");
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${BW}" height="${BH}" viewBox="0 0 ${BW} ${BH}" role="img" aria-labelledby="bp-title">
-<title id="bp-title">Blueprint of the totem, measured ${date}: ${mo.state}, ${m.last14} contributions in the last 14 days against a usual fortnight of ${m.usualFortnight}, steadiness ${m.steadiness}. It turns once every ${mo.spinPeriod} seconds and leans ${lean} degrees.</title>
+<title id="bp-title">Blueprint of the totem, ${example ? "an example reading" : `measured ${date}`}: ${mo.state}, ${m.last14} contributions in the last 14 days against a usual fortnight of ${m.usualFortnight}, steadiness ${m.steadiness}. It turns once every ${mo.spinPeriod} seconds and leans ${lean} degrees.</title>
 <style>
   .draw { stroke-dasharray: 900; stroke-dashoffset: 900; animation: draw 2.2s ease-out .2s forwards; }
   @keyframes draw { to { stroke-dashoffset: 0 } }
@@ -359,30 +368,56 @@ ${txt(plan.x - plan.r, 22, "PLAN", { ls: 2 })}
 ${txt(560, 22, "NOTES", { ls: 2 })}
 
 <!-- Elevation: the top's outline, its true axis (vertical) and its axis as it leans. -->
-<!-- The axes break where the width label crosses them, as on a drawing. -->
+<!-- The axes break where labels cross them, as on a drawing. -->
 <mask id="bp-gap" maskUnits="userSpaceOnUse" x="0" y="0" width="${BW}" height="${BH}">
   <rect width="${BW}" height="${BH}" fill="#fff"/>
-  <rect x="${tip.x - 84}" y="${tip.y - 79 * S - 43}" width="168" height="15" fill="#000"/>
-  <rect x="${tip.x + 10}" y="${tip.y - 77}" width="76" height="15" fill="#000"/>
+  <rect x="${tip.x - 86}" y="${dimY - 19}" width="172" height="15" fill="#000"/>
 </mask>
-<line x1="${tip.x}" y1="${tip.y + 14}" x2="${tip.x}" y2="${tip.y - L - 14}" stroke="${t.faint}" stroke-dasharray="10 3 2 3" mask="url(#bp-gap)"/>
-<g transform="translate(${tip.x} ${tip.y}) rotate(${lean}) scale(${S})">
+${mo.fallen ? "" : `<line x1="${tip.x}" y1="${tip.y + 14}" x2="${tip.x}" y2="${dimY - 22}" stroke="${t.faint}" stroke-dasharray="10 3 2 3" mask="url(#bp-gap)"/>`}
+<g transform="${mo.fallen ? restingPose(tip, S) : `translate(${tip.x} ${tip.y}) rotate(${lean})`} scale(${S})">
   <path class="draw" d="${BODY}" fill="none" stroke="${t.ink}" stroke-width="${(1 / S).toFixed(2)}"/>
   <path class="draw" d="M -50 -79 Q 0 -75 50 -79" fill="none" stroke="${t.mute}" stroke-width="${(0.7 / S).toFixed(2)}"/>
 </g>
-<line x1="${tip.x}" y1="${tip.y}" x2="${top.x.toFixed(1)}" y2="${top.y.toFixed(1)}" stroke="${t.accent}" stroke-width=".9" stroke-dasharray="4 3" mask="url(#bp-gap)"/>
+${
+  mo.fallen
+    ? `<line x1="${tip.x - 120}" y1="${tip.y + 0.5}" x2="${tip.x + 120}" y2="${tip.y + 0.5}" stroke="${t.mute}" stroke-width=".7"/>
+${[
+  `${live(m.last14)} CONTRIBUTIONS / 14 DAYS`,
+  `STEADINESS ${live(m.steadiness)}`,
+  `USUAL FORTNIGHT ${live(m.usualFortnight)}`,
+  `${live(m.idleDays)} DAYS SINCE THE LAST COMMIT`,
+  `LEAN ${live("90°")}: ON ITS SIDE`,
+]
+  .map((s, i) => txt(40, 58 + i * 18, s))
+  .join("\n")}`
+    : `<line x1="${tip.x}" y1="${tip.y}" x2="${top.x.toFixed(1)}" y2="${top.y.toFixed(1)}" stroke="${t.accent}" stroke-width=".9" stroke-dasharray="4 3" mask="url(#bp-gap)"/>
 <path d="M ${tip.x} ${tip.y - 60} A 60 60 0 0 1 ${(tip.x + Math.sin(rad) * 60).toFixed(1)} ${(tip.y - Math.cos(rad) * 60).toFixed(1)}" fill="none" stroke="${t.accent}" stroke-width=".9"/>
-${txt(tip.x + 14, tip.y - 66, `LEAN ${live(`${lean}°`)}`)}
+<path d="M ${(tip.x + Math.sin(rad) * 60 + 3).toFixed(1)} ${tip.y - 58} L ${tip.x + 50} ${tip.y - 46}" fill="none" stroke="${t.mute}" stroke-width=".7"/>
+${txt(tip.x + 54, tip.y - 43, `LEAN ${live(`${lean}°`)}`)}`
+}
 
 <!-- Dimensions: the body's width carries the fortnight; the height, the steadiness. -->
-${arrow(tip.x - 58 * S, tip.y - 79 * S - 26, tip.x + 58 * S, tip.y - 79 * S - 26)}
-${txt(tip.x, tip.y - 79 * S - 32, `${live(m.last14)} CONTRIBUTIONS / 14 DAYS`, { anchor: "middle" })}
-${arrow(tip.x - 92, tip.y, tip.x - 92, tip.y - 163 * S)}
-<g transform="translate(${tip.x - 98} ${tip.y - 82 * S}) rotate(-90)">${txt(0, 0, `STEADINESS ${live(m.steadiness)}`, { anchor: "middle" })}</g>
-<path d="M ${tip.x + 8} ${tip.y - 140 * S} L ${tip.x + 52} ${tip.y - 168 * S} H ${tip.x + 70}" fill="none" stroke="${t.mute}" stroke-width=".7"/>
-${txt(tip.x + 74, tip.y - 168 * S + 3, `USUAL FORTNIGHT ${live(m.usualFortnight)}`)}
-<path d="M ${tip.x + 3} ${tip.y - 4} L ${tip.x + 40} ${tip.y + 16} H ${tip.x + 58}" fill="none" stroke="${t.mute}" stroke-width=".7"/>
-${txt(tip.x + 62, tip.y + 19, `${live(m.idleDays)} ${m.idleDays === 1 ? "DAY" : "DAYS"} SINCE THE LAST COMMIT`)}
+${
+  mo.fallen
+    ? ""
+    : `<path d="M ${rimL.x.toFixed(1)} ${(rimL.y - 4).toFixed(1)} V ${dimY - 4} M ${rimR.x.toFixed(1)} ${(rimR.y - 4).toFixed(1)} V ${dimY - 4}" stroke="${t.faint}" stroke-width=".7"/>
+${arrow(rimL.x, dimY, rimR.x, dimY)}`
+}
+${
+  mo.fallen
+    ? ""
+    : `${txt(tip.x, dimY - 8, `${live(m.last14)} CONTRIBUTIONS / 14 DAYS`, { anchor: "middle" })}
+${arrow(tip.x - 104, tip.y, tip.x - 104, tip.y - 163 * S)}
+<g transform="translate(${tip.x - 110} ${tip.y - 82 * S}) rotate(-90)">${txt(0, 0, `STEADINESS ${live(m.steadiness)}`, { anchor: "middle" })}</g>
+<path d="M ${(stem.x + 3).toFixed(1)} ${stem.y.toFixed(1)} H ${Math.max(tip.x + 60, stem.x + 20).toFixed(1)}" fill="none" stroke="${t.mute}" stroke-width=".7"/>
+${txt(Math.max(tip.x + 64, stem.x + 24), stem.y + 3, `USUAL FORTNIGHT ${live(m.usualFortnight)}`)}`
+}
+${
+  mo.fallen
+    ? ""
+    : `<path d="M ${tip.x + 3} ${tip.y - 4} L ${tip.x + 40} ${tip.y + 16} H ${tip.x + 58}" fill="none" stroke="${t.mute}" stroke-width=".7"/>
+${txt(tip.x + 62, tip.y + 19, `${live(m.idleDays)} ${m.idleDays === 1 ? "DAY" : "DAYS"} SINCE THE LAST COMMIT`)}`
+}
 
 <!-- Plan view, turning at the measured rate (slowed six times so the eye can follow it). -->
 <g transform="translate(${plan.x} ${plan.y})">
@@ -393,8 +428,8 @@ ${txt(tip.x + 62, tip.y + 19, `${live(m.idleDays)} ${m.idleDays === 1 ? "DAY" : 
   <line x1="0" y1="${-plan.r - 12}" x2="0" y2="${plan.r + 12}" stroke="${t.faint}" stroke-dasharray="10 3 2 3"/>
 </g>
 <g class="turn"><path d="M ${plan.x} ${plan.y - plan.r * 0.78} L ${plan.x} ${plan.y - plan.r + 1}" stroke="${t.accent}" stroke-width="2.4" stroke-linecap="round"/><circle cx="${plan.x + plan.r * 0.55}" cy="${plan.y + plan.r * 0.55}" r="2" fill="${t.accent}"/></g>
-${txt(plan.x, plan.y + plan.r + 34, `ONE TURN EVERY ${live(`${mo.spinPeriod} s`)}`, { anchor: "middle" })}
-${txt(plan.x, plan.y + plan.r + 48, "SHOWN SIX TIMES SLOWER", { anchor: "middle", size: 9 })}
+${txt(plan.x, plan.y + plan.r + 34, mo.fallen ? `NOT TURNING` : `ONE TURN EVERY ${live(`${mo.spinPeriod} s`)}`, { anchor: "middle" })}
+${mo.fallen ? "" : txt(plan.x, plan.y + plan.r + 48, "SHOWN SIX TIMES SLOWER", { anchor: "middle", size: 9 })}
 
 <!-- Notes. -->
 ${[
@@ -417,9 +452,9 @@ ${[
   <line x1="0" y1="67" x2="264" y2="67" stroke="${t.mute}" stroke-width=".6"/>
   <line x1="132" y1="34" x2="132" y2="100" stroke="${t.mute}" stroke-width=".6"/>
   ${txt(10, 22, "TOTEM", { size: 15, fill: t.ink, ls: 4 })}
-  ${txt(254, 22, "DWG 001", { anchor: "end" })}
+  ${txt(254, 22, example ? `DWG ${example.dwg}` : "DWG 001", { anchor: "end" })}
   ${txt(10, 49, "STATE", { size: 8 })}${txt(10, 61, live(mo.state.toUpperCase()), { size: 10 })}
-  ${txt(142, 49, "MEASURED", { size: 8 })}${txt(142, 61, date, { size: 10, fill: t.ink })}
+  ${txt(142, 49, example ? "READINGS" : "MEASURED", { size: 8 })}${txt(142, 61, date, { size: 10, fill: t.ink })}
   ${txt(10, 82, "OWNER", { size: 8 })}${txt(10, 94, "SATNAMCODES", { size: 10, fill: t.ink })}
   ${txt(142, 82, "DRAWN BY", { size: 8 })}${txt(142, 94, "GITHUB ACTIONS", { size: 10, fill: t.ink })}
 </g>
@@ -428,7 +463,68 @@ ${[
 }
 
 // ---------------------------------------------------------------------------------------------
-// 4. The caption in the README
+// 5. The other states. Below the live blueprint, a button for each state the top is not in today
+//    opens an example of it: the top and its drawing, from a made-up but typical fortnight.
+
+const STATES = [
+  { id: "spinning-true", name: "spinning true", dwg: "002", m: { last14: 40, active14: 10, usualFortnight: 8, idleDays: 0, steadiness: 0.9 } },
+  { id: "wobbling", name: "wobbling", dwg: "003", m: { last14: 3, active14: 2, usualFortnight: 8, idleDays: 5, steadiness: 0.3 } },
+  { id: "at-rest", name: "at rest", dwg: "004", m: { last14: 0, active14: 0, usualFortnight: 8, idleDays: 24, steadiness: 0 } },
+];
+
+// A small glyph of the top in each state, for its button: upright, leaning, lying down.
+function glyph(id, c) {
+  const body = `<path d="M0 0 L-7 -10 Q-8 -14 -4 -15 L-1 -15.5 V-20 H1 V-15.5 L4 -15 Q8 -14 7 -10 Z" fill="none" stroke="${c}" stroke-width="1.2" stroke-linejoin="round"/>`;
+  const pose = { "spinning-true": "translate(14 30)", wobbling: "translate(14 30) rotate(16)", "at-rest": "translate(23 28.5) rotate(-98)" }[id];
+  return `<g transform="${pose}">${body}</g><path d="M4 31.5 H28" stroke="${c}" stroke-opacity=".45" stroke-width="1"/>`;
+}
+
+function stateButton(s, theme) {
+  const t = { dark: { ink: "#e6edf3", faint: "#30363d", accent: "#d9a35b" }, light: { ink: "#1f2328", faint: "#d8dee4", accent: "#9a5f17" } }[theme];
+  const label = `See it ${s.name}`;
+  const w = Math.round(52 + label.length * 7.4);
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="40" viewBox="0 0 ${w} 40" role="img" aria-label="${label}">
+<rect x=".5" y=".5" width="${w - 1}" height="39" rx="20" fill="none" stroke="${t.faint}"/>
+<g transform="translate(6 0)">${glyph(s.id, t.accent)}</g>
+<text x="42" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" fill="${t.ink}">${label}</text>
+</svg>
+`;
+}
+
+const pic = (base, alt, attrs) =>
+  `<picture><source media="(prefers-color-scheme: dark)" srcset="${base}-dark.svg"><source media="(prefers-color-scheme: light)" srcset="${base}-light.svg"><img src="${base}-light.svg" ${attrs} alt="${alt}"></picture>`;
+
+function statesBlock(mo) {
+  return STATES.filter((s) => s.name !== mo.state)
+    .map(
+      (s) => `<details>
+<summary><a name="${s.id}">${pic(`assets/states/${s.id}-button`, `See it ${s.name}`, 'height="40"')}</a></summary>
+<br>
+<a name="${s.id}-top"><img src="assets/states/${s.id}-top.svg" width="420" alt="The top ${s.name}, from an example fortnight."></a>
+<br>
+${pic(`assets/states/${s.id}-blueprint`, `Its blueprint, ${s.name}: ${s.m.last14} contributions in 14 days, steadiness ${s.m.steadiness}.`, 'width="840"')}
+</details>`,
+    )
+    .join("\n");
+}
+
+function writeStates() {
+  const dir = path.join(ROOT, "assets", "states");
+  fs.mkdirSync(dir, { recursive: true });
+  for (const s of STATES) {
+    const m = { measuredAt: "2026-01-01", yearTotal: 0, ...s.m };
+    const mo = motion(m);
+    if (mo.state !== s.name) throw new Error(`example for ${s.name} measures as ${mo.state}`);
+    fs.writeFileSync(path.join(dir, `${s.id}-top.svg`), svg(m, mo));
+    for (const theme of ["dark", "light"]) {
+      fs.writeFileSync(path.join(dir, `${s.id}-blueprint-${theme}.svg`), blueprint(m, mo, theme, s));
+      fs.writeFileSync(path.join(dir, `${s.id}-button-${theme}.svg`), stateButton(s, theme));
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------------------------
+// 6. The README: the caption and the state buttons
 
 const fmtDate = (iso) =>
   new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
@@ -442,24 +538,29 @@ function caption(m, mo) {
   return `<sub>${parts.join(" · ")}</sub>`;
 }
 
-function writeCaption(text) {
+function writeBlock(name, text) {
   const file = path.join(ROOT, "README.md");
   const readme = fs.readFileSync(file, "utf8");
-  const next = readme.replace(/<!-- totem -->[\s\S]*?<!-- \/totem -->/, `<!-- totem -->\n${text}\n<!-- /totem -->`);
-  if (next === readme && !readme.includes("<!-- totem -->")) throw new Error("README has no <!-- totem --> block");
-  fs.writeFileSync(file, next);
+  if (!readme.includes(`<!-- ${name} -->`)) throw new Error(`README has no <!-- ${name} --> block`);
+  const re = new RegExp(`<!-- ${name} -->[\\s\\S]*?<!-- /${name} -->`);
+  fs.writeFileSync(file, readme.replace(re, () => `<!-- ${name} -->\n${text}\n<!-- /${name} -->`));
 }
 
 // ---------------------------------------------------------------------------------------------
 
 async function main() {
-  const m = measure(await calendar());
+  const days = await calendar();
+  const m = measure(days);
   const mo = motion(m);
   fs.writeFileSync(path.join(ROOT, "assets", "totem.svg"), svg(m, mo));
   for (const theme of ["dark", "light"])
     fs.writeFileSync(path.join(ROOT, "assets", `blueprint-${theme}.svg`), blueprint(m, mo, theme));
   fs.writeFileSync(STATE, `${JSON.stringify({ measurement: m, motion: mo }, null, 2)}\n`);
-  writeCaption(caption(m, mo));
+  fs.writeFileSync(path.join(ROOT, "assets", "heatmap-dark.svg"), heatmap(days, "dark"));
+  fs.writeFileSync(path.join(ROOT, "assets", "heatmap-light.svg"), heatmap(days, "light"));
+  writeStates();
+  writeBlock("totem", caption(m, mo));
+  writeBlock("states", statesBlock(mo));
   console.log(`[totem] ${m.measuredAt}: ${mo.state}, ${m.last14} in 14 days (usual ${m.usualFortnight}), steadiness ${m.steadiness}`);
 }
 

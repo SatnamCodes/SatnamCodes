@@ -8,6 +8,27 @@
   <source media="(prefers-color-scheme: light)" srcset="assets/blueprint-light.svg">
   <img src="assets/blueprint-light.svg" width="840" alt="The top's blueprint: an elevation with its lean, a plan view turning at the measured rate, and dimensions that are the readings: contributions in the last 14 days, the usual fortnight, steadiness and days since the last commit.">
 </picture>
+<br><br>
+<sub>Today's state is above. The other two, from example fortnights:</sub>
+<br><br>
+
+<!-- states -->
+<details>
+<summary><a name="wobbling"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/states/wobbling-button-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/states/wobbling-button-light.svg"><img src="assets/states/wobbling-button-light.svg" height="40" alt="See it wobbling"></picture></a></summary>
+<br>
+<a name="wobbling-top"><img src="assets/states/wobbling-top.svg" width="420" alt="The top wobbling, from an example fortnight."></a>
+<br>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/states/wobbling-blueprint-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/states/wobbling-blueprint-light.svg"><img src="assets/states/wobbling-blueprint-light.svg" width="840" alt="Its blueprint, wobbling: 3 contributions in 14 days, steadiness 0.3."></picture>
+</details>
+<details>
+<summary><a name="at-rest"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/states/at-rest-button-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/states/at-rest-button-light.svg"><img src="assets/states/at-rest-button-light.svg" height="40" alt="See it at rest"></picture></a></summary>
+<br>
+<a name="at-rest-top"><img src="assets/states/at-rest-top.svg" width="420" alt="The top at rest, from an example fortnight."></a>
+<br>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/states/at-rest-blueprint-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/states/at-rest-blueprint-light.svg"><img src="assets/states/at-rest-blueprint-light.svg" width="840" alt="Its blueprint, at rest: 0 contributions in 14 days, steadiness 0."></picture>
+</details>
+<!-- /states -->
+
 </details>
 
 <!-- totem -->
@@ -18,9 +39,13 @@
 
 <br>
 
-### Satnam Singh
-
-Machine learning for physical and materials systems, GPU performance in scientific computing, and exoplanet habitability. B.Tech in Computer Science (AI and ML) at Christ University, Bengaluru, alongside a B.S. in Data Science at IIT Madras.
+<div align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/about-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/about-light.svg">
+  <img src="assets/about-light.svg" width="840" alt="Satnam Singh. Machine learning for physical and materials systems, GPU performance in scientific computing, and exoplanet habitability. B.Tech in Computer Science (AI and ML) at Christ University, Bengaluru, and a B.S. in Data Science at IIT Madras.">
+</picture>
+</div>
 
 <br>
 
@@ -48,16 +73,20 @@ Machine learning for physical and materials systems, GPU performance in scientif
 
 <br>
 
-<details>
-<summary>Tools and languages</summary>
+<div align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/heatmap-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/heatmap-light.svg">
+  <img src="assets/heatmap-light.svg" width="840" alt="My contribution calendar for the last year, a square a day, with the fortnight the top is measured on marked.">
+</picture>
 
-<br>
+<br><br>
 
-**Programming** Python, C++, C, CUDA, SQL<br>
-**Tools** Nsight Systems, Nsight Compute, Git, Linux, Docker, PostgreSQL, FastAPI<br>
-**ML** PyTorch, PyTorch Geometric, scikit-learn, XGBoost, LangGraph, FAISS<br>
-**Speaks** Punjabi, Hindi, English
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/stack-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/stack-light.svg">
+  <img src="assets/stack-light.svg" width="840" alt="Languages: Python, C++, C, CUDA, SQL. Tools: Nsight Systems, Nsight Compute, Git, Linux, Docker, PostgreSQL, FastAPI. Machine learning: PyTorch, PyTorch Geometric, scikit-learn, XGBoost, LangGraph, FAISS. Speaks Punjabi, Hindi and English.">
+</picture>
 
-<sub>**spaceflora**: astrophotography outreach, featured by NASA</sub>
-
-</details>
+<sub><b>spaceflora</b>: astrophotography outreach, featured by NASA</sub>
+</div>

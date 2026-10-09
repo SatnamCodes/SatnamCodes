@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="156" height="40" viewBox="0 0 156 40" role="img" aria-label="See it at rest">
+<rect x=".5" y=".5" width="155" height="39" rx="20" fill="none" stroke="#30363d"/>
+<g transform="translate(6 0)"><g transform="translate(23 28.5) rotate(-98)"><path d="M0 0 L-7 -10 Q-8 -14 -4 -15 L-1 -15.5 V-20 H1 V-15.5 L4 -15 Q8 -14 7 -10 Z" fill="none" stroke="#d9a35b" stroke-width="1.2" stroke-linejoin="round"/></g><path d="M4 31.5 H28" stroke="#d9a35b" stroke-opacity=".45" stroke-width="1"/></g>
+<text x="42" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif" font-size="12.5" fill="#e6edf3">See it at rest</text>
+</svg>

@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="300" viewBox="0 0 720 300" role="img" aria-labelledby="tt-title">
+<title id="tt-title">A machined steel spinning top, wobbling: 3 contributions on 2 of the last 14 days. It turns once every 1.222 seconds and leans 11.04 degrees as it precesses.</title>
+<style>
+  .sway { transform-box: view-box; transform-origin: 360px 266px;
+          animation: sway 3.36s ease-in-out infinite alternate; }
+  @keyframes sway { from { transform: rotate(-11.04deg) } to { transform: rotate(11.04deg) } }
+  .shadow { transform-box: view-box; transform-origin: 360px 266px;
+            animation: drift 3.36s ease-in-out infinite alternate; }
+  @keyframes drift { from { transform: translateX(-26.5px) } to { transform: translateX(26.5px) } }
+  .mark { opacity: 0; animation: turn 1.222s linear infinite; }
+  @keyframes turn {
+    0%   { transform: translateX(-46px) scaleX(.2); opacity: 0 }
+    10%  { opacity: .55 }
+    25%  { transform: translateX(-33px) scaleX(.7) }
+    50%  { transform: translateX(0) scaleX(1); opacity: .75 }
+    75%  { transform: translateX(33px) scaleX(.7) }
+    90%  { opacity: .55 }
+    100% { transform: translateX(46px) scaleX(.2); opacity: 0 }
+  }
+  @media (prefers-reduced-motion: reduce) { .sway, .shadow, .mark { animation: none } }
+</style>
+<defs>
+  <linearGradient id="tt-steel" x1="-51" x2="51" y1="0" y2="0" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#141517"/><stop offset="0.07" stop-color="#2f3134"/><stop offset="0.18" stop-color="#7d8085"/><stop offset="0.27" stop-color="#cfd2d5"/><stop offset="0.33" stop-color="#f3f4f5"/><stop offset="0.4" stop-color="#b4b7bb"/><stop offset="0.5" stop-color="#55585c"/><stop offset="0.6" stop-color="#3b3d40"/><stop offset="0.7" stop-color="#74777b"/><stop offset="0.79" stop-color="#c7c9cc"/><stop offset="0.85" stop-color="#8d9094"/><stop offset="0.93" stop-color="#3a3c3f"/><stop offset="1" stop-color="#151618"/>
+  </linearGradient>
+  <linearGradient id="tt-stem" x1="-5.2" x2="5.2" y1="0" y2="0" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#141517"/><stop offset="0.07" stop-color="#2f3134"/><stop offset="0.18" stop-color="#7d8085"/><stop offset="0.27" stop-color="#cfd2d5"/><stop offset="0.33" stop-color="#f3f4f5"/><stop offset="0.4" stop-color="#b4b7bb"/><stop offset="0.5" stop-color="#55585c"/><stop offset="0.6" stop-color="#3b3d40"/><stop offset="0.7" stop-color="#74777b"/><stop offset="0.79" stop-color="#c7c9cc"/><stop offset="0.85" stop-color="#8d9094"/><stop offset="0.93" stop-color="#3a3c3f"/><stop offset="1" stop-color="#151618"/>
+  </linearGradient>
+  <radialGradient id="tt-hot"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+  <!-- Key light from above: the crown catches it, the underside falls into shade. -->
+  <linearGradient id="tt-shade" x1="0" x2="0" y1="-163" y2="0" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#fff" stop-opacity=".12"/>
+    <stop offset=".3" stop-color="#fff" stop-opacity=".1"/>
+    <stop offset=".5" stop-color="#fff" stop-opacity="0"/>
+    <stop offset=".55" stop-color="#000" stop-opacity=".05"/>
+    <stop offset="1" stop-color="#000" stop-opacity=".5"/>
+  </linearGradient>
+  <clipPath id="tt-clip"><path d="M 0 0 C 6 -6 18 -26 30 -44 C 40 -58 48 -70 50 -79 C 51 -86 47 -95 38 -102 C 29 -108 15 -111 6.5 -112 C 5.4 -114 5 -116 5 -119 L 5 -149 C 5 -151 7.6 -152 7.6 -156 C 7.6 -161 4 -163 0 -163 C -4 -163, -7.6 -161, -7.6 -156 C -7.6 -152, -5 -151, -5 -149 L -5 -119 C -5 -116, -5.4 -114, -6.5 -112 C -15 -111, -29 -108, -38 -102 C -47 -95, -51 -86, -50 -79 C -48 -70, -40 -58, -30 -44 C -18 -26, -6 -6, 0 0 Z"/></clipPath>
+  <filter id="tt-blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.6 0.2"/></filter>
+  <filter id="tt-soft" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="6 2.2"/></filter>
+</defs>
+
+<!-- Contact shadow only: no floor, no frame. It reads on a light page and fades into a dark one. -->
+<ellipse class="shadow" cx="360" cy="267" rx="58" ry="5.5" fill="#000" opacity=".38" filter="url(#tt-soft)"/>
+<ellipse class="shadow" cx="360" cy="266.5" rx="9" ry="1.6" fill="#000" opacity=".45" filter="url(#tt-soft)"/>
+
+<g class="sway"><g transform="translate(360 266) scale(1.25)">
+    <g clip-path="url(#tt-clip)">
+      <path d="M 0 0 C 6 -6 18 -26 30 -44 C 40 -58 48 -70 50 -79 C 51 -86 47 -95 38 -102 C 29 -108 15 -111 6.5 -112 C 5.4 -114 5 -116 5 -119 L 5 -149 C 5 -151 7.6 -152 7.6 -156 C 7.6 -161 4 -163 0 -163 C -4 -163, -7.6 -161, -7.6 -156 C -7.6 -152, -5 -151, -5 -149 L -5 -119 C -5 -116, -5.4 -114, -6.5 -112 C -15 -111, -29 -108, -38 -102 C -47 -95, -51 -86, -50 -79 C -48 -70, -40 -58, -30 -44 C -18 -26, -6 -6, 0 0 Z" fill="url(#tt-steel)"/>
+      <!-- The stem is a narrower cylinder, so it carries the same reflections at its own scale. -->
+      <rect x="-8" y="-164" width="16" height="52" fill="url(#tt-stem)"/>
+      <path d="M 0 0 C 6 -6 18 -26 30 -44 C 40 -58 48 -70 50 -79 C 51 -86 47 -95 38 -102 C 29 -108 15 -111 6.5 -112 C 5.4 -114 5 -116 5 -119 L 5 -149 C 5 -151 7.6 -152 7.6 -156 C 7.6 -161 4 -163 0 -163 C -4 -163, -7.6 -161, -7.6 -156 C -7.6 -152, -5 -151, -5 -149 L -5 -119 C -5 -116, -5.4 -114, -6.5 -112 C -15 -111, -29 -108, -38 -102 C -47 -95, -51 -86, -50 -79 C -48 -70, -40 -58, -30 -44 C -18 -26, -6 -6, 0 0 Z" fill="url(#tt-shade)"/>
+      <!-- The key light's hotspot on the crown. -->
+      <ellipse cx="-17" cy="-93" rx="12" ry="9" fill="url(#tt-hot)"/>
+      <ellipse cx="0" cy="-110.5" rx="18.7" ry="1.25" fill="none" stroke="#fff" stroke-opacity="0.036" stroke-width=".4"/>
+      <ellipse cx="0" cy="-108.8" rx="24.8" ry="1.47" fill="none" stroke="#000" stroke-opacity="0.054" stroke-width=".4"/>
+      <ellipse cx="0" cy="-107.1" rx="29.5" ry="1.63" fill="none" stroke="#000" stroke-opacity="0.063" stroke-width=".4"/>
+      <ellipse cx="0" cy="-105.4" rx="33.3" ry="1.77" fill="none" stroke="#fff" stroke-opacity="0.059" stroke-width=".4"/>
+      <ellipse cx="0" cy="-103.7" rx="36.3" ry="1.87" fill="none" stroke="#000" stroke-opacity="0.070" stroke-width=".4"/>
+      <ellipse cx="0" cy="-102.0" rx="38.8" ry="1.96" fill="none" stroke="#000" stroke-opacity="0.066" stroke-width=".4"/>
+      <ellipse cx="0" cy="-100.3" rx="40.8" ry="2.03" fill="none" stroke="#fff" stroke-opacity="0.050" stroke-width=".4"/>
+      <ellipse cx="0" cy="-98.6" rx="42.6" ry="2.09" fill="none" stroke="#000" stroke-opacity="0.047" stroke-width=".4"/>
+      <ellipse cx="0" cy="-96.9" rx="44.0" ry="2.14" fill="none" stroke="#000" stroke-opacity="0.049" stroke-width=".4"/>
+      <ellipse cx="0" cy="-95.2" rx="45.3" ry="2.18" fill="none" stroke="#fff" stroke-opacity="0.051" stroke-width=".4"/>
+      <ellipse cx="0" cy="-93.5" rx="46.4" ry="2.22" fill="none" stroke="#000" stroke-opacity="0.067" stroke-width=".4"/>
+      <ellipse cx="0" cy="-91.8" rx="47.4" ry="2.26" fill="none" stroke="#000" stroke-opacity="0.070" stroke-width=".4"/>
+      <ellipse cx="0" cy="-90.1" rx="48.3" ry="2.29" fill="none" stroke="#fff" stroke-opacity="0.058" stroke-width=".4"/>
+      <ellipse cx="0" cy="-88.4" rx="49.0" ry="2.31" fill="none" stroke="#000" stroke-opacity="0.062" stroke-width=".4"/>
+      <ellipse cx="0" cy="-86.7" rx="49.5" ry="2.33" fill="none" stroke="#000" stroke-opacity="0.052" stroke-width=".4"/>
+      <ellipse cx="0" cy="-85.0" rx="49.9" ry="2.34" fill="none" stroke="#fff" stroke-opacity="0.038" stroke-width=".4"/>
+      <ellipse cx="0" cy="-83.3" rx="50.1" ry="2.35" fill="none" stroke="#000" stroke-opacity="0.055" stroke-width=".4"/>
+      <ellipse cx="0" cy="-81.6" rx="50.1" ry="2.36" fill="none" stroke="#000" stroke-opacity="0.064" stroke-width=".4"/>
+      <ellipse cx="0" cy="-79.9" rx="50.1" ry="2.35" fill="none" stroke="#fff" stroke-opacity="0.059" stroke-width=".4"/>
+      <ellipse cx="0" cy="-78.2" rx="49.9" ry="2.35" fill="none" stroke="#000" stroke-opacity="0.069" stroke-width=".4"/>
+      <ellipse cx="0" cy="-76.5" rx="49.5" ry="2.33" fill="none" stroke="#000" stroke-opacity="0.065" stroke-width=".4"/>
+      <ellipse cx="0" cy="-74.8" rx="48.9" ry="2.31" fill="none" stroke="#fff" stroke-opacity="0.048" stroke-width=".4"/>
+      <ellipse cx="0" cy="-73.1" rx="48.4" ry="2.29" fill="none" stroke="#000" stroke-opacity="0.045" stroke-width=".4"/>
+      <ellipse cx="0" cy="-71.4" rx="47.6" ry="2.27" fill="none" stroke="#000" stroke-opacity="0.051" stroke-width=".4"/>
+      <ellipse cx="0" cy="-69.7" rx="46.8" ry="2.24" fill="none" stroke="#fff" stroke-opacity="0.052" stroke-width=".4"/>
+      <ellipse cx="0" cy="-68.0" rx="45.9" ry="2.21" fill="none" stroke="#000" stroke-opacity="0.068" stroke-width=".4"/>
+      <ellipse cx="0" cy="-66.3" rx="45.0" ry="2.17" fill="none" stroke="#000" stroke-opacity="0.070" stroke-width=".4"/>
+      <ellipse cx="0" cy="-64.6" rx="44.0" ry="2.14" fill="none" stroke="#fff" stroke-opacity="0.058" stroke-width=".4"/>
+      <ellipse cx="0" cy="-62.9" rx="43.0" ry="2.11" fill="none" stroke="#000" stroke-opacity="0.060" stroke-width=".4"/>
+      <ellipse cx="0" cy="-61.2" rx="42.1" ry="2.07" fill="none" stroke="#000" stroke-opacity="0.050" stroke-width=".4"/>
+      <ellipse cx="0" cy="-59.5" rx="41.0" ry="2.04" fill="none" stroke="#fff" stroke-opacity="0.039" stroke-width=".4"/>
+      <ellipse cx="0" cy="-57.8" rx="39.8" ry="1.99" fill="none" stroke="#000" stroke-opacity="0.057" stroke-width=".4"/>
+      <ellipse cx="0" cy="-56.1" rx="38.9" ry="1.96" fill="none" stroke="#000" stroke-opacity="0.065" stroke-width=".4"/>
+      <ellipse cx="0" cy="-54.4" rx="37.6" ry="1.92" fill="none" stroke="#fff" stroke-opacity="0.060" stroke-width=".4"/>
+      <ellipse cx="0" cy="-52.7" rx="36.5" ry="1.88" fill="none" stroke="#000" stroke-opacity="0.069" stroke-width=".4"/>
+      <ellipse cx="0" cy="-51.0" rx="35.5" ry="1.84" fill="none" stroke="#000" stroke-opacity="0.064" stroke-width=".4"/>
+      <ellipse cx="0" cy="-49.3" rx="34.1" ry="1.79" fill="none" stroke="#fff" stroke-opacity="0.047" stroke-width=".4"/>
+      <ellipse cx="0" cy="-47.6" rx="32.9" ry="1.75" fill="none" stroke="#000" stroke-opacity="0.043" stroke-width=".4"/>
+      <ellipse cx="0" cy="-45.9" rx="31.8" ry="1.71" fill="none" stroke="#000" stroke-opacity="0.052" stroke-width=".4"/>
+      <ellipse cx="0" cy="-44.2" rx="30.6" ry="1.67" fill="none" stroke="#fff" stroke-opacity="0.053" stroke-width=".4"/>
+      <ellipse cx="0" cy="-42.5" rx="29.3" ry="1.62" fill="none" stroke="#000" stroke-opacity="0.068" stroke-width=".4"/>
+      <ellipse cx="0" cy="-40.8" rx="28.2" ry="1.59" fill="none" stroke="#000" stroke-opacity="0.070" stroke-width=".4"/>
+      <ellipse cx="0" cy="-39.1" rx="27.1" ry="1.55" fill="none" stroke="#fff" stroke-opacity="0.057" stroke-width=".4"/>
+      <ellipse cx="0" cy="-37.4" rx="26.0" ry="1.51" fill="none" stroke="#000" stroke-opacity="0.059" stroke-width=".4"/>
+      <ellipse cx="0" cy="-35.7" rx="25.0" ry="1.47" fill="none" stroke="#000" stroke-opacity="0.048" stroke-width=".4"/>
+      <ellipse cx="0" cy="-34.0" rx="23.9" ry="1.44" fill="none" stroke="#fff" stroke-opacity="0.041" stroke-width=".4"/>
+      <ellipse cx="0" cy="-32.3" rx="22.8" ry="1.40" fill="none" stroke="#000" stroke-opacity="0.058" stroke-width=".4"/>
+      <ellipse cx="0" cy="-30.6" rx="21.4" ry="1.35" fill="none" stroke="#000" stroke-opacity="0.066" stroke-width=".4"/>
+      <ellipse cx="0" cy="-28.9" rx="20.4" ry="1.31" fill="none" stroke="#fff" stroke-opacity="0.060" stroke-width=".4"/>
+      <ellipse cx="0" cy="-27.2" rx="19.4" ry="1.28" fill="none" stroke="#000" stroke-opacity="0.069" stroke-width=".4"/>
+      <ellipse cx="0" cy="-25.5" rx="18.3" ry="1.24" fill="none" stroke="#000" stroke-opacity="0.062" stroke-width=".4"/>
+      <ellipse cx="0" cy="-23.8" rx="17.3" ry="1.21" fill="none" stroke="#fff" stroke-opacity="0.045" stroke-width=".4"/>
+      <ellipse cx="0" cy="-22.1" rx="16.0" ry="1.16" fill="none" stroke="#000" stroke-opacity="0.043" stroke-width=".4"/>
+      <ellipse cx="0" cy="-20.4" rx="15.0" ry="1.12" fill="none" stroke="#000" stroke-opacity="0.054" stroke-width=".4"/>
+      <ellipse cx="0" cy="-18.7" rx="14.0" ry="1.09" fill="none" stroke="#fff" stroke-opacity="0.054" stroke-width=".4"/>
+      <ellipse cx="0" cy="-17.0" rx="12.8" ry="1.05" fill="none" stroke="#000" stroke-opacity="0.069" stroke-width=".4"/>
+      <ellipse cx="0" cy="-15.3" rx="11.8" ry="1.01" fill="none" stroke="#000" stroke-opacity="0.070" stroke-width=".4"/>
+      <ellipse cx="0" cy="-13.6" rx="10.6" ry="0.97" fill="none" stroke="#fff" stroke-opacity="0.056" stroke-width=".4"/>
+      <ellipse cx="0" cy="-11.9" rx="9.4" ry="0.93" fill="none" stroke="#000" stroke-opacity="0.057" stroke-width=".4"/>
+      <ellipse cx="0" cy="-10.2" rx="8.2" ry="0.89" fill="none" stroke="#000" stroke-opacity="0.046" stroke-width=".4"/>
+      <ellipse cx="0" cy="-8.5" rx="7.1" ry="0.85" fill="none" stroke="#fff" stroke-opacity="0.042" stroke-width=".4"/>
+      <g filter="url(#tt-blur)"><rect class="mark" x="-2.5" y="-96" width="5" height="1.8" rx=".9" fill="#0e0f10" style="animation-delay:-0.000s"/><rect class="mark" x="-2.5" y="-96" width="5" height="1.8" rx=".9" fill="#0e0f10" style="animation-delay:-0.611s"/></g>
+    </g>
+    <!-- The machined edge at the widest point, and a fine rim light on the crown. -->
+    <path d="M -50 -79 Q 0 -75.2 50 -79" fill="none" stroke="#000" stroke-opacity=".35" stroke-width=".7" clip-path="url(#tt-clip)"/>
+    <path d="M -49.6 -77.6 Q 0 -73.8 49.6 -77.6" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width=".5" clip-path="url(#tt-clip)"/>
+    <path d="M -38 -102 C -29 -108 -15 -111 -6.5 -112" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width=".6"/></g></g>
+</svg>
