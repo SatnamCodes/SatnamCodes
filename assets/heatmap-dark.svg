@@ -386,13 +386,14 @@
 <rect class="c" style="animation-delay:1.55s" x="792" y="100" width="11" height="11" rx="2.5" fill="#e3b072" fill-opacity="0.28"/>
 <rect class="c" style="animation-delay:1.58s" x="792" y="114" width="11" height="11" rx="2.5" fill="#e3b072" fill-opacity="0.28"/>
 <rect class="c" style="animation-delay:1.61s" x="792.5" y="128.5" width="10" height="10" rx="2.5" fill="none" stroke="#3d444d"/>
+<rect class="c" style="animation-delay:1.64s" x="792.5" y="142.5" width="10" height="10" rx="2.5" fill="none" stroke="#3d444d"/>
 <g clip-path="url(#hm-lit)" class="glint"><rect x="-56" y="58" width="120" height="98" fill="url(#hm-band)" opacity="0">
   <animate attributeName="x" values="-56;803" dur="7s" begin="6.7s;glint.end+4s" id="glint" fill="freeze"/>
   <animate attributeName="opacity" values="0;.7;.7;0" keyTimes="0;.1;.9;1" dur="7s" begin="6.7s;glint.end+4s" fill="freeze"/>
 </rect></g>
-<path d="M 764 160 v 5 H 803 v -5" fill="none" stroke="#e3b072" stroke-width=".9"/>
-<path d="M 783.5 165 V 182 H 756" fill="none" stroke="#9198a1" stroke-width=".7"/>
-<text x="752" y="185" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#9198a1">THE FORTNIGHT THE TOP IS MEASURED ON</text>
+<path d="M 778 160 v 5 H 803 v -5" fill="none" stroke="#e3b072" stroke-width=".9"/>
+<path d="M 790.5 165 V 182 H 770" fill="none" stroke="#9198a1" stroke-width=".7"/>
+<text x="766" y="185" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#9198a1">THE FORTNIGHT THE TOP IS MEASURED ON</text>
 <g transform="translate(64 182)" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8.5" fill="#9198a1">
   <text x="0" y="3">LESS</text>
   <rect x="30.5" y="-6.5" width="10" height="10" rx="2.5" fill="none" stroke="#3d444d"/><rect x="44" y="-7" width="11" height="11" rx="2.5" fill="#e3b072" fill-opacity="0.28"/><rect x="58" y="-7" width="11" height="11" rx="2.5" fill="#e3b072" fill-opacity="0.5"/><rect x="72" y="-7" width="11" height="11" rx="2.5" fill="#e3b072" fill-opacity="0.74"/><rect x="86" y="-7" width="11" height="11" rx="2.5" fill="#e3b072" fill-opacity="1"/>
