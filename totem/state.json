@@ -1,11 +1,11 @@
 {
   "measurement": {
-    "measuredAt": "2026-10-21",
-    "last14": 12,
+    "measuredAt": "2026-10-22",
+    "last14": 10,
     "active14": 3,
-    "usualFortnight": 6,
-    "idleDays": 8,
-    "yearTotal": 276,
+    "usualFortnight": 7,
+    "idleDays": 1,
+    "yearTotal": 277,
     "steadiness": 0.771
   },
   "motion": {

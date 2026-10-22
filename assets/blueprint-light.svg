@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="840" height="330" viewBox="0 0 840 330" role="img" aria-labelledby="bp-title">
-<title id="bp-title">Blueprint of the totem, measured 21 OCT 2026: spinning true, 12 contributions in the last 14 days against a usual fortnight of 6, steadiness 0.771. It turns once every 0.0189 seconds and leans 5.66 degrees.</title>
+<title id="bp-title">Blueprint of the totem, measured 22 OCT 2026: spinning true, 10 contributions in the last 14 days against a usual fortnight of 7, steadiness 0.771. It turns once every 0.0189 seconds and leans 5.66 degrees.</title>
 <style>
   .draw { stroke-dasharray: 900; stroke-dashoffset: 900; animation: draw 2.2s ease-out .2s forwards; }
   @keyframes draw { to { stroke-dashoffset: 0 } }
@@ -33,13 +33,13 @@
 <!-- Dimensions: the body's width carries the fortnight; the height, the steadiness. -->
 <path d="M 101.7 167.9 V 60.55000000000001 M 216.2 179.3 V 60.55000000000001" stroke="#d8dee4" stroke-width=".7"/>
 <path class="draw" d="M 101.7404171275921 64.55000000000001 L 216.17975368681888 64.55000000000001 M 216.17975368681888 64.55000000000001 l -5.4 2.6 M 216.17975368681888 64.55000000000001 l -5.4 -2.6 M 101.7404171275921 64.55000000000001 l 5.4 -2.6 M 101.7404171275921 64.55000000000001 l 5.4 2.6" fill="none" stroke="#59636e" stroke-width=".8"/>
-<text x="150" y="56.55000000000001" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e" text-anchor="middle"><tspan fill="#9a5f17">12</tspan> CONTRIBUTIONS / 14 DAYS</text>
+<text x="150" y="56.55000000000001" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e" text-anchor="middle"><tspan fill="#9a5f17">10</tspan> CONTRIBUTIONS / 14 DAYS</text>
 <path class="draw" d="M 46 268 L 46 80.55000000000001 M 46 80.55000000000001 l 2.6 5.4 M 46 80.55000000000001 l -2.6 5.4 M 46 268 l -2.6 -5.4 M 46 268 l 2.6 -5.4" fill="none" stroke="#59636e" stroke-width=".8"/>
 <g transform="translate(40 173.7) rotate(-90)"><text x="0" y="0" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e" text-anchor="middle">STEADINESS <tspan fill="#9a5f17">0.771</tspan></text></g>
 <path d="M 174.1 112.9 H 210.0" fill="none" stroke="#59636e" stroke-width=".7"/>
-<text x="214" y="115.92959629256583" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e">USUAL FORTNIGHT <tspan fill="#9a5f17">6</tspan></text>
+<text x="214" y="115.92959629256583" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e">USUAL FORTNIGHT <tspan fill="#9a5f17">7</tspan></text>
 <path d="M 153 264 L 190 284 H 208" fill="none" stroke="#59636e" stroke-width=".7"/>
-<text x="212" y="287" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e"><tspan fill="#9a5f17">8</tspan> DAYS SINCE THE LAST COMMIT</text>
+<text x="212" y="287" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e"><tspan fill="#9a5f17">1</tspan> DAY SINCE THE LAST COMMIT</text>
 
 <!-- Plan view, turning at the measured rate (slowed six times so the eye can follow it). -->
 <g transform="translate(400 160)">
@@ -72,7 +72,7 @@
   <text x="10" y="22" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="15" fill="#1f2328" letter-spacing="4">TOTEM</text>
   <text x="254" y="22" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e" text-anchor="end">DWG 001</text>
   <text x="10" y="49" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8" fill="#59636e">STATE</text><text x="10" y="61" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e"><tspan fill="#9a5f17">SPINNING TRUE</tspan></text>
-  <text x="142" y="49" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8" fill="#59636e">MEASURED</text><text x="142" y="61" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#1f2328">21 OCT 2026</text>
+  <text x="142" y="49" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8" fill="#59636e">MEASURED</text><text x="142" y="61" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#1f2328">22 OCT 2026</text>
   <text x="10" y="82" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8" fill="#59636e">OWNER</text><text x="10" y="94" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#1f2328">SATNAMCODES</text>
   <text x="142" y="82" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8" fill="#59636e">DRAWN BY</text><text x="142" y="94" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#1f2328">GITHUB ACTIONS</text>
 </g>
