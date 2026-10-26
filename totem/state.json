@@ -1,26 +1,26 @@
 {
   "measurement": {
-    "measuredAt": "2026-10-25",
+    "measuredAt": "2026-10-26",
     "last14": 6,
     "active14": 3,
-    "usualFortnight": 7,
-    "idleDays": 0,
-    "yearTotal": 271,
-    "steadiness": 0.6
+    "usualFortnight": 8.5,
+    "idleDays": 1,
+    "yearTotal": 268,
+    "steadiness": 0.524
   },
   "motion": {
     "state": "spinning true",
     "fallen": false,
-    "spinHz": 49.7,
-    "spinPeriod": 0.0201,
-    "leanDeg": 8.4,
-    "precessionPeriod": 0.396,
-    "nutationDeg": 0.79,
+    "spinHz": 48.2,
+    "spinPeriod": 0.0207,
+    "leanDeg": 9.62,
+    "precessionPeriod": 0.354,
+    "nutationDeg": 1.48,
     "sleepHz": 47.8,
     "launch": {
-      "w": 312.2294628403696,
-      "theta": 0.1466076571675237,
-      "phid0": 15.19394366927934
+      "w": 303.10275546503567,
+      "theta": 0.16783086087177473,
+      "phid0": 17.126701587833715
     }
   }
 }
