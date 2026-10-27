@@ -14,11 +14,11 @@
 
 <!-- states -->
 <details>
-<summary><a name="wobbling"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/states/wobbling-button-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/states/wobbling-button-light.svg"><img src="assets/states/wobbling-button-light.svg" height="40" alt="See it wobbling"></picture></a></summary>
+<summary><a name="spinning-true"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/states/spinning-true-button-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/states/spinning-true-button-light.svg"><img src="assets/states/spinning-true-button-light.svg" height="40" alt="See it spinning true"></picture></a></summary>
 <br>
-<a name="wobbling-top"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/states/wobbling-top-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/states/wobbling-top-light.svg"><img src="assets/states/wobbling-top-light.svg" width="560" alt="The top wobbling, from an example fortnight."></picture></a>
+<a name="spinning-true-top"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/states/spinning-true-top-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/states/spinning-true-top-light.svg"><img src="assets/states/spinning-true-top-light.svg" width="560" alt="The top spinning true, from an example fortnight."></picture></a>
 <br>
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/states/wobbling-blueprint-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/states/wobbling-blueprint-light.svg"><img src="assets/states/wobbling-blueprint-light.svg" width="840" alt="Its blueprint, wobbling: 3 contributions in 14 days, steadiness 0.3."></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/states/spinning-true-blueprint-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/states/spinning-true-blueprint-light.svg"><img src="assets/states/spinning-true-blueprint-light.svg" width="840" alt="Its blueprint, spinning true: 40 contributions in 14 days, steadiness 0.9."></picture>
 </details>
 <details>
 <summary><a name="at-rest"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/states/at-rest-button-dark.svg"><source media="(prefers-color-scheme: light)" srcset="assets/states/at-rest-button-light.svg"><img src="assets/states/at-rest-button-light.svg" height="40" alt="See it at rest"></picture></a></summary>
@@ -32,7 +32,7 @@
 </details>
 
 <!-- totem -->
-<sub><b>Spinning true</b> · 6 contributions in the last 14 days · measured 26 Oct 2026</sub>
+<sub><b>Wobbling</b> · 2 contributions in the last 14 days · measured 27 Oct 2026</sub>
 <!-- /totem -->
 
 </div>
