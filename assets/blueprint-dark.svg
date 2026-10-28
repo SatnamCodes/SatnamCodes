@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="840" height="330" viewBox="0 0 840 330" role="img" aria-labelledby="bp-title">
-<title id="bp-title">Blueprint of the totem, measured 27 OCT 2026: wobbling, 2 contributions in the last 14 days against a usual fortnight of 9, steadiness 0.225. It turns once every 0.0235 seconds and leans 47.68 degrees.</title>
+<title id="bp-title">Blueprint of the totem, measured 28 OCT 2026: wobbling, 2 contributions in the last 14 days against a usual fortnight of 7, steadiness 0.257. It turns once every 0.0232 seconds and leans 46.15 degrees.</title>
 <style>
   .draw { stroke-dasharray: 900; stroke-dashoffset: 900; animation: draw 2.2s ease-out .2s forwards; }
   @keyframes draw { to { stroke-dashoffset: 0 } }
-  .turn { transform-box: view-box; transform-origin: 400px 160px; animation: turn 1.5s linear infinite; }
+  .turn { transform-box: view-box; transform-origin: 400px 160px; animation: turn 1.51s linear infinite; }
   @keyframes turn { to { transform: rotate(360deg) } }
   @media (prefers-reduced-motion: reduce) { .draw { animation: none; stroke-dashoffset: 0 } .turn { animation: none } }
 </style>
@@ -21,17 +21,17 @@
   <rect x="64" y="45.55000000000001" width="172" height="15" fill="#000"/>
 </mask>
 <line x1="150" y1="282" x2="150" y2="150" stroke="#30363d" stroke-dasharray="10 3 2 3" mask="url(#bp-gap)"/>
-<g transform="translate(150 268) rotate(47.68) scale(1.15)">
+<g transform="translate(150 268) rotate(46.15) scale(1.15)">
   <path class="draw" d="M 0 0 C 6 -6 18 -26 30 -44 C 40 -58 48 -70 50 -79 C 51 -86 47 -95 38 -102 C 29 -108 15 -111 6.5 -112 C 5.4 -114 5 -116 5 -119 L 5 -149 C 5 -151 7.6 -152 7.6 -156 C 7.6 -161 4 -163 0 -163 C -4 -163, -7.6 -161, -7.6 -156 C -7.6 -152, -5 -151, -5 -149 L -5 -119 C -5 -116, -5.4 -114, -6.5 -112 C -15 -111, -29 -108, -38 -102 C -47 -95, -51 -86, -50 -79 C -48 -70, -40 -58, -30 -44 C -18 -26, -6 -6, 0 0 Z" fill="none" stroke="#e6edf3" stroke-width="0.87"/>
   <path class="draw" d="M -50 -79 Q 0 -75 50 -79" fill="none" stroke="#9198a1" stroke-width="0.61"/>
 </g>
-<line x1="150" y1="268" x2="298.8" y2="132.5" stroke="#d9a35b" stroke-width=".9" stroke-dasharray="4 3" mask="url(#bp-gap)"/>
-<path d="M 150 208 A 60 60 0 0 1 194.4 227.6" fill="none" stroke="#d9a35b" stroke-width=".9"/>
+<line x1="150" y1="268" x2="295.1" y2="128.6" stroke="#d9a35b" stroke-width=".9" stroke-dasharray="4 3" mask="url(#bp-gap)"/>
+<path d="M 150 208 A 60 60 0 0 1 193.3 226.4" fill="none" stroke="#d9a35b" stroke-width=".9"/>
 <text x="40" y="58" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#9198a1"><tspan fill="#d9a35b">2</tspan> CONTRIBUTIONS / 14 DAYS</text>
-<text x="40" y="76" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#9198a1">STEADINESS <tspan fill="#d9a35b">0.225</tspan></text>
-<text x="40" y="94" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#9198a1">USUAL FORTNIGHT <tspan fill="#d9a35b">9</tspan></text>
-<text x="40" y="112" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#9198a1"><tspan fill="#d9a35b">2</tspan> DAYS SINCE THE LAST COMMIT</text>
-<text x="40" y="130" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#9198a1">LEAN <tspan fill="#d9a35b">47.7°</tspan></text>
+<text x="40" y="76" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#9198a1">STEADINESS <tspan fill="#d9a35b">0.257</tspan></text>
+<text x="40" y="94" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#9198a1">USUAL FORTNIGHT <tspan fill="#d9a35b">7</tspan></text>
+<text x="40" y="112" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#9198a1"><tspan fill="#d9a35b">3</tspan> DAYS SINCE THE LAST COMMIT</text>
+<text x="40" y="130" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#9198a1">LEAN <tspan fill="#d9a35b">46.1°</tspan></text>
 
 <!-- Dimensions: the body's width carries the fortnight; the height, the steadiness. -->
 
@@ -47,8 +47,8 @@
   <line x1="0" y1="-69.5" x2="0" y2="69.5" stroke="#30363d" stroke-dasharray="10 3 2 3"/>
 </g>
 <g class="turn"><path d="M 400 115.15 L 400 103.5" stroke="#d9a35b" stroke-width="2.4" stroke-linecap="round"/><circle cx="431.625" cy="191.625" r="2" fill="#d9a35b"/></g>
-<text x="400" y="251.5" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#9198a1" text-anchor="middle"><tspan fill="#d9a35b">42.5</tspan> TURNS A SECOND</text>
-<text x="400" y="265.5" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9" fill="#9198a1" text-anchor="middle">SHOWN 64× SLOWER · AXIS ROUND EVERY 0.386 S</text>
+<text x="400" y="251.5" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#9198a1" text-anchor="middle"><tspan fill="#d9a35b">43.1</tspan> TURNS A SECOND</text>
+<text x="400" y="265.5" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9" fill="#9198a1" text-anchor="middle">SHOWN 65× SLOWER · AXIS ROUND EVERY 0.39 S</text>
 
 <!-- Notes. -->
 <text style="white-space:pre" x="560" y="46" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="9.5" fill="#9198a1">1. MEASURED DAILY FROM THE CALENDAR.</text>
@@ -69,7 +69,7 @@
   <text x="10" y="22" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="15" fill="#e6edf3" letter-spacing="4">TOTEM</text>
   <text x="254" y="22" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#9198a1" text-anchor="end">DWG 001</text>
   <text x="10" y="49" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8" fill="#9198a1">STATE</text><text x="10" y="61" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#9198a1"><tspan fill="#d9a35b">WOBBLING</tspan></text>
-  <text x="142" y="49" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8" fill="#9198a1">MEASURED</text><text x="142" y="61" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#e6edf3">27 OCT 2026</text>
+  <text x="142" y="49" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8" fill="#9198a1">MEASURED</text><text x="142" y="61" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#e6edf3">28 OCT 2026</text>
   <text x="10" y="82" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8" fill="#9198a1">OWNER</text><text x="10" y="94" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#e6edf3">SATNAMCODES</text>
   <text x="142" y="82" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8" fill="#9198a1">DRAWN BY</text><text x="142" y="94" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#e6edf3">GITHUB ACTIONS</text>
 </g>
