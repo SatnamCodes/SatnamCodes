@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="840" height="330" viewBox="0 0 840 330" role="img" aria-labelledby="bp-title">
-<title id="bp-title">Blueprint of the totem, measured 29 OCT 2026: wobbling, 2 contributions in the last 14 days against a usual fortnight of 5.5, steadiness 0.296. It turns once every 0.0228 seconds and leans 44.2 degrees.</title>
+<title id="bp-title">Blueprint of the totem, measured 30 OCT 2026: wobbling, 2 contributions in the last 14 days against a usual fortnight of 5.5, steadiness 0.296. It turns once every 0.0228 seconds and leans 44.2 degrees.</title>
 <style>
   .draw { stroke-dasharray: 900; stroke-dashoffset: 900; animation: draw 2.2s ease-out .2s forwards; }
   @keyframes draw { to { stroke-dashoffset: 0 } }
@@ -30,7 +30,7 @@
 <text x="40" y="58" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e"><tspan fill="#9a5f17">2</tspan> CONTRIBUTIONS / 14 DAYS</text>
 <text x="40" y="76" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e">STEADINESS <tspan fill="#9a5f17">0.296</tspan></text>
 <text x="40" y="94" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e">USUAL FORTNIGHT <tspan fill="#9a5f17">5.5</tspan></text>
-<text x="40" y="112" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e"><tspan fill="#9a5f17">4</tspan> DAYS SINCE THE LAST COMMIT</text>
+<text x="40" y="112" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e"><tspan fill="#9a5f17">5</tspan> DAYS SINCE THE LAST COMMIT</text>
 <text x="40" y="130" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e">LEAN <tspan fill="#9a5f17">44.2°</tspan></text>
 
 <!-- Dimensions: the body's width carries the fortnight; the height, the steadiness. -->
@@ -69,7 +69,7 @@
   <text x="10" y="22" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="15" fill="#1f2328" letter-spacing="4">TOTEM</text>
   <text x="254" y="22" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e" text-anchor="end">DWG 001</text>
   <text x="10" y="49" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8" fill="#59636e">STATE</text><text x="10" y="61" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#59636e"><tspan fill="#9a5f17">WOBBLING</tspan></text>
-  <text x="142" y="49" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8" fill="#59636e">MEASURED</text><text x="142" y="61" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#1f2328">29 OCT 2026</text>
+  <text x="142" y="49" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8" fill="#59636e">MEASURED</text><text x="142" y="61" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#1f2328">30 OCT 2026</text>
   <text x="10" y="82" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8" fill="#59636e">OWNER</text><text x="10" y="94" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#1f2328">SATNAMCODES</text>
   <text x="142" y="82" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="8" fill="#59636e">DRAWN BY</text><text x="142" y="94" font-family="ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="10" fill="#1f2328">GITHUB ACTIONS</text>
 </g>
