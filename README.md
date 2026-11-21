@@ -32,7 +32,7 @@
 </details>
 
 <!-- totem -->
-<sub><b>Spinning true</b> · 13 contributions in the last 14 days · measured 20 Nov 2026</sub>
+<sub><b>Spinning true</b> · 7 contributions in the last 14 days · measured 21 Nov 2026</sub>
 <!-- /totem -->
 
 </div>
