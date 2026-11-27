@@ -32,7 +32,7 @@
 </details>
 
 <!-- totem -->
-<sub><b>Wobbling</b> · 3 contributions in the last 14 days · measured 26 Nov 2026</sub>
+<sub><b>Wobbling</b> · 3 contributions in the last 14 days · measured 27 Nov 2026</sub>
 <!-- /totem -->
 
 </div>
